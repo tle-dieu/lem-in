@@ -1,20 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/04 18:28:56 by matleroy         ###   ########.fr       */
+/*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
+/*   Updated: 2019/02/04 18:28:15 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
+#include <fcntl.h>
 
-int		main(void)
+int	parse_infos()
 {
-	ft_printf("{green}debut{reset}");
-	parse_infos();
+	char *line;
+
+	while (get_next_line(0, &line) == 1)
+	{
+		ft_printf("%s\n", line);
+	}
 	return (0);
 }

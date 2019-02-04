@@ -7,7 +7,7 @@ LDFLAG = -L./$(LIBDIR) -lft
 RM = rm -rf
 
 SRC = main.c \
-
+	  parsing.c
 OBJ = $(SRC:.c=.o)
 
 LIBDIR := libft/
@@ -21,6 +21,8 @@ RED := \033[38;2;255;60;51m
 BLUE := \033[38;2;0;188;218m
 RMLINE = \033[2K
 NC := \033[0m
+
+MAP_FOLDER := ./maps/
 
 all: $(NAME)
 
@@ -51,7 +53,7 @@ fclean:
 	@printf "$(RED)$(NAME) has been removed$(NC)\n"
 
 run: $(NAME)
-	@printf "$(BLUE)Nothing to run for now\n"
+	./lem_in < $(MAP_FOLDER)$(map)
 
 re: fclean all
 
