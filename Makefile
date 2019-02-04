@@ -51,7 +51,7 @@ fclean:
 	@printf "$(RED)$(NAME) has been removed$(NC)\n"
 
 run: $(NAME)
-	@printf "$(BLUE)Nothing to run for now"
+	@printf "$(BLUE)Nothing to run for now\n"
 
 re: fclean all
 
