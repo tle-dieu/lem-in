@@ -6,12 +6,20 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/03 16:23:14 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/04 17:48:50 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "lem_in.h"
+
 int		main(void)
 {
+	char *line;
+	
 
+	while (1)
+	{
+		get_next_line(0, &line);
+	}
 	return (0);
 }
