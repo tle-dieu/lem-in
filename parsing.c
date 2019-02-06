@@ -19,7 +19,7 @@ int	get_start(char *line)
 	t_room start;
 
 	(void)start;
-	if (!strcmp("##start", line))
+	if (!ft_strcmp("##start", line))
 	{	
 		ft_printf("{yellow} good\n");
 		if (get_next_line(0, &line) == 1)
@@ -31,11 +31,26 @@ int	get_start(char *line)
 	return (0);
 }
 
+int	get_room(char *line)
+{
+	t_room end;
+
+	if (!ft_strcmp("##end", line))
+	{
+		ft_printf("{yellow} good\n");
+		if (get_next_line(0, &line) == 1)
+		{
+			end.name = ft_strcdup(line, ' ');	
+		}
+		ft_printf("{green} name = %s\n", end.name);
+	}
+	return (0); 
+}
+
 int	parse_infos()
 {
 	char *line;
 	int		ant;
-
 	ant = -1;
 	while (get_next_line(0, &line) == 1)
 	{
@@ -43,9 +58,14 @@ int	parse_infos()
 		{
 			ant = ft_atoi(line);
 		}
-		ft_printf("{red}%d\n", ant);
-		ft_printf("{cyan}%s\n", line);
-		get_start(line);
+		else if (!ft_strchr(line, '-'))
+		{
+			get_start(line);
+			ft_printf("{cyan}%s\n", line);
+		}
+		else
+			ft_printf("{blue}%s\n", line);
+		get_end(line);
 	}
 	return (0);
 }
