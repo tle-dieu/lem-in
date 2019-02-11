@@ -9,5 +9,10 @@ typedef struct	s_room
 	char		*name;
 }				t_room;
 
+typedef struct s_pipe
+{
+	char *name;
+	int len;
+}				t_pipe;
 int		parse_infos();
 #endif

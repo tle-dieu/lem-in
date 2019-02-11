@@ -1,0 +1,17 @@
+deplacement diagonales autorise ?
+listes chaine des chemins les plus courts ?
+listes chaine abvec tableau de pointeur pour le next?
+ou tableau 2d?
+
+::::::::::::::::::::::: REPARTITION DU TRAVAIL :::::::::::::::::::::::::::
+
+MATHHEW
+
+-parsing (+ stocker les datas)
+-fonctions choisir chemins
+
+
+THOMAS
+
+-algo pour trouver les chemins les plus courts
+-fonctions deplacer forumis

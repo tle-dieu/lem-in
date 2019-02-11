@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/04 21:08:25 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/02/11 16:35:39 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,38 @@
 #include <fcntl.h>
 
 
-int	get_start(char *line)
+int	get_room(char *line)
 {
-	t_room start;
+	t_room room;
+	int len;
+	char *tmp;
 
-	(void)start;
-	if (!strcmp("##start", line))
+	if (!strchr(line, '-'))
 	{	
-		ft_printf("{yellow} good\n");
-		if (get_next_line(0, &line) == 1)
+		if (!strcmp("##start", line) || !strcmp("##end", line))
 		{
-			start.name = ft_strcdup(line, ' ');	
+			if (get_next_line(0, &line) == 1)
+				room.name = ft_strcdup(line, ' ');	
 		}
-		ft_printf("{green} name = %s\n", start.name);
+		else
+			room.name = ft_strcdup(line, ' ');	
+		ft_printf("{yellow}%s\n", room.name);
+		len = ft_strlen(room.name);
+		if (len && line + len)
+			ft_printf("{blue} %d", ft_atoi(line + len));
+		if ((tmp = ft_strrchr(line, ' ')))
+			ft_printf("{blue} %d\n", ft_atoi(tmp));
 	}
+	return (0);
+}
+
+int get_pipe(char *line)
+{
+	t_pipe pipe;
+
+	pipe.name = strdup(line);
+	ft_printf("{green} new pipe ::: %s\n", pipe.name);
+	
 	return (0);
 }
 
@@ -44,8 +62,10 @@ int	parse_infos()
 			ant = ft_atoi(line);
 		}
 		ft_printf("{red}%d\n", ant);
-		ft_printf("{cyan}%s\n", line);
-		get_start(line);
+		if (!strchr(line, '-'))
+			get_room(line);
+		else
+			get_pipe(line);
 	}
 	return (0);
 }
