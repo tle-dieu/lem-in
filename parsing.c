@@ -6,55 +6,52 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/11 16:57:19 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/02/11 23:33:03 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <fcntl.h>
+#include <stdlib.h>
 
-// deplacemnent diagonales autorise ?
-// listes des chemins les plus courts ?
-// liste chaine avec tableau de pointeur pour les next ?
-//	ou tableau a 2d ?
-//
-//
-int	get_room(char *line)
+int	get_room(t_room **room, char *line)
 {
-	t_room room;
 	int len;
 	char *tmp;
+	t_room *new;
 
-	if (!strchr(line, '-'))
-	{	
-		if (!strcmp("##start", line) || !strcmp("##end", line))
-		{
-			if (get_next_line(0, &line) == 1)
-				room.name = ft_strcdup(line, ' ');	
-		}
-		else
-			room.name = ft_strcdup(line, ' ');	
-		ft_printf("{yellow}%s\n", room.name);
-		len = ft_strlen(room.name);
-		if (len && line + len)
-			ft_printf("{blue} %d", ft_atoi(line + len));
-		if ((tmp = ft_strrchr(line, ' ')))
-			ft_printf("{blue} %d\n", ft_atoi(tmp));
+	if (!(new = (t_room*)malloc(sizeof(t_room))))
+		return (1);
+	if (!strcmp("##start", line) || !strcmp("##end", line))
+	{
+		if (get_next_line(0, &line) == 1)
+			new->name = ft_strcdup(line, ' ');	
 	}
+	else
+		new->name = ft_strcdup(line, ' ');	
+	len = ft_strlen(new->name);
+	if (len && line + len)
+		ft_printf("{blue} %d", ft_atoi(line + len));
+	if ((tmp = ft_strrchr(line, ' ')))
+		ft_printf("{blue} %d\n", ft_atoi(tmp));
+	new->next = *room ? *room : NULL;
+	*room = new;
 	return (0);
 }
 
-int get_pipe(char *line)
+int get_pipe(t_pipe **pipe, char *line)
 {
-	t_pipe pipe;
-
-	pipe.name = strdup(line);
-	ft_printf("{green} new pipe ::: %s\n", pipe.name);
+	t_pipe *new;
 	
+	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
+		return (1);
+	new->name = strdup(line);
+	new->next = *pipe ? *pipe : NULL;
+	*pipe = new;
 	return (0);
 }
 
-int	parse_infos()
+int	parse_infos(t_room **room, t_pipe **pipe)
 {
 	char *line;
 	int		ant;
@@ -68,9 +65,12 @@ int	parse_infos()
 		}
 		ft_printf("{red}%d\n", ant);
 		if (!strchr(line, '-'))
-			get_room(line);
+		{
+			get_room(room, line);
+			ft_printf("{purple}%s\n", (*room)->name);
+		}
 		else
-			get_pipe(line);
+			get_pipe(pipe, line);
 	}
 	return (0);
 }
