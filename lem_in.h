@@ -9,6 +9,7 @@ typedef struct		s_room
 	char			*name;
 	char			*place;
 	int				status;
+	int				id;
 	struct s_room	*next;
 }					t_room;
 

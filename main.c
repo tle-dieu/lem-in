@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/12 12:03:41 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/02/12 23:11:21 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	print_room(t_room *room)
 	ft_printf("{red}::::ROOM::::\n");
 	while (room)
 	{
-		ft_printf("{purple} room = {red} %s place = %s\n", room->name, room->place);
+		ft_printf("{purple} room = {red} %s place = %s => %d\n", room->name, room->place, room->id);
 		room = room->next;
 	}
 }
