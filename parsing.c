@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/11 23:51:51 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/02/12 15:32:20 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,15 @@ int	get_room(t_room **room, char *line)
 		return (1);
 	if (!strcmp("##start", line) || !strcmp("##end", line))
 	{
+		new->place = line;
 		if (get_next_line(0, &line) == 1)
-			new->name = ft_strcdup(line, ' ');	
+			new->name = ft_strcdup(line, ' ');
 	}
 	else
+	{
+		new->place = NULL;
 		new->name = ft_strcdup(line, ' ');	
+	}
 	len = ft_strlen(new->name);
 	if (len && line + len)
 		ft_printf("{blue} %d", ft_atoi(line + len));
@@ -42,33 +46,31 @@ int	get_room(t_room **room, char *line)
 int get_pipe(t_pipe **pipe, char *line)
 {
 	t_pipe *new;
-	
+	char *tmp;
+
 	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
-	new->name = strdup(line);
+	new->begin = ft_strcdup(line, '-');
+	tmp = ft_strchr(line, '-');
+	if (*tmp == '-')
+		tmp++;
+	new->end = ft_strdup(tmp);
 	new->next = *pipe ? *pipe : NULL;
 	*pipe = new;
 	return (0);
 }
 
-int	parse_infos(t_room **room, t_pipe **pipe)
+int	parse_infos(t_room **room, t_pipe **pipe, int *ant)
 {
 	char *line;
-	int		ant;
 
-	ant = -1;
+	*ant = -1;
 	while (get_next_line(0, &line) == 1)
 	{
-		if (ant < 0)
-		{
-			ant = ft_atoi(line);
-		}
-		ft_printf("{red}%d\n", ant);
-		if (!strchr(line, '-'))
-		{
+		if (*ant < 0)
+			*ant = ft_atoi(line);
+		else if (!strchr(line, '-'))
 			get_room(room, line);
-			ft_printf("{purple}%s\n", (*room)->name);
-		}
 		else
 			get_pipe(pipe, line);
 	}

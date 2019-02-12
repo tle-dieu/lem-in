@@ -7,14 +7,18 @@ typedef struct		s_room
 	int				x;
 	int				y;
 	char			*name;
+	char			*place;
+	int				status;
 	struct s_room	*next;
 }					t_room;
 
 typedef struct		s_pipe
 {
-	char			*name;
+	char			*begin;
+	char			*end;
 	int				len;
 	struct s_pipe	*next;
 }					t_pipe;
-int		parse_infos();
+
+int parse_infos(t_room **room, t_pipe **pipe, int *ant);
 #endif
