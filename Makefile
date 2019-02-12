@@ -1,13 +1,13 @@
-NAME = lem_in
-CC = gcc
-FLAG = -Wall -Werror -Wextra
+NAME := lem_in
+CFLAG = -Wall -Werror -Wextra
+CC = gcc $(CFLAG)
 LDFLAG = -L./$(LIBDIR) -lft
-
 
 RM = rm -rf
 
 SRC = main.c \
 	  parsing.c
+
 OBJ = $(SRC:.c=.o)
 
 LIBDIR := libft/
@@ -22,7 +22,16 @@ BLUE := \033[38;2;0;188;218m
 RMLINE = \033[2K
 NC := \033[0m
 
-MAP_FOLDER := ./maps/
+
+MAP_FOLDER := maps/
+
+ifneq (,$(filter $(debug),y yes))
+	CFLAG += -g3
+endif
+ifneq (,$(filter $(valgrind),y yes))
+	EXEC_LINE := valgrind --leak-check=full --track-origins=yes --read-inline-info=yes  --read-var-info=yes --num-callers=100
+endif
+EXEC_LINE += ./lem_in < $(MAP_FOLDER)$(map)
 
 all: $(NAME)
 
@@ -37,9 +46,9 @@ $(LIBFT):
 
 %.o: %.c $(INCLUDE)
 	@tput civis
-	@$(CC) $(FLAG) -I $(INCLUDE_FOLDER) -o $@ -c $<
+	@$(CC) $(CFLAG) -I $(INCLUDE_FOLDER) -o $@ -c $<
 	@printf "$(RMLINE)\r🚀 $(GREEN)$(YELLOW) Compiling:$(NC) $(notdir $<)\r"
-	@sleep 0.01
+	@sleep .01
 
 clean:
 	@(cd $(LIBDIR) && $(MAKE) $@)
@@ -52,8 +61,14 @@ fclean:
 	@printf "$(RED)The lem_in objects have been removed$(NC)\n"
 	@printf "$(RED)$(NAME) has been removed$(NC)\n"
 
-run: $(NAME)
-	./lem_in < $(MAP_FOLDER)$(map)
+debug: CFLAG+=-g3
+debug: re
+
+run: $(NAME) Makefile
+	$(EXEC_LINE)
+ifneq (,$(filter $(valgrind),y yes))
+	@$(RM) $(NAME).dSYM
+endif
 
 re: fclean all
 
