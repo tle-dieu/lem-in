@@ -1,11 +1,10 @@
-deplacement diagonales autorise ?
 listes chaine des chemins les plus courts ?
-listes chaine abvec tableau de pointeur pour le next?
+listes chaine avec tableau de pointeur pour le next?
 ou tableau 2d?
 
 ::::::::::::::::::::::: REPARTITION DU TRAVAIL :::::::::::::::::::::::::::
 
-MATHHEW
+MATTHEW
 
 -parsing (+ stocker les datas)
 -fonctions choisir chemins
