@@ -21,5 +21,11 @@ typedef struct		s_pipe
 	struct s_pipe	*next;
 }					t_pipe;
 
-int parse_infos(t_room **room, t_pipe **pipe, int *ant);
+typedef struct		s_way
+{
+	t_room			*room;
+	struct s_way	*next;
+}					t_way;
+
+void ***parse_infos(t_room **room, t_pipe **pipe, int *ant, void ***matrice);
 #endif

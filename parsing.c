@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/13 11:32:10 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/02/13 15:14:57 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,30 +94,7 @@ void ***init_matrice(void ***matrice, int nb)
 	return (matrice);
 }
 
-void print_matrice(void ***matrice, int nb)
-{
-	int i;
-	int j;
-
-	i = 0;
-	while (i <= nb)
-	{
-		j = 0; 
-		while (j <= nb)
-		{
-			if (matrice[i][j])
-				ft_printf("{yellow}%15s", ((t_room*)matrice[i][j])->name);
-			else
-				ft_printf("{cyan}%15p", matrice[i][j]);
-			j++;
-		}
-		ft_printf("\n\n\n");
-		i++;
-	}
-
-}
-
-int	check_room(t_room *room, t_pipe *pipe, void ***matrice)
+void ***check_room(t_room *room, t_pipe *pipe, void ***matrice)
 {
 	t_room *tmp;
 	int begin;
@@ -164,17 +141,14 @@ int	check_room(t_room *room, t_pipe *pipe, void ***matrice)
 			ft_printf("{yellow}THIS PIPE IS BAD!!!!! ;)\n");
 		pipe = pipe->next;
 	}
-	print_matrice(matrice, room->id);
-	return (0);
+	return (matrice);
 }
 
 
-int	parse_infos(t_room **room, t_pipe **pipe, int *ant)
+void ***parse_infos(t_room **room, t_pipe **pipe, int *ant, void ***matrice)
 {
 	char *line;
-	void ***matrice;
-	
-	matrice = NULL;
+
 	*ant = -1;
 	while (get_next_line(0, &line) == 1)
 	{
@@ -185,24 +159,5 @@ int	parse_infos(t_room **room, t_pipe **pipe, int *ant)
 		else
 			get_pipe(pipe, line);
 	}
-	check_room(*room, *pipe, matrice);
-	return (0);
+	return (check_room(*room, *pipe, matrice));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
