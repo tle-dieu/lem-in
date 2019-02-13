@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/13 00:00:41 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/02/13 11:32:10 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,9 @@ int get_pipe(t_pipe **pipe, char *line)
 void ***init_matrice(void ***matrice, int nb)
 {
 	int i;
-	
+	int j;
+
+
 	ft_printf("BOnjour\n\n");
 	if (!(matrice = (void ***)malloc(sizeof(void**) * (nb + 1))))
 		return (NULL);
@@ -80,8 +82,13 @@ void ***init_matrice(void ***matrice, int nb)
 	ft_printf("{yellow}%d\n", i);
 	while (i <= nb)
 	{
+		j = 0;
 		if (!(matrice[i] = (void **)malloc(sizeof(void*) * (nb + 1))))
 			return (NULL);
+		while (j <= nb)
+		{
+			matrice[i][j++] = NULL;	
+		}
 		i++;
 	}
 	return (matrice);
@@ -115,7 +122,11 @@ int	check_room(t_room *room, t_pipe *pipe, void ***matrice)
 	t_room *tmp;
 	int begin;
 	int end;
+	void *first;
+	void *second;
 
+	first = NULL;
+	second = NULL;
 	matrice = init_matrice(matrice, room->id);
 	while (pipe)
 	{
@@ -125,25 +136,32 @@ int	check_room(t_room *room, t_pipe *pipe, void ***matrice)
 		while (tmp)
 		{
 			if (!ft_strcmp(tmp->name, pipe->begin))
+			{	
 				begin = tmp->id;
+				first = tmp;
+			}
 			if (!ft_strcmp(tmp->name, pipe->end))
+			{
 				end = tmp->id;
+				second = tmp;
+			}
 			if (end >= 0 && begin >= 0)
 				break ;
 			tmp = tmp->next;
 		}
-		ft_printf("{yellow}BOnjour)\n");
 		if (begin > -1 && end > -1)
 		{
 			ft_printf("{red} [%d][%d]\n", begin, end);
-			matrice[begin][end] = tmp;
-			matrice[end][begin] = tmp;
-			ft_printf("{white}%s\n\n\n\n", tmp->name);
+			matrice[begin][end] = first;
+			matrice[end][begin] = second;
+			ft_printf("{cyan}TEST\n");
+			ft_printf("{cyan}%s\n", ((t_room*)matrice[begin][end])->name);
+			ft_printf("{cyan}%s\n", ((t_room*)matrice[end][begin])->name);
 			ft_printf("{green}THIS PIPE IS GOOD!!!! ;)\n");
+
 		}
 		else 
 			ft_printf("{yellow}THIS PIPE IS BAD!!!!! ;)\n");
-		ft_printf("{purple} %s\n", pipe->begin);
 		pipe = pipe->next;
 	}
 	print_matrice(matrice, room->id);
@@ -154,9 +172,7 @@ int	check_room(t_room *room, t_pipe *pipe, void ***matrice)
 int	parse_infos(t_room **room, t_pipe **pipe, int *ant)
 {
 	char *line;
-
 	void ***matrice;
-
 	
 	matrice = NULL;
 	*ant = -1;
