@@ -13,6 +13,12 @@ typedef struct		s_room
 	struct s_room	*next;
 }					t_room;
 
+typedef struct 		s_matrice
+{
+	void			***content;
+	int				size;
+}					t_matrice;
+
 typedef struct		s_pipe
 {
 	char			*begin;
@@ -27,5 +33,13 @@ typedef struct		s_way
 	struct s_way	*next;
 }					t_way;
 
-void ***parse_infos(t_room **room, t_pipe **pipe, int *ant, void ***matrice);
+typedef struct		s_ways
+{
+	t_way			*way;
+	struct s_way	*next;
+}					t_ways;
+
+t_matrice *parse_infos(t_room **room, t_pipe **pipe, int *ant, t_matrice *matrice);
+int get_ways(t_matrice *matrice, t_ways **ways);
+
 #endif

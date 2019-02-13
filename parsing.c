@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/13 15:14:57 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/02/13 16:11:59 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,32 +69,30 @@ int get_pipe(t_pipe **pipe, char *line)
 	return (0);
 }
 
-void ***init_matrice(void ***matrice, int nb)
+t_matrice *init_matrice(t_matrice *matrice, int nb)
 {
 	int i;
 	int j;
 
-
-	ft_printf("BOnjour\n\n");
-	if (!(matrice = (void ***)malloc(sizeof(void**) * (nb + 1))))
+	matrice->size = nb;
+	if (!(matrice->content = (void ***)malloc(sizeof(void**) * (nb + 1))))
 		return (NULL);
 	i = 0;
-	ft_printf("{yellow}%d\n", i);
 	while (i <= nb)
 	{
 		j = 0;
-		if (!(matrice[i] = (void **)malloc(sizeof(void*) * (nb + 1))))
+		if (!(matrice->content[i] = (void **)malloc(sizeof(void*) * (nb + 1))))
 			return (NULL);
 		while (j <= nb)
 		{
-			matrice[i][j++] = NULL;	
+			matrice->content[i][j++] = NULL;	
 		}
 		i++;
 	}
 	return (matrice);
 }
 
-void ***check_room(t_room *room, t_pipe *pipe, void ***matrice)
+t_matrice *check_room(t_room *room, t_pipe *pipe, t_matrice *matrice)
 {
 	t_room *tmp;
 	int begin;
@@ -129,11 +127,8 @@ void ***check_room(t_room *room, t_pipe *pipe, void ***matrice)
 		if (begin > -1 && end > -1)
 		{
 			ft_printf("{red} [%d][%d]\n", begin, end);
-			matrice[begin][end] = first;
-			matrice[end][begin] = second;
-			ft_printf("{cyan}TEST\n");
-			ft_printf("{cyan}%s\n", ((t_room*)matrice[begin][end])->name);
-			ft_printf("{cyan}%s\n", ((t_room*)matrice[end][begin])->name);
+			matrice->content[begin][end] = first;
+			matrice->content[end][begin] = second;
 			ft_printf("{green}THIS PIPE IS GOOD!!!! ;)\n");
 
 		}
@@ -145,7 +140,7 @@ void ***check_room(t_room *room, t_pipe *pipe, void ***matrice)
 }
 
 
-void ***parse_infos(t_room **room, t_pipe **pipe, int *ant, void ***matrice)
+t_matrice *parse_infos(t_room **room, t_pipe **pipe, int *ant, t_matrice *matrice)
 {
 	char *line;
 

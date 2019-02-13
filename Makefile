@@ -6,7 +6,8 @@ LDFLAG = -L./$(LIBDIR) -lft
 RM = rm -rf
 
 SRC = main.c \
-	  parsing.c
+	  parsing.c \
+	  ways.c \
 
 OBJ = $(SRC:.c=.o)
 

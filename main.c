@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/13 15:15:53 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/02/13 16:29:50 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,21 +32,21 @@ void	print_pipe(t_pipe *pipe)
 	}
 }
 
-void print_matrice(void ***matrice, int nb)
+void print_matrice(t_matrice *matrice)
 {
 	int i;
 	int j;
 
 	i = 0;
-	while (i <= nb)
+	while (i <= matrice->size)
 	{
 		j = 0;
-		while (j <= nb)
+		while (j <= matrice->size)
 		{
-			if (matrice[i][j])
-				ft_printf("{yellow}%15s", ((t_room*)matrice[i][j])->name);
+			if (matrice->content[i][j])
+				ft_printf("{yellow}%15s", ((t_room*)matrice->content[i][j])->name);
 			else
-				ft_printf("{cyan}%15p", matrice[i][j]);
+				ft_printf("{cyan}%15p", matrice->content[i][j]);
 			j++;
 		}
 		ft_printf("\n\n\n");
@@ -54,21 +54,24 @@ void print_matrice(void ***matrice, int nb)
 	}
 
 }
+
 int		main(void)
 {
 	t_room *room;
 	t_pipe *pipe;
 	int ant;
-	void ***matrice;
+	t_matrice matrice;
+	t_ways	*ways;
 
-	matrice = NULL;
+	ways = NULL;
 	pipe = NULL;
 	room = NULL;
 	ft_printf("{green}debut{reset}");
-	matrice = parse_infos(&room, &pipe, &ant, matrice);
+	parse_infos(&room, &pipe, &ant, &matrice);
 	ft_printf("{green} number of ants %d\n", ant);
 	print_room(room);
 	print_pipe(pipe);
-	print_matrice(matrice, room->id);
+	get_ways(&matrice, &ways);
+	print_matrice(&matrice);
 	return (0);
 }
