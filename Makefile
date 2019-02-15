@@ -29,8 +29,11 @@ MAP_FOLDER := maps/
 ifneq (,$(filter $(debug),y yes))
 	CFLAG += -g3
 endif
+ifneq (,$(filter $(fsanitize),y yes))
+	CFLAG += -fsanitize=address
+endif
 ifneq (,$(filter $(valgrind),y yes))
-	EXEC_LINE := valgrind --leak-check=full --track-origins=yes --read-inline-info=yes  --read-var-info=yes --num-callers=100
+	EXEC_LINE := valgrind --leak-check=full --track-origins=yes --read-inline-info=yes --read-var-info=yes --num-callers=100 --show-possibly-lost=no
 endif
 EXEC_LINE += ./lem_in < $(MAP_FOLDER)$(map)
 
@@ -62,7 +65,7 @@ fclean:
 	@printf "$(RED)The lem_in objects have been removed$(NC)\n"
 	@printf "$(RED)$(NAME) has been removed$(NC)\n"
 
-debug: CFLAG+=-g3
+debug: CFLAG += -g3
 debug: re
 
 run: $(NAME) Makefile
