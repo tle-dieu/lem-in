@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/15 06:02:55 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/17 22:09:00 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,37 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
+int		get_coord(t_room *new, char *line)
+{
+	char *tmp_y;
+
+	if (!line || !*(++line))
+		return (0);
+	if (!(tmp_y = ft_strchr(line, ' ')))
+		return (0);
+	*tmp_y++ = '\0';
+	if (!*tmp_y || ((new->x = atoi_parsing(line)) < 0) || ((new->y = atoi_parsing(tmp_y)) < 0))
+		return (0);
+	return (1);
+}
+
 int		get_room(t_room **room, t_pipe **pipe, char *line, int *room_opt)
 {
-	int		len;
-	char	*tmp;
 	t_room	*new;
 
+	ft_printf("room: %s\n", line);
 	if (*pipe || !(new = (t_room*)malloc(sizeof(t_room))))
 		return (1);
 	new->place = *room_opt;
 	if (*room_opt)
 		*room_opt = 0;
-	new->name = ft_strcdup(line, ' ');
-	len = ft_strlen(new->name);
-	if (len && line + len)
-		ft_printf("{cyan} %d", ft_atoi(line + len));
-	if ((tmp = ft_strrchr(line, ' ')))
-		ft_printf("{cyan} %d\n", ft_atoi(tmp));
+	if (!get_coord(new, ft_strchr(line, ' ')))
+	{
+		ft_printf("coord error\n");
+		free(new);
+		return (1);
+	}
+	new->name = ft_strcdup(line, ' '); //protection
 	new->next = *room;
 	*room = new;
 	return (0);
@@ -41,6 +55,7 @@ int		get_pipe(t_pipe **pipe, char *line)
 	t_pipe	*new;
 	char	*tmp;
 
+	ft_printf("pipe: %s\n", line);
 	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
 	new->begin = ft_strcdup(line, '-');
@@ -66,40 +81,29 @@ int		get_room_opt(char *line, int *room_opt)
 	return (0);
 }
 
-void	check_name(t_room *new, t_room *room)
+void	check_room(t_room *room)
 {
+	t_room *actual;
 	t_room *next;
 
-	next = room->next;
-	while (next)
+	while (room->next)
 	{
-		if (!ft_strcmp(next->name, new->name))
+		actual = room;
+		next = actual->next;
+		while (next)
 		{
-			room->next = next->next;
-			free(next->name);
-			free(next);
-			break ;
+			if (!ft_strcmp(next->name, actual->name)
+			|| (actual->x == next->x && actual->y == next->y))	
+			{
+				ft_printf("RM: {#de3030}%s X: %d Y: %d{reset}\n", next->name, next->x, next->y);
+				actual->next = next->next;
+				free(next->name);
+				free(next);
+			}
+			else
+				actual = actual->next;
+			next = actual->next;
 		}
-		room = room->next;
-		next = next->next;
-	}
-}
-
-void	check_infos(t_room *room, t_pipe **pipe)
-{
-	int start;
-	int end;
-
-	end = 0;
-	start = 0;
-	while (room)
-	{
-		if (room->place)
-		{
-			if (room->place == 1)
-				start++;
-
-
 		room = room->next;
 	}
 }

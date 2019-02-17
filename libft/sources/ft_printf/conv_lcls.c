@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/14 11:16:18 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/01/16 18:19:00 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/15 17:28:35 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void		lc_conv(t_print *buff, t_flag *flags, char **format, wint_t c)
 	int len;
 
 	len = (c >> 16 != 0) + (c >> 11 != 0) + (c >> 7 != 0) + 1;
-	if ((MB_CUR_MAX == 1 && c > 255) || c < 0 || c > 0x110000)
+	if ((MB_CUR_MAX == 1 && c > 255) || c > 0x110000)
 	{
 		while (*(*format + 1))
 			++(*format);

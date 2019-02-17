@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/17 13:29:49 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/01 19:38:04 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/15 17:33:11 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ int			ft_dprintf(int fd, char const *format, ...)
 	va_list	args;
 	t_print	buff;
 
+	if (!format)
+		return (-1);
 	va_start(args, format);
 	buff.i = 0;
 	buff.total = 0;

@@ -129,7 +129,7 @@ $(NAME): $(OBJECTS)
 
 objects/%.o: %.c $(INCLUDES)
 	@tput civis
-	@mkdir -p $(dir $@) 
+	@mkdir -p $(dir $@)
 	@$(CC) $(FLAG) -I $(INCLUDES_FOLDER) -o $@ -c $<
 	@printf "$(RMLINE)\r🚀 $(GREEN)$(YELLOW) Compiling:$(NC) $(notdir $<)\r"
 	@sleep 0.01

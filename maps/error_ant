@@ -1,11 +1,10 @@
 236
 ##start
-room1 0 0
-##start
-room3 3 5
-room2 2 4
+start 3 4
 ##end
-room1 1 2
-room1-room2
-room3-room1
-room2-room1
+end 2 8
+salle1 1 2
+salle2 3 7
+salle1 3 7
+salle3 3 7
+salle1-salle2

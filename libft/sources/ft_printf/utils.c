@@ -6,11 +6,12 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/09 23:54:23 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/01/16 18:17:06 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/15 17:29:51 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <unistd.h>
 
 char		*atoi_jr(char *format, int *nb)
 {
