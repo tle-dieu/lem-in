@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/17 22:09:00 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/17 23:39:56 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,29 @@ int		get_coord(t_room *new, char *line)
 	return (1);
 }
 
+void	check_room(t_room *room)
+{
+	t_room *actual;
+	t_room *prev;
+
+	prev = room;
+	while (prev->next)
+	{
+		actual = prev->next;
+		if (room->place && ((actual->place == 3 || actual->place == room->place)))
+			actual->place -= room->place; 
+		if (!ft_strcmp(actual->name, room->name)
+		|| (room->x == actual->x && room->y == actual->y))	
+		{
+			prev->next = actual->next;
+			free(actual->name);
+			free(actual);
+		}
+		else
+			prev = prev->next;
+	}
+}
+
 int		get_room(t_room **room, t_pipe **pipe, char *line, int *room_opt)
 {
 	t_room	*new;
@@ -47,6 +70,7 @@ int		get_room(t_room **room, t_pipe **pipe, char *line, int *room_opt)
 	new->name = ft_strcdup(line, ' '); //protection
 	new->next = *room;
 	*room = new;
+	check_room(*room);
 	return (0);
 }
 
@@ -70,43 +94,19 @@ int		get_pipe(t_pipe **pipe, char *line)
 
 int		get_room_opt(char *line, int *room_opt)
 {
-	if (*room_opt)
-		return (1);
+	int new_opt;
+
 	if (!ft_strcmp("##end", line))
-		*room_opt = 2;
+		new_opt = 2;
 	else if (!ft_strcmp("##start", line))
-		*room_opt = 1;
+		new_opt = 1;
 	else
 		return (1);
+	if (*room_opt != new_opt && *room_opt != 3)
+		*room_opt += new_opt;
 	return (0);
 }
 
-void	check_room(t_room *room)
-{
-	t_room *actual;
-	t_room *next;
-
-	while (room->next)
-	{
-		actual = room;
-		next = actual->next;
-		while (next)
-		{
-			if (!ft_strcmp(next->name, actual->name)
-			|| (actual->x == next->x && actual->y == next->y))	
-			{
-				ft_printf("RM: {#de3030}%s X: %d Y: %d{reset}\n", next->name, next->x, next->y);
-				actual->next = next->next;
-				free(next->name);
-				free(next);
-			}
-			else
-				actual = actual->next;
-			next = actual->next;
-		}
-		room = room->next;
-	}
-}
 
 int		parse_infos(t_room **room, t_pipe **pipe, int *ant)
 {

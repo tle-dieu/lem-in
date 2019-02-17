@@ -1,10 +1,16 @@
-236
+42
 ##start
-start 3 4
 ##end
-end 2 8
-salle1 1 2
-salle2 3 7
-salle1 3 7
-salle3 3 7
+salle1 10 2
+##start
+salle2 12 4
+##end
+salle3 5 7
+##start
+##start
+salle5 4 2
+##end
+##end
+salle4 2 1
+salle6 3 3
 salle1-salle2

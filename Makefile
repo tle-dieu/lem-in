@@ -68,8 +68,8 @@ fclean:
 debug: CFLAG += -g3
 debug: re
 
-run: $(NAME) Makefile
-	$(EXEC_LINE)
+run: $(NAME)
+	-$(EXEC_LINE)
 ifneq (,$(filter $(valgrind),y yes))
 	@$(RM) $(NAME).dSYM
 endif

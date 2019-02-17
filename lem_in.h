@@ -23,7 +23,6 @@ typedef struct		s_pipe
 
 void    finish(char *line, char *message, int error);
 int		parse_infos(t_room **room, t_pipe **pipe, int *ant);
-void	check_room(t_room *room);
 int		atoi_parsing(char const *s);
 
 #endif
