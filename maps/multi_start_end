@@ -1,0 +1,7 @@
+12
+##end
+##start
+room1 2 4
+##start
+room4 2 3
+room2-room1

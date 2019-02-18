@@ -69,7 +69,7 @@ debug: CFLAG += -g3
 debug: re
 
 run: $(NAME)
-	@if [ -f $(MAP_FOLDER)$(map) ]; then $(EXEC_LINE); \
+	-@if [ -f $(MAP_FOLDER)$(map) ]; then $(EXEC_LINE); \
 	else printf "$(BLUE)List of maps\n$(NC)" && ls $(MAP_FOLDER); fi
 ifneq (,$(filter $(valgrind),y yes))
 	@$(RM) $(NAME).dSYM

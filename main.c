@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/17 22:47:02 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/18 19:49:44 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,24 @@ void	print_pipe(t_pipe *pipe)
 	ft_printf("{reset}");
 }
 
+int		enough_data(t_room *room, t_pipe *pipe)
+{
+	int start;
+
+	(void)pipe;
+	while (room)
+	{
+		if (room->place)
+		{
+			if (room->place == 3)
+				return (0);
+			start += room->place;
+		}
+		room = room->next;
+	}
+	return (start == 3);
+}
+
 int		main(void)
 {
 	t_room *room;
@@ -50,11 +68,16 @@ int		main(void)
 
 	pipe = NULL;
 	room = NULL;
-	ft_printf("{green}debut\n{reset}");
+	/* ft_printf("{green}debut\n{reset}"); */
 	parse_infos(&room, &pipe, &ant);
-	ft_printf("{yellow}::::::::::PARSING RESULT::::::::::\n");
-	ft_printf("{green}number of ants %d\n", ant);
-	print_room(room);
-	print_pipe(pipe);
+	/* ft_printf("{yellow}::::::::::PARSING RESULT::::::::::\n"); */
+	/* ft_printf("{green}number of ants %d\n", ant); */
+	/* print_room(room); */
+	/* print_pipe(pipe); */
+	if (!enough_data(room, pipe))
+	{
+		ft_printf("ERROR\n");
+		return (1);
+	}
 	return (0);
 }
