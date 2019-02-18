@@ -46,7 +46,7 @@ $(NAME): $(OBJ) $(LIBFT)
 	@tput cnorm
 
 $(LIBFT):
-	@(cd $(LIBDIR) && $(MAKE))
+	@$(MAKE) -C $@
 
 %.o: %.c $(INCLUDE)
 	@tput civis
@@ -55,12 +55,12 @@ $(LIBFT):
 	@sleep .01
 
 clean:
-	@(cd $(LIBDIR) && $(MAKE) $@)
+	@$(MAKE) -C $@
 	@$(RM) $(OBJ)
 	@printf "$(RED)The lem_in objects have been removed$(NC)\n"
 
 fclean:
-	@(cd $(LIBDIR) && $(MAKE) $@)
+	@$(MAKE) -C $@
 	@$(RM) $(OBJ) $(NAME)
 	@printf "$(RED)The lem_in objects have been removed$(NC)\n"
 	@printf "$(RED)$(NAME) has been removed$(NC)\n"
@@ -69,7 +69,8 @@ debug: CFLAG += -g3
 debug: re
 
 run: $(NAME)
-	-$(EXEC_LINE)
+	@if [ -f $(MAP_FOLDER)$(map) ]; then $(EXEC_LINE); \
+	else printf "$(BLUE)List of maps\n$(NC)" && ls $(MAP_FOLDER); fi
 ifneq (,$(filter $(valgrind),y yes))
 	@$(RM) $(NAME).dSYM
 endif

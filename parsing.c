@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/17 23:39:56 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/18 16:15:45 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,13 @@ int		get_room(t_room **room, t_pipe **pipe, char *line, int *room_opt)
 	new->place = *room_opt;
 	if (*room_opt)
 		*room_opt = 0;
-	if (!get_coord(new, ft_strchr(line, ' ')))
+	if (!get_coord(new, ft_strchr(line, ' '))
+	|| !(new->name = ft_strcdup(line, ' ')))
 	{
 		ft_printf("coord error\n");
 		free(new);
 		return (1);
 	}
-	new->name = ft_strcdup(line, ' '); //protection
 	new->next = *room;
 	*room = new;
 	check_room(*room);
@@ -82,13 +82,21 @@ int		get_pipe(t_pipe **pipe, char *line)
 	ft_printf("pipe: %s\n", line);
 	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
+	new->end = NULL;
 	new->begin = ft_strcdup(line, '-');
-	tmp = ft_strchr(line, '-');
-	if (*tmp == '-')
-		tmp++;
-	new->end = ft_strdup(tmp);
-	new->next = *pipe ? *pipe : NULL;
-	*pipe = new;
+	if (new->begin && (tmp = ft_strchr(line, '-')))
+	{
+		new->next = *pipe;
+		if ((new->end = ft_strdup(tmp + 1)))
+			*pipe = new;
+	}
+	if (!new->end || !new->begin)
+	{
+		free(new->end);
+		free(new->begin);
+		free(new);
+		return (1);
+	}
 	return (0);
 }
 
@@ -101,7 +109,7 @@ int		get_room_opt(char *line, int *room_opt)
 	else if (!ft_strcmp("##start", line))
 		new_opt = 1;
 	else
-		return (1);
+		return (1); //peut etre pas une erreur si c'est ni ##start ni ##end
 	if (*room_opt != new_opt && *room_opt != 3)
 		*room_opt += new_opt;
 	return (0);
@@ -127,12 +135,10 @@ int		parse_infos(t_room **room, t_pipe **pipe, int *ant)
 			if (*(line + 1) == '#')
 				error = get_room_opt(line, &room_opt);
 		}
-		else if (ft_strchr(line, ' '))
+		else if (!ft_strchr(line, '-'))
 			error = get_room(room, pipe, line, &room_opt);
-		else if (room_opt || *line == 'L' || !*line)
-			error = 1;
 		else
-			error = get_pipe(pipe, line);
+			error = room_opt || *line == 'L' || get_pipe(pipe, line);
 		free(line);
 	}
 	if (error)
