@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/18 19:49:44 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/20 18:06:36 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int		enough_data(t_room *room, t_pipe *pipe)
 	int start;
 
 	(void)pipe;
+	start = 0;
 	while (room)
 	{
 		if (room->place)

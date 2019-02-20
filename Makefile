@@ -46,7 +46,7 @@ $(NAME): $(OBJ) $(LIBFT)
 	@tput cnorm
 
 $(LIBFT):
-	@$(MAKE) -C $@
+	@$(MAKE) -C $(LIBDIR)
 
 %.o: %.c $(INCLUDE)
 	@tput civis
@@ -55,12 +55,12 @@ $(LIBFT):
 	@sleep .01
 
 clean:
-	@$(MAKE) -C $@
+	@$(MAKE) $@ -C $(LIBDIR)
 	@$(RM) $(OBJ)
 	@printf "$(RED)The lem_in objects have been removed$(NC)\n"
 
 fclean:
-	@$(MAKE) -C $@
+	@$(MAKE) $@ -C $(LIBDIR)
 	@$(RM) $(OBJ) $(NAME)
 	@printf "$(RED)The lem_in objects have been removed$(NC)\n"
 	@printf "$(RED)$(NAME) has been removed$(NC)\n"
