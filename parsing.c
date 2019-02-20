@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/18 19:55:08 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/20 18:27:08 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int		get_room(t_room **room, t_pipe **pipe, char *line, int *room_opt)
 {
 	t_room	*new;
 
-	/* ft_printf("room: %s\n", line); */
+	ft_printf("room: %s\n", line);
 	if (*pipe || !(new = (t_room*)malloc(sizeof(t_room))))
 		return (1);
 	new->place = *room_opt;
@@ -92,7 +92,7 @@ int		get_pipe(t_pipe **pipe, char *line)
 	t_pipe	*new;
 	char	*tmp;
 
-	/* ft_printf("pipe: %s\n", line); */
+	ft_printf("pipe: %s\n", line);
 	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
 	new->end = NULL;
@@ -134,9 +134,7 @@ int		parse_infos(t_room **room, t_pipe **pipe, int *ant)
 	char	*line;
 	int		room_opt;
 	int		error;
-	int		i;
 
-	i = 0;
 	line = NULL;
 	room_opt = 0;
 	error = 0;
@@ -145,8 +143,6 @@ int		parse_infos(t_room **room, t_pipe **pipe, int *ant)
 	free(line);
 	while (!error && get_next_line(0, &line) == 1)
 	{
-		if (!(i++ % 10000))
-			ft_printf("+1\n");
 		if (*line == '#')
 		{
 			if (*(line + 1) == '#')

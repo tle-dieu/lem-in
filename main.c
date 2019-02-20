@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/20 18:06:36 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/20 18:26:37 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,12 @@ int		main(void)
 
 	pipe = NULL;
 	room = NULL;
-	/* ft_printf("{green}debut\n{reset}"); */
+	ft_printf("{green}debut\n{reset}");
 	parse_infos(&room, &pipe, &ant);
-	/* ft_printf("{yellow}::::::::::PARSING RESULT::::::::::\n"); */
-	/* ft_printf("{green}number of ants %d\n", ant); */
-	/* print_room(room); */
-	/* print_pipe(pipe); */
+	ft_printf("{yellow}::::::::::PARSING RESULT::::::::::\n");
+	ft_printf("{green}number of ants %d\n", ant);
+	print_room(room);
+	print_pipe(pipe);
 	if (!enough_data(room, pipe))
 	{
 		ft_printf("ERROR\n");
