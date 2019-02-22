@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/22 18:27:04 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/22 20:40:31 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int		get_room(t_room **room, t_pipe *pipe, char *line, int *room_opt)
 {
 	t_room	*new;
 
-	/* ft_printf("room: %s\n", line); */
+	ft_printf("room: %s\n", line);
 	if (pipe || !(new = (t_room*)malloc(sizeof(t_room))))
 		return (1);
 	new->place = *room_opt;
@@ -71,6 +71,7 @@ int		get_room(t_room **room, t_pipe *pipe, char *line, int *room_opt)
 	new->id = *room ? (*room)->id + 1 : 0;
 	new->nb_links = 0;
 	new->next = *room;
+	new->i = 0;
 	*room = new;
 	check_room(*room);
 	return (0);
@@ -87,6 +88,7 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 	prev = pipe;
 	new = pipe;
 	pipe->to = -1;
+	pipe->from = -1;
 	if (from && to && ft_strcmp(from, to))
 	{
 		while (room)
@@ -122,7 +124,7 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 	}
 	free(from);
 	free(to);
-	return (pipe->to != -1);
+	return (pipe->to != -1 && pipe->from != -1);
 }
 
 int		get_pipe(t_pipe **pipe, t_room *room, char *line)
@@ -132,7 +134,7 @@ int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 	char	*from;
 	char	*to;
 
-	/* ft_printf("pipe: %s\n", line); */
+	ft_printf("pipe: %s\n", line);
 	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
 	to = NULL;

@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/22 19:25:53 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/22 21:08:13 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,25 +63,60 @@ int		enough_data(t_room *room, t_pipe *pipe)
 
 #include <stdlib.h>
 
-void	create_graph(t_room *room, t_pipe *pipe)
+t_room **create_graph(t_room *room, t_pipe *pipe)
 {
 	t_room **tab;
 	int i;
 
-	tab = (t_room **)malloc(sizeof(t_room *) * room->id + 1);
+	tab = (t_room **)malloc(sizeof(t_room *) * (room->id + 2));
 	i = room->id;
-	while (i)
+	tab[i + 1] = NULL;
+	while (room)
 	{
 		tab[i--] = room;
+		if (room->nb_links && !(room->links = (t_room**)malloc(sizeof(t_room*) * room->nb_links)))
+			return (NULL);
 		room = room->next;
 	}
-	(void)pipe;
-	ft_printf("id: %d name: %s\n", tab[3]->id, tab[3]->name);
+	i = 0;
+	while (tab[i])
+		ft_printf("name: %s\n", tab[i++]->name);
+	ft_printf("debut boucle\n");
+	while (pipe)
+	{
+		ft_printf("{#80f00d}%s : %d to %s : %d\n{reset}", tab[pipe->from]->name, pipe->from, tab[pipe->to]->name, pipe->to);
+		ft_printf("tab[%d]->links[tab[%d]->%d++] = tab[%d]\n", pipe->from, pipe->from, tab[pipe->from]->i, pipe->to);
+		tab[pipe->from]->links[tab[pipe->from]->i++] = tab[pipe->to];
+		ft_printf("tab[%d]->links[tab[%d]->%d++] = tab[%d]\n", pipe->to, pipe->to, tab[pipe->to]->i, pipe->from);
+		tab[pipe->to]->links[tab[pipe->to]->i++] = tab[pipe->from];
+		pipe = pipe->next;
+	}
+	return (tab);
+}
+
+void	print_graph(t_room **tab)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (tab[i])
+	{
+		j = 0;
+		ft_printf("\n-----ROOM-----\nname: %s id: %d nb_links: %d\n", tab[i]->name, tab[i]->id, tab[i]->nb_links);
+		while (j < tab[i]->nb_links)
+		{
+			ft_printf("  -> nb: %d name: %s id: %d\n", j, tab[i]->links[j]->name, tab[i]->links[j]->id);
+			j++;
+		}
+		i++;
+	}
 }
 
 int		main(void)
 {
 	t_room *room;
+	t_room **tab;
 	t_pipe *pipe;
 	int ant;
 
@@ -93,7 +128,8 @@ int		main(void)
 	ft_printf("{green}number of ants %d\n", ant);
 	print_room(room);
 	print_pipe(pipe);
-	create_graph(room, pipe);
+	tab = create_graph(room, pipe);
+	print_graph(tab);
 	if (!enough_data(room, pipe))
 	{
 		ft_printf("ERROR\n");

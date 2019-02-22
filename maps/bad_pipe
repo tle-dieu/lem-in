@@ -6,17 +6,9 @@ start 1 2
 end 2 4
 room1 3 4
 room2 4 3
-room1-room2
-room1-room2
-room2-room1
-room1-room1
-room1-room1
-room2-room2
-#1 laison
-end-start
 start-end
-start-room1
-start-room2
-start-room1
-start-start
 end-start
+room1-room2
+room2-start
+room2-end
+#1 laison

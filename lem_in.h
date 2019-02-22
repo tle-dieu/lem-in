@@ -11,6 +11,7 @@ typedef struct		s_room
 	int				place;
 	int				nb_links;
 	int				id;
+	int				i;
 	struct s_room	**links;
 	struct s_room	*next;
 }					t_room;
