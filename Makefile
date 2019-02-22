@@ -32,8 +32,11 @@ endif
 ifneq (,$(filter $(fsanitize),y yes))
 	CFLAG += -fsanitize=address
 endif
+ifneq (,$(filter $(time),y yes))
+	EXEC_LINE := time
+endif
 ifneq (,$(filter $(valgrind),y yes))
-	EXEC_LINE := valgrind --leak-check=full --track-origins=yes --read-inline-info=yes --read-var-info=yes --num-callers=100 --show-possibly-lost=no
+	EXEC_LINE += valgrind --leak-check=full --track-origins=yes --read-inline-info=yes --read-var-info=yes --num-callers=100 --show-possibly-lost=no
 endif
 EXEC_LINE += ./lem_in < $(MAP_FOLDER)$(map)
 

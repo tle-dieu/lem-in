@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/18 19:55:08 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/22 18:27:04 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	check_room(t_room *room)
 		if (room->place && ((actual->place == 3 || actual->place == room->place)))
 			actual->place -= room->place; 
 		if (!ft_strcmp(actual->name, room->name)
-		|| (room->x == actual->x && room->y == actual->y))	
+				|| (room->x == actual->x && room->y == actual->y))	
 		{
 			prev->next = actual->next;
 			free(actual->name);
@@ -51,64 +51,102 @@ void	check_room(t_room *room)
 	}
 }
 
-int		get_room(t_room **room, t_pipe **pipe, char *line, int *room_opt)
+int		get_room(t_room **room, t_pipe *pipe, char *line, int *room_opt)
 {
 	t_room	*new;
 
 	/* ft_printf("room: %s\n", line); */
-	if (*pipe || !(new = (t_room*)malloc(sizeof(t_room))))
+	if (pipe || !(new = (t_room*)malloc(sizeof(t_room))))
 		return (1);
 	new->place = *room_opt;
 	if (*room_opt)
 		*room_opt = 0;
 	if (!get_coord(new, ft_strchr(line, ' '))
-	|| !(new->name = ft_strcdup(line, ' ')))
+			|| !(new->name = ft_strcdup(line, ' ')))
 	{
 		ft_printf("coord error\n");
 		free(new);
 		return (1);
 	}
+	new->id = *room ? (*room)->id + 1 : 0;
+	new->nb_links = 0;
 	new->next = *room;
 	*room = new;
 	check_room(*room);
 	return (0);
 }
 
-/* int		check_pipe_name(t_room *room, t_pipe *pipe) */
-/* { */
-/* 	int cmp; */
-/* 	t_room *begin; */
+int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
+{
+	t_pipe *new;
+	t_pipe *actual;
+	t_pipe *prev;
+	t_room *room_from;
+	t_room *room_to;
 
-/* 	cmp = 0; */
-/* 	begin = room; */
-/* 	while (room) */
-/* 	{ */
-/* 		if (ft_strcmp(room->name, pipe->begin) || ft_strcmp */
-/* 	} */
-/* } */
+	prev = pipe;
+	new = pipe;
+	pipe->to = -1;
+	if (from && to && ft_strcmp(from, to))
+	{
+		while (room)
+		{
+			if (!ft_strcmp(room->name, from))
+			{
+				room_from = room;
+				pipe->from = room->id;
+				room->nb_links++;
+			}
+			else if (!ft_strcmp(room->name, to))
+			{
+				room_to = room;
+				pipe->to = room->id;
+				room->nb_links++;
+			}
+			room = room->next;
+		}
+		while (prev->next)
+		{
+			actual = prev->next;
+			if ((new->to == actual->to && new->from == actual->from)
+			|| (new->to == actual->from && new->from == actual->to))
+			{
+				room_to->nb_links--;
+				room_from->nb_links--;
+				prev->next = actual->next;
+				free(actual);
+				break ;
+			}
+			prev = prev->next;
+		}
+	}
+	free(from);
+	free(to);
+	return (pipe->to != -1);
+}
 
-int		get_pipe(t_pipe **pipe, char *line)
+int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 {
 	t_pipe	*new;
 	char	*tmp;
+	char	*from;
+	char	*to;
 
 	/* ft_printf("pipe: %s\n", line); */
 	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
-	new->end = NULL;
-	new->begin = ft_strcdup(line, '-');
-	if (new->begin && (tmp = ft_strchr(line, '-')))
+	to = NULL;
+	from = ft_strcdup(line, '-');
+	if (from && (tmp = ft_strchr(line, '-')))
 	{
 		new->next = *pipe;
-		if ((new->end = ft_strdup(tmp + 1)))
+		if ((to = ft_strdup(tmp + 1)))
 			*pipe = new;
 	}
-	if (!new->end || !new->begin) //|| !check_pipe_name(*room, new))
+	if (!check_pipe(room, *pipe, from, to))
 	{
-		free(new->end);
-		free(new->begin);
+		*pipe = (*pipe)->next;
 		free(new);
-		return (1);
 	}
 	return (0);
 }
@@ -128,15 +166,12 @@ int		get_room_opt(char *line, int *room_opt)
 	return (0);
 }
 
-
 int		parse_infos(t_room **room, t_pipe **pipe, int *ant)
 {
 	char	*line;
 	int		room_opt;
 	int		error;
-	int		i;
 
-	i = 0;
 	line = NULL;
 	room_opt = 0;
 	error = 0;
@@ -145,17 +180,15 @@ int		parse_infos(t_room **room, t_pipe **pipe, int *ant)
 	free(line);
 	while (!error && get_next_line(0, &line) == 1)
 	{
-		if (!(i++ % 10000))
-			ft_printf("+1\n");
 		if (*line == '#')
 		{
 			if (*(line + 1) == '#')
 				error = get_room_opt(line, &room_opt);
 		}
 		else if (!ft_strchr(line, '-'))
-			error = get_room(room, pipe, line, &room_opt);
+			error = get_room(room, *pipe, line, &room_opt);
 		else
-			error = room_opt || *line == 'L' || get_pipe(pipe, line);
+			error = room_opt || *line == 'L' || get_pipe(pipe, *room, line);
 		free(line);
 	}
 	if (error)

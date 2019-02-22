@@ -9,14 +9,16 @@ typedef struct		s_room
 	int				y;
 	char			*name;
 	int				place;
-	int				status;
+	int				nb_links;
+	int				id;
+	struct s_room	**links;
 	struct s_room	*next;
 }					t_room;
 
 typedef struct		s_pipe
 {
-	char			*begin;
-	char			*end;
+	int				from;
+	int				to;
 	int				len;
 	struct s_pipe	*next;
 }					t_pipe;
