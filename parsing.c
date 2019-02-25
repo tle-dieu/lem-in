@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/22 20:40:31 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/24 18:20:04 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ int		get_room(t_room **room, t_pipe *pipe, char *line, int *room_opt)
 		free(new);
 		return (1);
 	}
+	new->dist = 2147483647;
 	new->id = *room ? (*room)->id + 1 : 0;
 	new->nb_links = 0;
 	new->next = *room;

@@ -3,4 +3,11 @@
 start 0 0
 ##end
 end 1 1
-start-end
+room1 2 2
+room2 3 3
+room3 4 4
+start-room1
+start-room2
+room1-room3
+room2-end
+room3-end
