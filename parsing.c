@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/24 18:20:04 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/28 13:04:01 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,12 @@ void	check_room(t_room *room)
 	}
 }
 
-int		get_room(t_room **room, t_pipe *pipe, char *line, int *room_opt)
+int		get_room(t_room **room, char *line, int *room_opt)
 {
 	t_room	*new;
 
 	ft_printf("room: %s\n", line);
-	if (pipe || !(new = (t_room*)malloc(sizeof(t_room))))
+	if (!(new = (t_room*)malloc(sizeof(t_room))))
 		return (1);
 	new->place = *room_opt;
 	if (*room_opt)
@@ -150,6 +150,7 @@ int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 	{
 		*pipe = (*pipe)->next;
 		free(new);
+		return (1);
 	}
 	return (0);
 }
@@ -189,7 +190,7 @@ int		parse_infos(t_room **room, t_pipe **pipe, int *ant)
 				error = get_room_opt(line, &room_opt);
 		}
 		else if (!ft_strchr(line, '-'))
-			error = get_room(room, *pipe, line, &room_opt);
+			error = *pipe || get_room(room, line, &room_opt);
 		else
 			error = room_opt || *line == 'L' || get_pipe(pipe, *room, line);
 		free(line);

@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/24 18:35:54 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/02/28 13:06:32 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ int		enough_data(t_room *room, t_pipe *pipe)
 {
 	int start;
 
-	(void)pipe;
 	start = 0;
+	if (!pipe)
+		return (0);
 	while (room)
 	{
 		if (room->place)
@@ -146,11 +147,14 @@ int		main(void)
 	parse_infos(&room, &pipe, &infos.ant);
 	ft_printf("{yellow}::::::::::PARSING RESULT::::::::::\n");
 	ft_printf("{green}number of ants %d\n", infos.ant);
-	print_room(room);
-	print_pipe(pipe);
-	tab = create_graph(room, pipe, &infos);
-	get_flow(infos.end, infos, 0);
-	print_graph(tab, infos);
+	if (pipe && room)
+	{
+		print_room(room);
+		print_pipe(pipe);
+		tab = create_graph(room, pipe, &infos);
+		get_flow(infos.end, infos, 0);
+		print_graph(tab, infos);
+	}
 	if (!enough_data(room, pipe))
 	{
 		ft_printf("ERROR\n");
