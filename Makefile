@@ -1,4 +1,4 @@
-NAME := lem_in
+NAME := lem-in
 CFLAG = -Wall -Werror -Wextra
 CC = gcc $(CFLAG)
 LDFLAG = -L./$(LIBDIR) -lft
@@ -33,12 +33,11 @@ ifneq (,$(filter $(fsanitize),y yes))
 	CFLAG += -fsanitize=address
 endif
 ifneq (,$(filter $(time),y yes))
-	EXEC_LINE := time
+	RUN_OPTION := time
 endif
 ifneq (,$(filter $(valgrind),y yes))
-	EXEC_LINE += valgrind --leak-check=full --track-origins=yes --read-inline-info=yes --read-var-info=yes --num-callers=100 --show-possibly-lost=no
+	RUN_OPTION += valgrind --leak-check=full --track-origins=yes --read-inline-info=yes --read-var-info=yes --num-callers=100 --show-possibly-lost=no
 endif
-EXEC_LINE += ./lem_in < $(MAP_FOLDER)$(map)
 
 all: $(NAME)
 
@@ -72,10 +71,19 @@ debug: CFLAG += -g3
 debug: re
 
 run: $(NAME)
-	-@if [ -f $(MAP_FOLDER)$(map) ]; then $(EXEC_LINE); \
+ifneq ($(generator),)
+ifneq (,$(filter $(generator),flow-one flow-ten flow-thousand big big-superposition))
+		$(MAP_FOLDER)./generator --$(generator) > $(MAP_FOLDER)generator_map
+		$(RUN_OPTION) ./$(NAME) < $(MAP_FOLDER)generator_map
+else
+		$(MAP_FOLDER)./generator --$(generator)
+endif
+else
+	-@if [ -f $(MAP_FOLDER)$(map) ]; then $(RUN_OPTION) ./$(NAME) < $(MAP_FOLDER)$(map); \
 	else printf "$(BLUE)List of maps\n$(NC)" && ls $(MAP_FOLDER); fi
 ifneq (,$(filter $(valgrind),y yes))
-	@$(RM) $(NAME).dSYM
+		@$(RM) $(NAME).dSYM
+endif
 endif
 
 re: fclean all
