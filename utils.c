@@ -6,17 +6,26 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/14 13:30:06 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/14 16:56:56 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/02 13:02:16 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <stdlib.h>
 
-void	finish(char *line, char *message, int error)
+void	finish(t_file *file, char *message, int error)
 {
+	int i;
+
 	ft_printf("%s", message);
-	free(line);
+	if (file && file->split)
+	{
+		i = 0;
+		while (i < file->size)
+			free(file->split[i++]);
+		free(file->split);
+		free(file->str);
+	}
 	exit(error);
 }
 

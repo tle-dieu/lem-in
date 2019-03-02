@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/02/28 13:04:01 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/02 15:02:53 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int		get_room(t_room **room, char *line, int *room_opt)
 {
 	t_room	*new;
 
-	ft_printf("room: %s\n", line);
+	/* ft_printf("room: %s\n", line); */
 	if (!(new = (t_room*)malloc(sizeof(t_room))))
 		return (1);
 	new->place = *room_opt;
@@ -135,7 +135,7 @@ int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 	char	*from;
 	char	*to;
 
-	ft_printf("pipe: %s\n", line);
+	/* ft_printf("pipe: %s\n", line); */
 	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
 	to = NULL;
@@ -170,32 +170,41 @@ int		get_room_opt(char *line, int *room_opt)
 	return (0);
 }
 
-int		parse_infos(t_room **room, t_pipe **pipe, int *ant)
+int		parse_infos(t_room **room, t_pipe **pipe, int *ant, t_file *file)
 {
-	char	*line;
 	int		room_opt;
 	int		error;
+	int		i;
 
-	line = NULL;
+	i = 0;
 	room_opt = 0;
 	error = 0;
-	if (get_next_line(0, &line) != 1 || ((*ant = atoi_parsing(line)) <= 0))
-		finish(line, "ERROR\n", 1);
-	free(line);
-	while (!error && get_next_line(0, &line) == 1)
+	if (!file->size)
+		finish(file, "EMPTY FILE ERROR\n", 1); // a changer
+	ft_printf("file->split[%d] = %s\n", i, file->split[i]);
+	while (file->split[i] && file->split[i][0] == '#' && file->split[i][1] != '#')
+		if (++i == file->size)
+			finish(file, "NO ANT ERROR\n", 1); // a changer
+	/* ft_printf("%s\n", file->split[i]); */
+	if (((*ant = atoi_parsing(file->split[i])) <= 0))
+		finish(file, "ANT ERROR\n", 1); // a changer
+	free(file->split[i++]);
+	while (!error && i < file->size && file->split[i])
 	{
-		if (*line == '#')
+		if (file->split[i][0] == '#')
 		{
-			if (*(line + 1) == '#')
-				error = get_room_opt(line, &room_opt);
+			if (file->split[i][1] == '#')
+				error = get_room_opt(file->split[i], &room_opt);
 		}
-		else if (!ft_strchr(line, '-'))
-			error = *pipe || get_room(room, line, &room_opt);
+		else if (!ft_strchr(file->split[i], '-'))
+			error = *pipe || get_room(room, file->split[i], &room_opt);
 		else
-			error = room_opt || *line == 'L' || get_pipe(pipe, *room, line);
-		free(line);
+			error = room_opt || file->split[i][0] == 'L' || get_pipe(pipe, *room, file->split[i]);
+		free(file->split[i]);
+		file->split[i++] = NULL;
 	}
 	if (error)
 		ft_printf("{#de5453}STOP !\n");
+	free(file->split);
 	return (0);
 }

@@ -6,11 +6,13 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/28 13:06:32 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/02 17:10:40 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
+#include <unistd.h>
+#include <stdlib.h>
 
 void	print_room(t_room *room)
 {
@@ -61,8 +63,6 @@ int		enough_data(t_room *room, t_pipe *pipe)
 	}
 	return (start == 3);
 }
-
-#include <stdlib.h>
 
 t_room **create_graph(t_room *room, t_pipe *pipe, t_infos *infos)
 {
@@ -127,11 +127,54 @@ void	get_flow(t_room *room, t_infos infos, int dist)
 	else 
 		return ;
 	while (i < room->nb_links)
-	{
-		ft_printf("{cyan}i: %d nb_links: %d\n", i, room->nb_links);
 		get_flow(room->links[i++], infos, dist + 1);
-	}
 	return ;
+}
+
+int		split_file(t_file *file)
+{
+	int i;
+	int j;
+	int occ;
+
+	file->size = ft_count_words(file->str, '\n');
+	if (!(file->split = (char **)malloc(sizeof(char *) * file->size)))
+		return (1);
+	j = 0;
+	i = 0;
+	while (j < file->size)
+	{
+		while (file->str[i] && file->str[i] == '\n')
+			i++;
+		occ = i;
+		while (file->str[i] != '\n' && file->str[i])
+			i++;
+		file->split[j++] = ft_strsub(file->str, occ, i - occ);
+	}
+	return (0);
+}
+
+int		get_file(t_file *file)
+{
+	char	*tmp;
+	char	buff[BS_LEMIN + 1];
+	int		ret;
+	int		total_ret;
+
+	total_ret = 0;
+	file->str = ft_strnew(0);
+	while ((ret = read(0, buff, BS_LEMIN)) && ret != -1)
+	{
+		buff[ret] = '\0';
+		tmp = buff;
+		total_ret += ret;
+		tmp = file->str;
+		if (!(file->str = ft_strjoin(file->str, buff)))
+			return (1);
+		free(tmp);
+	}
+	file->len = total_ret;
+	return (split_file(file));
 }
 
 int		main(void)
@@ -140,11 +183,15 @@ int		main(void)
 	t_room **tab;
 	t_pipe *pipe;
 	t_infos infos;
+	t_file	file;
 
 	pipe = NULL;
 	room = NULL;
 	ft_printf("{green}debut\n{reset}");
-	parse_infos(&room, &pipe, &infos.ant);
+	if (get_file(&file))
+		finish(NULL, "GET FILE ERROR\n", 1);
+	ft_printf("fin get_file\n");
+	parse_infos(&room, &pipe, &infos.ant, &file);
 	ft_printf("{yellow}::::::::::PARSING RESULT::::::::::\n");
 	ft_printf("{green}number of ants %d\n", infos.ant);
 	if (pipe && room)
@@ -157,7 +204,7 @@ int		main(void)
 	}
 	if (!enough_data(room, pipe))
 	{
-		ft_printf("ERROR\n");
+		ft_printf("NOT ENOUGH DATA ERROR\n");
 		return (1);
 	}
 	return (0);
