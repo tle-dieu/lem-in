@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/02 15:05:45 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/02 19:13:05 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,12 @@ typedef struct	s_infos
 	t_room			*end;
 }				t_infos;
 
+typedef struct s_queue
+{
+	t_room			*room;
+	struct	s_queue *next;
+}				t_queue;
+
 typedef struct	s_file
 {
 	char			**split;
@@ -56,5 +62,6 @@ typedef struct	s_file
 void			finish(t_file *file, char *message, int error);
 int				parse_infos(t_room **room, t_pipe **pipe, int *ant, t_file *file);
 int				atoi_parsing(char const *s);
+int				bfs(t_infos infos, t_room *room);
 
 #endif

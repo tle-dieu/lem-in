@@ -7,7 +7,8 @@ RM = rm -rf
 
 SRC = main.c \
 	  parsing.c \
-	  utils.c
+	  utils.c \
+	  solve.c
 
 OBJ = $(SRC:.c=.o)
 
