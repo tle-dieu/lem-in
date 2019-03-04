@@ -21,6 +21,7 @@ t_queue	*init_queue(t_room *actual, t_room *room)
 		return (NULL);
 	new->next = NULL;
 	new->room = actual;
+	new->room->lvl = 0;
 	while (room)
 	{
 		room->i = 0;
@@ -46,6 +47,7 @@ t_queue	*enqueue(t_queue *queue, t_room *room)
 			new->next = NULL;
 			new->room = room->links[i];
 			new->room->i = 1;
+			new->room->lvl = room->lvl + 1;
 			queue = queue->next;
 		}
 		i++;
