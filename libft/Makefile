@@ -118,7 +118,6 @@ RMLINE = \033[2K
 NC := \033[0m
 
 all: $(NAME)
-	@tput cnorm
 
 $(NAME): $(OBJECTS)
 	@printf "$(RMLINE)$(YELLOW)🌘  All compiled$(NC)\n"
@@ -126,13 +125,14 @@ $(NAME): $(OBJECTS)
 	@printf "$(GREEN)$(NAME) has been created$(NC)\n"
 	@$(RLIB) $(NAME)
 	@printf "$(GREEN)$(NAME) has been indexed$(NC)\n"
+	@tput cnorm
 
 objects/%.o: %.c $(INCLUDES)
 	@tput civis
 	@mkdir -p $(dir $@)
 	@$(CC) $(FLAG) -I $(INCLUDES_FOLDER) -o $@ -c $<
 	@printf "$(RMLINE)\r🚀 $(GREEN)$(YELLOW) Compiling:$(NC) $(notdir $<)\r"
-	@sleep 0.01
+	@sleep 0.02
 
 .PHONY: clean
 

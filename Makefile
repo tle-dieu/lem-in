@@ -1,31 +1,35 @@
 NAME := lem-in
-CFLAG = -Wall -Werror -Wextra
+CFLAG = -Wall -Werror -Wextra -g3
 CC = gcc $(CFLAG)
 LDFLAG = -L./$(LIBDIR) -lft
 
 RM = rm -rf
 
-SRC = main.c \
+SOURCES_FOLDER := sources/
+INCLUDES_FOLDER := includes/
+OBJECTS_FOLDER := objects/
+
+vpath %.c $(SOURCES_FOLDER)
+
+SOURCES = main.c \
 	  parsing.c \
 	  utils.c \
 	  solve.c
 
-OBJ = $(SRC:.c=.o)
+OBJECTS = $(SRC:.c=.o)
 
 LIBDIR := libft/
 LIBFT := $(LIBDIR)libft.a
-INCLUDE_FOLDER := $(LIBDIR)includes
-INCLUDE := lem_in.h
+LIBINC := $(LIBDIR)includes/
+INCLUDES := $(LIBINC)libft.h $(INCLUDES_FOLDER)lem_in.h
+OBJECTS := $(addprefix $(OBJECTS_FOLDER), $(SOURCES:.c=.o))
 
 GREEN := \033[38;2;12;231;58m
 YELLOW := \033[38;2;251;196;15m
 RED := \033[38;2;255;60;51m
 BLUE := \033[38;2;0;188;218m
-RMLINE = \033[2K
-NC := \033[0m
-
-
-MAP_FOLDER := maps/
+RMLINE := \033[2K
+RESET := \033[0m
 
 ifneq (,$(filter $(debug),y yes))
 	CFLAG += -g3
@@ -40,33 +44,39 @@ ifneq (,$(filter $(valgrind),y yes))
 	RUN_OPTION += valgrind --leak-check=full --track-origins=yes --read-inline-info=yes --read-var-info=yes --num-callers=100 --show-possibly-lost=no
 endif
 
+MAP_FOLDER := maps/
+
 all: $(NAME)
 
-$(NAME): $(OBJ) $(LIBFT)
-	@printf "$(RMLINE)$(YELLOW)🌘  All compiled$(NC)\n"
-	@$(CC) -o $@ $(LDFLAG) $^
-	@printf "$(GREEN)$(NAME) has been created$(NC)\n"
+$(NAME): $(OBJECTS) $(LIBFT)
+	@printf "$(RMLINE)$(YELLOW)🌘  All compiled$(RESET)\n"
+	@$(CC) -o $@ $(LDFLAG) $(OBJECTS)
+	@printf "$(GREEN)$(NAME) has been created$(RESET)\n"
 	@tput cnorm
 
-$(LIBFT):
+$(LIBFT): force
 	@$(MAKE) -C $(LIBDIR)
 
-%.o: %.c $(INCLUDE)
+force:
+	@true
+
+objects/%.o: %.c $(DEPS) $(INCLUDES)
 	@tput civis
-	@$(CC) $(CFLAG) -I $(INCLUDE_FOLDER) -o $@ -c $<
-	@printf "$(RMLINE)\r🚀 $(GREEN)$(YELLOW) Compiling:$(NC) $(notdir $<)\r"
-	@sleep .01
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAG) -I $(INCLUDES_FOLDER) -I $(LIBINC) -o $@ -c $<
+	@printf "$(RMLINE)\r🚀 $(GREEN)$(YELLOW) Compiling:$(RESET) $(notdir $<)\r"
+	@sleep 0.02
 
 clean:
 	@$(MAKE) $@ -C $(LIBDIR)
-	@$(RM) $(OBJ)
-	@printf "$(RED)The lem_in objects have been removed$(NC)\n"
+	@$(RM) $(OBJECTS_FOLDER)
+	@printf "$(RED)The lem_in objects have been removed$(RESET)\n"
 
 fclean:
 	@$(MAKE) $@ -C $(LIBDIR)
-	@$(RM) $(OBJ) $(NAME)
-	@printf "$(RED)The lem_in objects have been removed$(NC)\n"
-	@printf "$(RED)$(NAME) has been removed$(NC)\n"
+	@$(RM) $(OBJECTS_FOLDER) $(NAME)
+	@printf "$(RED)The lem_in objects have been removed$(RESET)\n"
+	@printf "$(RED)$(NAME) has been removed$(RESET)\n"
 
 debug: CFLAG += -g3
 debug: re
@@ -81,7 +91,7 @@ else
 endif
 else
 	-@if [ -f $(MAP_FOLDER)$(map) ]; then $(RUN_OPTION) ./$(NAME) < $(MAP_FOLDER)$(map); \
-	else printf "$(BLUE)List of maps\n$(NC)" && ls $(MAP_FOLDER); fi
+	else printf "$(BLUE)List of maps\n$(RESET)" && ls $(MAP_FOLDER); fi
 ifneq (,$(filter $(valgrind),y yes))
 		@$(RM) $(NAME).dSYM
 endif
