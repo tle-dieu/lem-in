@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/04 15:19:57 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/04 17:22:18 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct	s_room
 	int				id;
 	int				i;
 	int				dist;
+	int				lvl;;
 	struct s_room	**links;
 	struct s_room	*next;
 }				t_room;

@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/04 17:06:10 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/04 18:58:14 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ t_queue	*init_queue(t_room *actual, t_room *room)
 		return (NULL);
 	new->next = NULL;
 	new->room = actual;
+	new->room->lvl = 0;
 	while (room)
 	{
 		room->i = 0;
@@ -46,6 +47,7 @@ t_queue	*enqueue(t_queue *queue, t_room *room)
 			new->next = NULL;
 			new->room = room->links[i];
 			new->room->i = 1;
+			new->room->lvl = room->lvl + 1;
 			queue = queue->next;
 		}
 		i++;
@@ -63,16 +65,17 @@ void	print_queue(t_queue *print)
 			ft_printf("%s\n", print->room->name);
 		print = print->next;
 	}
+	ft_printf("\n");
 }
 
 int		bfs(t_infos infos, t_room *room)
 {
-	int		i;
+	int		lvl;
 	t_queue *queue;
 	t_queue	*begin;
 	t_queue	*tmp;
 
-	i = 0;
+	lvl = 0;
 	begin = init_queue(infos.start, room);
 	queue = enqueue(begin, begin->room);
 	while (begin)
