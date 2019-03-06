@@ -1,5 +1,5 @@
 NAME := lem-in
-CFLAG = -Wall -Werror -Wextra -g3
+CFLAG = -Wall -Werror -Wextra
 CC = gcc $(CFLAG)
 LDFLAG = -L./$(LIBDIR) -lft
 

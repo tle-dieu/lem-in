@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/06 16:10:58 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/03/06 16:16:19 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,10 @@ void	print_queue(t_queue *print)
 
 int		bfs(t_infos infos, t_room *room)
 {
-	int		lvl;
 	t_queue *queue;
 	t_queue	*begin;
 	t_queue	*tmp;
 
-	lvl = 0;
 	begin = init_queue(infos.start, room);
 	queue = enqueue(begin, begin->room);
 	while (begin)
