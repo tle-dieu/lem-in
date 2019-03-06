@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/06 15:51:49 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/03/06 19:23:49 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void	print_graph(t_room **tab, t_infos infos)
 {
 	int i;
 	int j;
+	int k;
 
 	i = 0;
 	ft_printf("{#de4343}");
@@ -109,7 +110,13 @@ void	print_graph(t_room **tab, t_infos infos)
 		ft_printf("\n-----%s-----\nid: %d lvl: %d nb_links: %d {#f0ab68}dist: %d\n{#de4343}", tab[i]->name, tab[i]->id, tab[i]->lvl, tab[i]->nb_links, tab[i]->dist);
 		while (j < tab[i]->nb_links)
 		{
-			ft_printf("  -> nb: %d name: %s id: %d lvl: %d\n", j, tab[i]->links[j]->name, tab[i]->links[j]->id, tab[i]->links[j]->lvl);
+			k = j;
+			if (tab[i]->id == tab[i]->links[j]->id)
+				ft_printf("{blue}ERROR room vers elle mm\n{reset}");
+			while (++k < tab[i]->nb_links)
+				if (tab[i]->links[j]->id == tab[i]->links[k]->id)
+					ft_printf("{blue}ERROR deux fois mm room\n{reset}");
+			ft_printf("{#de4343}  -> nb: %d name: %s id: %d lvl: %d\n", j, tab[i]->links[j]->name, tab[i]->links[j]->id, tab[i]->links[j]->lvl);
 			j++;
 		}
 		i++;
@@ -196,12 +203,12 @@ int		main(void)
 	ft_printf("{green}number of ants %d\n", infos.ant);
 	if (pipe && room)
 	{
-		print_room(room);
-		print_pipe(pipe);
+		/* print_room(room); */
+		/* print_pipe(pipe); */
 		tab = create_graph(room, pipe, &infos);
 		get_flow(infos.end, infos, 0);
 		bfs(infos, room);
-//		print_graph(tab, infos);
+		print_graph(tab, infos);
 		if (dfs(infos, tab))
 			ft_printf("UI\n");
 		else

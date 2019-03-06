@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/06 16:16:19 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/06 19:29:51 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_queue	*enqueue(t_queue *queue, t_room *room)
 	i = 0;
 	while (i < room->nb_links)
 	{
-		if (!room->links[i]->i)
+		if (!room->links[i]->i || room->links[i]->dist < room->dist)
 		{
 			if (!(new = (t_queue *)malloc(sizeof(t_queue))))
 				return (NULL);
@@ -78,7 +78,7 @@ int		bfs(t_infos infos, t_room *room)
 	queue = enqueue(begin, begin->room);
 	while (begin)
 	{
-//		print_queue(begin);
+		/* print_queue(begin); */
 		tmp = begin;
 		if ((begin = begin->next))
 			queue = enqueue(queue, begin->room);
@@ -92,7 +92,7 @@ int get_ways(t_room *room, t_infos infos, int *way)
 	int i;
 
 	i = 0;
-	ft_printf("{blue}=> {reset}%s ", room->name);
+	ft_printf("{blue}=> {reset}%s: {yellow}%d:%d{reset}", room->name, room->lvl, room->dist);
 	room->i = 1;
 	if (room->place == 2)
 	{
@@ -119,21 +119,11 @@ int dfs(t_infos infos, t_room **tab)
 	int j;
 
 	way = 0;
-		j = 0;
-		while (tab[j])
-			tab[j++]->i = 0;
-		get_ways(infos.start, infos, &way);
-		ft_printf("\n");
+	j = 0;
+	while (tab[j])
+		tab[j++]->i = 0;
+	get_ways(infos.start, infos, &way);
+	ft_printf("\n");
 	ft_printf("{#ff3333}%d", way);
 	return (42);
 }
-
-
-
-
-
-
-
-
-
-
