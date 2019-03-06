@@ -50,7 +50,7 @@ all: $(NAME)
 
 $(NAME): $(OBJECTS) $(LIBFT)
 	@printf "$(RMLINE)$(YELLOW)🌘  All compiled$(RESET)\n"
-	@$(CC) -o $@ $(LDFLAG) $(OBJECTS)
+	@$(CC) -o $@ $(OBJECTS) $(LDFLAG)
 	@printf "$(GREEN)$(NAME) has been created$(RESET)\n"
 	@tput cnorm
 
@@ -63,7 +63,7 @@ force:
 objects/%.o: %.c $(DEPS) $(INCLUDES)
 	@tput civis
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAG) -I $(INCLUDES_FOLDER) -I $(LIBINC) -o $@ -c $<
+	@$(CC) -I $(INCLUDES_FOLDER) -I $(LIBINC) -o $@ -c $<
 	@printf "$(RMLINE)\r🚀 $(GREEN)$(YELLOW) Compiling:$(RESET) $(notdir $<)\r"
 	@sleep 0.02
 
