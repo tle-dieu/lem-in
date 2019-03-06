@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/04 18:58:14 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/06 15:29:49 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,3 +88,58 @@ int		bfs(t_infos infos, t_room *room)
 	}
 	return (0);
 }
+
+int get_ways(t_room *room, t_infos infos, int *way)
+{
+	int i;
+
+	i = 0;
+	ft_printf("{blue}=> {reset}%s ", room->name);
+	room->i = 1;
+	if (room->place == 2)
+	{
+		(*way)++;
+		return (1);
+	}
+	while (i < room->nb_links)
+	{
+		if (room->links[i]->place == 2 || (!room->links[i]->i && (room->links[i]->lvl > room->lvl ||  room->links[i]->dist < room->dist)))
+		{
+			if (get_ways(room->links[i], infos, way))
+				ft_printf("\n");
+		}
+		i++;
+	}
+	return (0);
+}
+
+int dfs(t_infos infos, t_room **tab)
+{
+	int way;
+	int i;
+	int j;
+
+	i = 0;
+	way = 0;
+	while (i < infos.start->nb_links)
+	{
+		j = 0;
+		while (tab[j])
+			tab[j++]->i = 0;
+		get_ways(infos.start->links[i], infos, &way);
+		i++;
+		ft_printf("\n");
+	}
+	ft_printf("{#ff3333}%d", way);
+	return (42);
+}
+
+
+
+
+
+
+
+
+
+

@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/04 17:24:02 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/06 15:21:05 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,9 +199,13 @@ int		main(void)
 		print_room(room);
 		print_pipe(pipe);
 		tab = create_graph(room, pipe, &infos);
-		/* get_flow(infos.end, infos, 0); */
+		get_flow(infos.end, infos, 0);
 		bfs(infos, room);
 		print_graph(tab, infos);
+		if (dfs(infos, tab))
+			ft_printf("UI\n");
+		else
+			ft_printf("PAS UI\n");
 	}
 	if (!enough_data(room, pipe))
 	{

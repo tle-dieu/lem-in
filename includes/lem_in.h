@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/04 17:22:18 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/06 15:22:08 by matleroy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,5 +64,6 @@ void			finish(t_file *file, char *message, int error);
 int				parse_infos(t_room **room, t_pipe **pipe, int *ant, t_file *file);
 int				atoi_parsing(char const *s);
 int				bfs(t_infos infos, t_room *room);
+int				dfs(t_infos infos, t_room **tab);
 
 #endif
