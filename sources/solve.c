@@ -6,12 +6,25 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/06 16:16:19 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/07 20:18:02 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <stdlib.h>
+
+void	print_queue(t_queue *print)
+{
+	while (print)
+	{
+		if (print->next)
+			ft_printf("%s {yellow}-> {reset}", print->room->name);
+		else
+			ft_printf("%s\n", print->room->name);
+		print = print->next;
+	}
+	ft_printf("\n");
+}
 
 t_queue	*init_queue(t_room *actual, t_room *room)
 {
@@ -21,7 +34,6 @@ t_queue	*init_queue(t_room *actual, t_room *room)
 		return (NULL);
 	new->next = NULL;
 	new->room = actual;
-	new->room->lvl = 0;
 	while (room)
 	{
 		room->i = 0;
@@ -39,33 +51,21 @@ t_queue	*enqueue(t_queue *queue, t_room *room)
 	i = 0;
 	while (i < room->nb_links)
 	{
-		if (!room->links[i]->i)
+		if (!room->links[i]->i && !room->links[i]->flow)
 		{
+			ft_printf("name: %s i: %d\n", room->links[i]->name, room->links[i]->i);
 			if (!(new = (t_queue *)malloc(sizeof(t_queue))))
 				return (NULL);
 			queue->next = new;
 			new->next = NULL;
 			new->room = room->links[i];
 			new->room->i = 1;
-			new->room->lvl = room->lvl + 1;
+			room->links[i]->prev = room;
 			queue = queue->next;
 		}
 		i++;
 	}
 	return (queue);
-}
-
-void	print_queue(t_queue *print)
-{
-	while (print)
-	{
-		if (print->next)
-			ft_printf("%s {yellow}-> {reset}", print->room->name);
-		else
-			ft_printf("%s\n", print->room->name);
-		print = print->next;
-	}
-	ft_printf("\n");
 }
 
 int		bfs(t_infos infos, t_room *room)
@@ -78,7 +78,21 @@ int		bfs(t_infos infos, t_room *room)
 	queue = enqueue(begin, begin->room);
 	while (begin)
 	{
-//		print_queue(begin);
+		if (begin->room == infos.end)
+		{
+			room = begin->room;
+			while (room)
+			{
+				ft_printf("%s", room->name);
+				if (room->prev)
+					ft_printf(" {#ff3333}=>{reset}");
+				room->i = 1;
+				room = room->prev;
+			}
+			ft_printf("\n");
+			break ;
+		}
+		print_queue(begin);
 		tmp = begin;
 		if ((begin = begin->next))
 			queue = enqueue(queue, begin->room);
@@ -87,53 +101,25 @@ int		bfs(t_infos infos, t_room *room)
 	return (0);
 }
 
-int get_ways(t_room *room, t_infos infos, int *way)
+/*
+void	edmonds_karp(t_infos infos, t_room *room)
 {
-	int i;
+	int max_flow;
+	int flow;
+	t_room *actual;
+	t_room *prev;
 
-	i = 0;
-	ft_printf("{blue}=> {reset}%s ", room->name);
-	room->i = 1;
-	if (room->place == 2)
+	max_flow = 0;
+	while ((flow = bfs(infos, room)))
 	{
-		(*way)++;
-		room->i = 0;
-		return (1);
-	}
-	while (i < room->nb_links)
-	{
-		if (room->links[i]->place == 2 || (!room->links[i]->i && (room->links[i]->lvl > room->lvl ||  room->links[i]->dist < room->dist)))
+		ft_printf("flow: %d\n", flow);
+		max_flow += flow;
+		actual = infos->end;
+		while (actual != infos->start)
 		{
-			if (get_ways(room->links[i], infos, way))
-				ft_printf("\n");
+			prev = current;
 		}
-		i++;
 	}
-	room->i = 0;
-	return (0);
+	while ()
 }
-
-int dfs(t_infos infos, t_room **tab)
-{
-	int way;
-	int j;
-
-	way = 0;
-		j = 0;
-		while (tab[j])
-			tab[j++]->i = 0;
-		get_ways(infos.start, infos, &way);
-		ft_printf("\n");
-	ft_printf("{#ff3333}%d", way);
-	return (42);
-}
-
-
-
-
-
-
-
-
-
-
+*/

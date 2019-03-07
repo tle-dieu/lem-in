@@ -6,11 +6,12 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/17 13:29:49 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/15 17:33:11 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/07 15:26:46 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "ft_printf.h"
 
 static int	more_conv(va_list args, t_print *buff, t_flag *flags, char **format)
 {

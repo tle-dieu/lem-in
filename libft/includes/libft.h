@@ -6,15 +6,13 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 10:50:07 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/01/17 12:57:09 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/07 15:24:19 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include "get_next_line.h"
-# include "ft_printf.h"
 # include <string.h>
 
 typedef struct	s_list
@@ -95,5 +93,9 @@ char			*ft_strndup(const char *s, size_t len);
 size_t			ft_strclen(char const *s, char c);
 size_t			ft_count_words(char const *s, char c);
 char			*ft_strupper(char *str);
+int				ft_printf(char const *format, ...) __attribute__
+((format(printf,1,2)));
+int				ft_dprintf(int fd, char const *format, ...);
+int				get_next_line(const int fd, char **line);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/04 16:14:29 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/07 20:13:04 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	check_room(t_room *room)
 		if (room->place && ((actual->place == 3 || actual->place == room->place)))
 			actual->place -= room->place; 
 		if (!ft_strcmp(actual->name, room->name)
-				|| (room->x == actual->x && room->y == actual->y))	
+		|| (room->x == actual->x && room->y == actual->y))	
 		{
 			prev->next = actual->next;
 			free(actual->name);
@@ -68,7 +68,7 @@ int		get_room(t_room **room, char *line, int *room_opt)
 		free(new);
 		return (1);
 	}
-	new->dist = 2147483647;
+	new->prev = NULL;
 	new->id = *room ? (*room)->id + 1 : 0;
 	new->nb_links = 0;
 	new->next = *room;

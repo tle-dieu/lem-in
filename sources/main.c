@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/06 15:51:49 by matleroy         ###   ########.fr       */
+/*   Updated: 2019/03/07 20:14:42 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,7 @@ t_room **create_graph(t_room *room, t_pipe *pipe, t_infos *infos)
 	}
 	while (pipe)
 	{
-		/* ft_printf("{#80f00d}%s : %d to %s : %d\n{reset}", tab[pipe->from]->name, pipe->from, tab[pipe->to]->name, pipe->to); */
-		/* ft_printf("tab[%d]->links[tab[%d]->%d++] = tab[%d]\n", pipe->from, pipe->from, tab[pipe->from]->i, pipe->to); */
 		tab[pipe->from]->links[tab[pipe->from]->i++] = tab[pipe->to];
-		/* ft_printf("tab[%d]->links[tab[%d]->%d++] = tab[%d]\n", pipe->to, pipe->to, tab[pipe->to]->i, pipe->from); */
 		tab[pipe->to]->links[tab[pipe->to]->i++] = tab[pipe->from];
 		pipe = pipe->next;
 	}
@@ -106,29 +103,15 @@ void	print_graph(t_room **tab, t_infos infos)
 	while (tab[i])
 	{
 		j = 0;
-		ft_printf("\n-----%s-----\nid: %d lvl: %d nb_links: %d {#f0ab68}dist: %d\n{#de4343}", tab[i]->name, tab[i]->id, tab[i]->lvl, tab[i]->nb_links, tab[i]->dist);
+		ft_printf("\n-----%s-----\nid: %d nb_links: %d {#f0ab68}\n{#de4343}", tab[i]->name, tab[i]->id, tab[i]->nb_links);
 		while (j < tab[i]->nb_links)
 		{
-			ft_printf("  -> nb: %d name: %s id: %d lvl: %d\n", j, tab[i]->links[j]->name, tab[i]->links[j]->id, tab[i]->links[j]->lvl);
+			ft_printf("  -> nb: %d name: %s id: %d\n", j, tab[i]->links[j]->name, tab[i]->links[j]->id);
 			j++;
 		}
 		i++;
 	}
 	ft_printf("{reset}");
-}
-
-void	get_flow(t_room *room, t_infos infos, int dist)
-{
-	int i;
-
-	i = 0;
-	if (room->dist >= dist)
-		room->dist = dist;
-	else 
-		return ;
-	while (i < room->nb_links)
-		get_flow(room->links[i++], infos, dist + 1);
-	return ;
 }
 
 int		split_file(t_file *file)
@@ -199,13 +182,12 @@ int		main(void)
 		print_room(room);
 		print_pipe(pipe);
 		tab = create_graph(room, pipe, &infos);
-		get_flow(infos.end, infos, 0);
-		bfs(infos, room);
-//		print_graph(tab, infos);
-		if (dfs(infos, tab))
-			ft_printf("UI\n");
-		else
-			ft_printf("PAS UI\n");
+		print_graph(tab, infos);
+		int i;
+		i = 3;
+		while (--i)
+			bfs(infos, room);
+		/* edmond_karp(infos, room); */
 	}
 	if (!enough_data(room, pipe))
 	{
