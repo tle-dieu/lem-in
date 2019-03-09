@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/07 20:14:42 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/09 20:53:37 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,22 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-void	print_room(t_room *room)
+void	print_room(t_lemin *l)
 {
+	t_room *room;
+
+	room = l->room;
 	ft_printf("{red}::::ROOM::::\n");
+	ft_printf("nb_room: %d\n", l->nb_room);
 	while (room)
 	{
-		ft_printf("{purple} room = {yellow} %s id: %d nb_links: %d X: %d Y: %d", room->name, room->id, room->nb_links, room->x, room->y);
-		if (room->place)
-		{
-			if (room->place == 3)
-				ft_printf(" ERROR");
-			else
-				ft_printf(room->place == 1 ? " START" : " END");
-		}
+		ft_printf("{purple} room = {yellow} %s id: %d X: %d Y: %d", room->name, room->id, room->x, room->y);
+		if (room == l->start && room == l->end)
+			ft_printf(" ERROR");
+		else if (room == l->start)
+			ft_printf(" START");
+		else if (room == l->end)
+			ft_printf(" END");
 		ft_printf("\n");
 		room = room->next;
 	}
@@ -44,152 +47,157 @@ void	print_pipe(t_pipe *pipe)
 	ft_printf("{reset}");
 }
 
-int		enough_data(t_room *room, t_pipe *pipe)
+int		enough_data(t_lemin *l, t_pipe *pipe)
 {
-	int start;
-
-	start = 0;
 	if (!pipe)
+		return (0);
+	if (!l->end || !l->start || l->end == l->start)
+		return (0);
+	return (1);
+}
+
+int			create_tab(t_lemin *l)
+{
+	t_room *room;
+
+	room = l->room;
+	if (!(l->tab = (t_room**)malloc(sizeof(t_room*) * l->nb_room)))
 		return (0);
 	while (room)
 	{
-		if (room->place)
-		{
-			if (room->place == 3)
-				return (0);
-			start += room->place;
-		}
+		l->tab[room->id] = room;
 		room = room->next;
 	}
-	return (start == 3);
+	return (1);
 }
 
-t_room **create_graph(t_room *room, t_pipe *pipe, t_infos *infos)
+void		print_matrix(t_lemin *l, t_room ***matrix)
 {
-	t_room **tab;
+	t_room *room;
+	int max;
+	int j;
 	int i;
+	int tmp;
 
-	tab = (t_room **)malloc(sizeof(t_room *) * (room->id + 2));
-	i = room->id;
-	tab[i + 1] = NULL;
+	j = 0;
+	room = l->room;
+	max = 0;
 	while (room)
 	{
-		tab[i--] = room;
-		if (room->place == 1)
-			infos->start = room;
-		else if (room->place == 2)
-			infos->end = room;
-		if (room->nb_links && !(room->links = (t_room**)malloc(sizeof(t_room*) * room->nb_links)))
-			return (NULL);
+		if ((tmp = (int)ft_strlen(room->name)) > max)
+			max = tmp;
 		room = room->next;
 	}
-	while (pipe)
+	while (j < l->nb_room)
 	{
-		tab[pipe->from]->links[tab[pipe->from]->i++] = tab[pipe->to];
-		tab[pipe->to]->links[tab[pipe->to]->i++] = tab[pipe->from];
-		pipe = pipe->next;
+		i = 0;
+		while (i < l->nb_room)
+		{
+			if (matrix[j][i])
+				ft_printf("{#ff3333}%-*s", max + 1, matrix[j][i]->name);
+			else
+				ft_printf("{reset}%-*s", max + 1, "*");
+			++i;
+		}
+		++j;
+		i = max / 2 + 1;
+		while (i--)
+			ft_printf("\n");
 	}
-	return (tab);
 }
 
-void	print_graph(t_room **tab, t_infos infos)
+t_room		***init_matrix_adj(t_lemin *l)
+{
+	t_room ***matrix_adj;
+	int j;
+	int i;
+
+	j = 0;
+	if (!(matrix_adj = (t_room***)malloc(sizeof(t_room**) * l->nb_room)))
+		return (NULL);
+	while (j < l->nb_room)
+	{
+		i = 0;
+		if (!(matrix_adj[j] = (t_room**)malloc(sizeof(t_room*) * l->nb_room)))
+			return (NULL);
+		while (i < l->nb_room)
+			matrix_adj[j][i++] = NULL;
+		j++;
+	}
+	return (matrix_adj);
+}
+
+void	print_graph(t_room **tab, t_lemin *l)
 {
 	int i;
-	int j;
 
 	i = 0;
 	ft_printf("{#de4343}");
-	ft_printf("\nSTART: %s\nEND: %s\n", infos.start->name, infos.end->name);
-	while (tab[i])
+	while (i < l->nb_room)
 	{
-		j = 0;
-		ft_printf("\n-----%s-----\nid: %d nb_links: %d {#f0ab68}\n{#de4343}", tab[i]->name, tab[i]->id, tab[i]->nb_links);
-		while (j < tab[i]->nb_links)
-		{
-			ft_printf("  -> nb: %d name: %s id: %d\n", j, tab[i]->links[j]->name, tab[i]->links[j]->id);
-			j++;
-		}
+		ft_printf("\n-----%s-----\nid: %d {#f0ab68}\n{#de4343}", tab[i]->name, tab[i]->id);
 		i++;
 	}
 	ft_printf("{reset}");
 }
 
-int		split_file(t_file *file)
+t_room		***create_matrix_adj(t_lemin *l, t_pipe *pipe)
 {
-	int i;
-	int j;
-	int occ;
+	t_room ***matrix_adj;
+	t_room *room;
+	t_pipe *tmp;
+	int j;	
 
-	file->size = ft_count_words(file->str, '\n');
-	if (!(file->split = (char **)malloc(sizeof(char *) * file->size)))
-		return (1);
 	j = 0;
-	i = 0;
-	while (j < file->size)
+	room = l->room;
+	matrix_adj = init_matrix_adj(l);
+	while (j < l->nb_room)
 	{
-		while (file->str[i] && file->str[i] == '\n')
-			i++;
-		occ = i;
-		while (file->str[i] != '\n' && file->str[i])
-			i++;
-		file->split[j++] = ft_strsub(file->str, occ, i - occ);
+		tmp = pipe;
+		while (tmp)
+		{
+			if (room->id == tmp->to)
+				matrix_adj[j][tmp->from] = l->tab[tmp->from];
+			else if (room->id == tmp->from)
+				matrix_adj[j][tmp->to] = l->tab[tmp->to];
+			tmp = tmp->next;
+		}
+		room = room->next;
+		j++;
 	}
-	return (0);
-}
-
-int		get_file(t_file *file)
-{
-	char	*tmp;
-	char	buff[BS_LEMIN + 1];
-	int		ret;
-	int		total_ret;
-
-	total_ret = 0;
-	file->str = ft_strnew(0);
-	while ((ret = read(0, buff, BS_LEMIN)) && ret != -1)
-	{
-		buff[ret] = '\0';
-		tmp = buff;
-		total_ret += ret;
-		tmp = file->str;
-		if (!(file->str = ft_strjoin(file->str, buff)))
-			return (1);
-		free(tmp);
-	}
-	file->len = total_ret;
-	return (split_file(file));
+	return (matrix_adj);
 }
 
 int		main(void)
 {
-	t_room *room;
-	t_room **tab;
+	t_room ***matrix_adj;
 	t_pipe *pipe;
-	t_infos infos;
-	t_file	file;
+	t_lemin l;
 
+	l.start = NULL;
+	l.end = NULL;
+	l.room = NULL;
+	l.nb_room = 0;
 	pipe = NULL;
-	room = NULL;
 	ft_printf("{green}debut\n{reset}");
-	if (get_file(&file))
-		finish(NULL, "GET FILE ERROR\n", 1);
-	ft_printf("fin get_file\n");
-	parse_infos(&room, &pipe, &infos.ant, &file);
+	parse_infos(&l, &pipe);
 	ft_printf("{yellow}::::::::::PARSING RESULT::::::::::\n");
-	ft_printf("{green}number of ants %d\n", infos.ant);
-	if (pipe && room)
+	ft_printf("{green}number of ants %d\n", l.ant);
+	if (pipe && l.room)
 	{
-		print_room(room);
+		print_room(&l);
 		print_pipe(pipe);
-		tab = create_graph(room, pipe, &infos);
-		print_graph(tab, infos);
-		int i;
-		i = 3;
-		while (--i)
-			bfs(infos, room);
+		create_tab(&l); //revoir la protection du malloc
+		print_graph(l.tab, &l);
+		matrix_adj = create_matrix_adj(&l, pipe);
+		print_matrix(&l, matrix_adj);
+		/* int i; */
+		/* i = 3; */
+		/* while (--i) */
+		bfs(&l, matrix_adj);
 		/* edmond_karp(infos, room); */
 	}
-	if (!enough_data(room, pipe))
+	if (!enough_data(&l, pipe))
 	{
 		ft_printf("NOT ENOUGH DATA ERROR\n");
 		return (1);

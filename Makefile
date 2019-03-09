@@ -12,9 +12,9 @@ OBJECTS_FOLDER := objects/
 vpath %.c $(SOURCES_FOLDER)
 
 SOURCES = main.c \
-	  parsing.c \
-	  utils.c \
-	  solve.c
+		  parsing.c \
+		  utils.c \
+		  solve.c
 
 OBJECTS = $(SRC:.c=.o)
 

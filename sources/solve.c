@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/07 20:18:02 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/09 20:53:35 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,41 +26,43 @@ void	print_queue(t_queue *print)
 	ft_printf("\n");
 }
 
-t_queue	*init_queue(t_room *actual, t_room *room)
+t_queue	*init_queue(t_lemin *l)
 {
+	t_room *room;
 	t_queue	*new;
 
 	if (!(new = (t_queue *)malloc(sizeof(t_queue))))
 		return (NULL);
 	new->next = NULL;
-	new->room = actual;
+	new->room = l->start;
+	room = l->room;
 	while (room)
 	{
 		room->i = 0;
+		room->prev = NULL;
 		room = room->next;
 	}
-	actual->i = 1;
+	l->start->i = 1;
 	return (new);
 }
 
-t_queue	*enqueue(t_queue *queue, t_room *room)
+t_queue	*enqueue(t_lemin *l, t_room ***matrix, t_queue *queue, t_room *room)
 {
 	t_queue	*new;
 	int i;
 
 	i = 0;
-	while (i < room->nb_links)
+	while (i < l->nb_room)
 	{
-		if (!room->links[i]->i && !room->links[i]->flow)
+		if (matrix[room->id][i] && !matrix[room->id][i]->i)
 		{
-			ft_printf("name: %s i: %d\n", room->links[i]->name, room->links[i]->i);
 			if (!(new = (t_queue *)malloc(sizeof(t_queue))))
 				return (NULL);
 			queue->next = new;
 			new->next = NULL;
-			new->room = room->links[i];
+			new->room = matrix[room->id][i];
 			new->room->i = 1;
-			room->links[i]->prev = room;
+			new->room->prev = room;
 			queue = queue->next;
 		}
 		i++;
@@ -68,58 +70,42 @@ t_queue	*enqueue(t_queue *queue, t_room *room)
 	return (queue);
 }
 
-int		bfs(t_infos infos, t_room *room)
+void	create_path(t_lemin *l)
+{
+	t_room *room;
+
+	room = l->end;
+	while (room)
+	{
+		ft_printf("%s", room->name);
+		if (room->prev)
+			ft_printf(" {#00bfff}=> {reset}");
+		room = room->prev;
+	}
+	ft_printf("\n");
+}
+
+int     bfs(t_lemin *l, t_room ***matrix)
 {
 	t_queue *queue;
-	t_queue	*begin;
-	t_queue	*tmp;
+	t_queue *begin;
+	t_queue *tmp;
 
-	begin = init_queue(infos.start, room);
-	queue = enqueue(begin, begin->room);
+	begin = init_queue(l);
+	queue = enqueue(l, matrix, begin, begin->room);
 	while (begin)
 	{
-		if (begin->room == infos.end)
-		{
-			room = begin->room;
-			while (room)
-			{
-				ft_printf("%s", room->name);
-				if (room->prev)
-					ft_printf(" {#ff3333}=>{reset}");
-				room->i = 1;
-				room = room->prev;
-			}
-			ft_printf("\n");
-			break ;
-		}
 		print_queue(begin);
 		tmp = begin;
-		if ((begin = begin->next))
-			queue = enqueue(queue, begin->room);
+		if (!(begin = begin->next) || (begin->room == l->end))
+		{
+			free(tmp);
+			break;
+		}
+		queue = enqueue(l, matrix, queue, begin->room);
 		free(tmp);
 	}
+	if (begin)
+		create_path(l);
 	return (0);
 }
-
-/*
-void	edmonds_karp(t_infos infos, t_room *room)
-{
-	int max_flow;
-	int flow;
-	t_room *actual;
-	t_room *prev;
-
-	max_flow = 0;
-	while ((flow = bfs(infos, room)))
-	{
-		ft_printf("flow: %d\n", flow);
-		max_flow += flow;
-		actual = infos->end;
-		while (actual != infos->start)
-		{
-			prev = current;
-		}
-	}
-	while ()
-}
-*/

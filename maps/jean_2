@@ -1,0 +1,26 @@
+100
+##start
+start 0 1
+a 1 0
+b 1 1
+c 1 2
+d 2 0
+e 2 1
+f 2 2
+g 3 1
+h 3 7
+i 24 24
+##end
+end 4 1
+start-a
+start-b
+a-h
+h-d
+d-e
+b-e
+e-g
+g-end
+b-c
+c-i
+i-f
+f-end

@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/07 20:13:04 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/09 20:13:04 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,23 @@ int		get_coord(t_room *new, char *line)
 	return (1);
 }
 
-void	check_room(t_room *room)
+void	check_room(t_lemin *l)
 {
 	t_room *actual;
 	t_room *prev;
 
-	prev = room;
+	prev = l->room;
 	while (prev->next)
 	{
 		actual = prev->next;
-		if (room->place && ((actual->place == 3 || actual->place == room->place)))
-			actual->place -= room->place; 
-		if (!ft_strcmp(actual->name, room->name)
-		|| (room->x == actual->x && room->y == actual->y))	
+		if (!ft_strcmp(actual->name, l->room->name)
+		|| (l->room->x == actual->x && l->room->y == actual->y))	
 		{
+			--l->nb_room;
+			if (actual == l->start)
+				l->start = NULL;
+			else if (actual == l->end)
+				l->start = NULL;
 			prev->next = actual->next;
 			free(actual->name);
 			free(actual);
@@ -51,30 +54,34 @@ void	check_room(t_room *room)
 	}
 }
 
-int		get_room(t_room **room, char *line, int *room_opt)
+int		get_room(t_lemin *l, char *line, int *room_opt)
 {
 	t_room	*new;
 
 	/* ft_printf("room: %s\n", line); */
+	++l->nb_room;
 	if (!(new = (t_room*)malloc(sizeof(t_room))))
 		return (1);
-	new->place = *room_opt;
-	if (*room_opt)
-		*room_opt = 0;
 	if (!get_coord(new, ft_strchr(line, ' '))
-			|| !(new->name = ft_strcdup(line, ' ')))
+	|| !(new->name = ft_strcdup(line, ' ')))
 	{
 		ft_printf("coord error\n");
 		free(new);
 		return (1);
 	}
-	new->prev = NULL;
-	new->id = *room ? (*room)->id + 1 : 0;
-	new->nb_links = 0;
-	new->next = *room;
+	if (*room_opt == 1 || *room_opt == 3)
+	{
+		l->start = new;
+		--(*room_opt);
+	}
+	if (*room_opt == 2)
+		l->end = new;
+	*room_opt = 0;
+	new->id = l->room ? l->room->id + 1 : 0;
+	new->next = l->room;
 	new->i = 0;
-	*room = new;
-	check_room(*room);
+	l->room = new;
+	check_room(l);
 	return (0);
 }
 
@@ -83,8 +90,6 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 	t_pipe *new;
 	t_pipe *actual;
 	t_pipe *prev;
-	t_room *room_from;
-	t_room *room_to;
 
 	prev = pipe;
 	new = pipe;
@@ -95,17 +100,9 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 		while (room)
 		{
 			if (!ft_strcmp(room->name, from))
-			{
-				room_from = room;
 				pipe->from = room->id;
-				room->nb_links++;
-			}
 			else if (!ft_strcmp(room->name, to))
-			{
-				room_to = room;
 				pipe->to = room->id;
-				room->nb_links++;
-			}
 			room = room->next;
 		}
 		while (prev->next)
@@ -114,8 +111,6 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 			if ((new->to == actual->to && new->from == actual->from)
 			|| (new->to == actual->from && new->from == actual->to))
 			{
-				room_to->nb_links--;
-				room_from->nb_links--;
 				prev->next = actual->next;
 				free(actual);
 				break ;
@@ -128,6 +123,18 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 	return (pipe->to != -1 && pipe->from != -1);
 }
 
+void	reorder_room(t_room *room)
+{
+	int i;
+
+	i = -1;
+	while (room)
+	{
+		room->id = ++i;
+		room = room->next;
+	}
+}
+
 int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 {
 	t_pipe	*new;
@@ -136,6 +143,8 @@ int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 	char	*to;
 
 	/* ft_printf("pipe: %s\n", line); */
+	if (!*pipe)
+		reorder_room(room);
 	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
 	to = NULL;
@@ -170,41 +179,38 @@ int		get_room_opt(char *line, int *room_opt)
 	return (0);
 }
 
-int		parse_infos(t_room **room, t_pipe **pipe, int *ant, t_file *file)
+int		parse_infos(t_lemin *l, t_pipe **pipe)
 {
 	int		room_opt;
 	int		error;
 	int		i;
+	char	*line;
 
 	i = 0;
 	room_opt = 0;
+	while ((error = get_next_line(0, &line)) == 1 && line[0] == '#' && line[1] != '#')
+		free(line);
+	if (error != 1)
+		finish(NULL, "NO ANT ERROR\n", 1); // a changer
+	if ((l->ant = atoi_parsing(line)) <= 0)
+		finish(NULL, "ANT ERROR\n", 1); // a changer
+	free(line);
 	error = 0;
-	if (!file->size)
-		finish(file, "EMPTY FILE ERROR\n", 1); // a changer
-	ft_printf("file->split[%d] = %s\n", i, file->split[i]);
-	while (file->split[i] && file->split[i][0] == '#' && file->split[i][1] != '#')
-		if (++i == file->size)
-			finish(file, "NO ANT ERROR\n", 1); // a changer
-	/* ft_printf("%s\n", file->split[i]); */
-	if (((*ant = atoi_parsing(file->split[i])) <= 0))
-		finish(file, "ANT ERROR\n", 1); // a changer
-	free(file->split[i++]);
-	while (!error && i < file->size && file->split[i])
+	while (!error && get_next_line(0, &line) == 1)
 	{
-		if (file->split[i][0] == '#')
+		if (line[0] == '#')
 		{
-			if (file->split[i][1] == '#')
-				error = get_room_opt(file->split[i], &room_opt);
+			if (line[1] == '#')
+				error = get_room_opt(line, &room_opt);
 		}
-		else if (!ft_strchr(file->split[i], '-'))
-			error = *pipe || get_room(room, file->split[i], &room_opt);
+		else if (!ft_strchr(line, '-'))
+			error = *pipe || get_room(l, line, &room_opt);
 		else
-			error = room_opt || file->split[i][0] == 'L' || get_pipe(pipe, *room, file->split[i]);
-		free(file->split[i]);
-		file->split[i++] = NULL;
+			error = room_opt || line[0] == 'L' || get_pipe(pipe, l->room, line);
+		free(line);
+		line = NULL;
 	}
 	if (error)
 		ft_printf("{#de5453}STOP !\n");
-	free(file->split);
 	return (0);
 }

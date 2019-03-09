@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/07 20:12:38 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/09 20:23:28 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,12 @@
 
 typedef struct	s_room
 {
-	struct s_room	*prev;
 	int				x;
 	int				y;
 	char			*name;
-	int				place;
-	int				nb_links;
+	struct s_room	*prev;
 	int				id;
 	int				i;
-	int				flow;
-	struct s_room	**links;
 	struct s_room	*next;
 }				t_room;
 
@@ -35,16 +31,18 @@ typedef struct	s_pipe
 {
 	int				from;
 	int				to;
-	int				len;
 	struct s_pipe	*next;
 }				t_pipe;
 
-typedef struct	s_infos
+typedef struct	s_lemin
 {
 	int				ant;
 	t_room			*start;
 	t_room			*end;
-}				t_infos;
+	t_room			*room;
+	t_room			**tab;
+	int				nb_room;
+}				t_lemin;
 
 typedef struct s_queue
 {
@@ -61,9 +59,8 @@ typedef struct	s_file
 }				t_file;
 
 void			finish(t_file *file, char *message, int error);
-int				parse_infos(t_room **room, t_pipe **pipe, int *ant, t_file *file);
 int				atoi_parsing(char const *s);
-int				bfs(t_infos infos, t_room *room);
-void			edmond_karp(t_infos infos, t_room *room);
+int				parse_infos(t_lemin *l, t_pipe **pipe);
+int				bfs(t_lemin *l, t_room ***matrix);
 
 #endif
