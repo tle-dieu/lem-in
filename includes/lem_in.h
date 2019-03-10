@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/10 11:59:34 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/10 19:30:30 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,18 @@ typedef struct	s_room
 	struct s_room	*prev;
 	int				id;
 	int				i;
+	struct s_room	**links;
+	int				nb_links;
 	struct s_room	*next;
 }				t_room;
+
+typedef struct	s_way
+{
+	int				len;
+	t_room			**rooms;
+	struct s_way	*next;
+
+}				t_way;
 
 typedef struct	s_pipe
 {
@@ -61,5 +71,5 @@ typedef struct	s_file
 void			finish(t_file *file, char *message, int error);
 int				atoi_parsing(char const *s);
 int				parse_infos(t_lemin *l, t_pipe **pipe);
-int				edmonds_karp(t_lemin *l, t_room ***matrix);
+int				edmonds_karp(t_lemin *l);
 #endif

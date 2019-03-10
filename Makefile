@@ -35,6 +35,7 @@ ifneq (,$(filter $(debug),y yes))
 	CFLAG += -g3
 endif
 ifneq (,$(filter $(fsanitize),y yes))
+	CFLAG += -g3
 	CFLAG += -fsanitize=address
 endif
 ifneq (,$(filter $(time),y yes))

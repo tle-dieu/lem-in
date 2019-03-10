@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/09 20:13:04 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/10 15:42:57 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ int		get_room(t_lemin *l, char *line, int *room_opt)
 	new->id = l->room ? l->room->id + 1 : 0;
 	new->next = l->room;
 	new->i = 0;
+	new->nb_links = 0;
+	new->links = NULL;
 	l->room = new;
 	check_room(l);
 	return (0);
@@ -90,6 +92,8 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 	t_pipe *new;
 	t_pipe *actual;
 	t_pipe *prev;
+	t_room *room_from;
+	t_room *room_to;
 
 	prev = pipe;
 	new = pipe;
@@ -100,9 +104,17 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 		while (room)
 		{
 			if (!ft_strcmp(room->name, from))
+			{
+				room_from = room;
 				pipe->from = room->id;
+				room->nb_links++;
+			}
 			else if (!ft_strcmp(room->name, to))
+			{
+				room_to = room;
 				pipe->to = room->id;
+				room->nb_links++;
+			}
 			room = room->next;
 		}
 		while (prev->next)
@@ -111,6 +123,8 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 			if ((new->to == actual->to && new->from == actual->from)
 			|| (new->to == actual->from && new->from == actual->to))
 			{
+				room_to->nb_links--;
+				room_from->nb_links--;
 				prev->next = actual->next;
 				free(actual);
 				break ;

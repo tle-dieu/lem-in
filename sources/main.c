@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/10 14:57:03 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/10 16:54:50 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ void	print_room(t_lemin *l)
 
 	room = l->room;
 	ft_printf("{red}::::ROOM::::\n");
-	ft_printf("nb_room: %d\n", l->nb_room);
 	while (room)
 	{
-		ft_printf("{purple} room = {yellow} %s id: %d X: %d Y: %d", room->name, room->id, room->x, room->y);
-		if (room == l->start && room == l->end)
-			ft_printf(" ERROR");
-		else if (room == l->start)
-			ft_printf(" START");
-		else if (room == l->end)
-			ft_printf(" END");
+		ft_printf("{purple} room = {yellow} %s id: %d nb_links: %d X: %d Y: %d", room->name, room->id, room->nb_links, room->x, room->y);
+		if (room == l->end || room == l->start)
+		{
+			if (l->end == l->start)
+				ft_printf(" ERROR");
+			else
+				ft_printf(room == l->start ? " START" : " END");
+		}
 		ft_printf("\n");
 		room = room->next;
 	}
@@ -56,148 +56,75 @@ int		enough_data(t_lemin *l, t_pipe *pipe)
 	return (1);
 }
 
-int			create_tab(t_lemin *l)
+t_room **create_graph(t_lemin *l, t_pipe *pipe)
 {
 	t_room *room;
-
-	room = l->room;
-	if (!(l->tab = (t_room**)malloc(sizeof(t_room*) * l->nb_room)))
-		return (0);
-	while (room)
-	{
-		l->tab[room->id] = room;
-		room = room->next;
-	}
-	return (1);
-}
-
-void		print_matrix(t_lemin *l, t_room ***matrix)
-{
-	t_room *room;
-	int max;
-	int j;
-	int i;
-	int tmp;
-
-	j = 0;
-	room = l->room;
-	max = 0;
-	while (room)
-	{
-		if ((tmp = (int)ft_strlen(room->name)) > max)
-			max = tmp;
-		room = room->next;
-	}
-	while (j < l->nb_room)
-	{
-		i = 0;
-		while (i < l->nb_room)
-		{
-			if (matrix[j][i])
-				ft_printf("{#ff3333}%-*s", max + 1, matrix[j][i]->name);
-			else
-				ft_printf("{reset}%-*s", max + 1, "*");
-			++i;
-		}
-		++j;
-		i = max / 2 + 1;
-		while (i--)
-			ft_printf("\n");
-	}
-}
-
-t_room		***init_matrix_adj(t_lemin *l)
-{
-	t_room ***matrix_adj;
-	int j;
+	t_room **tab;
 	int i;
 
-	j = 0;
-	if (!(matrix_adj = (t_room***)malloc(sizeof(t_room**) * l->nb_room)))
-		return (NULL);
-	while (j < l->nb_room)
+	room = l->room;
+	tab = (t_room **)malloc(sizeof(t_room *) * (l->nb_room));
+	i = 0;
+	while (room)
 	{
-		i = 0;
-		if (!(matrix_adj[j] = (t_room**)malloc(sizeof(t_room*) * l->nb_room)))
+		tab[i++] = room;
+		if (room->nb_links && !(room->links = (t_room**)malloc(sizeof(t_room*) * room->nb_links)))
 			return (NULL);
-		while (i < l->nb_room)
-			matrix_adj[j][i++] = NULL;
-		j++;
+		room = room->next;
 	}
-	return (matrix_adj);
+	while (pipe)
+	{
+		tab[pipe->from]->links[tab[pipe->from]->i++] = tab[pipe->to];
+		tab[pipe->to]->links[tab[pipe->to]->i++] = tab[pipe->from];
+		pipe = pipe->next;
+	}
+	return (tab);
 }
 
 void	print_graph(t_room **tab, t_lemin *l)
 {
 	int i;
+	int j;
 
 	i = 0;
 	ft_printf("{#de4343}");
 	while (i < l->nb_room)
 	{
-		ft_printf("\n-----%s-----\nid: %d {#f0ab68}\n{#de4343}", tab[i]->name, tab[i]->id);
+		j = 0;
+		ft_printf("\n-----%s-----\nid: %d nb_links: %d {#f0ab68}\n{#de4343}", tab[i]->name, tab[i]->id, tab[i]->nb_links);
+		while (j < tab[i]->nb_links)
+		{
+			ft_printf("  -> nb: %d name: %s id: %d\n", j, tab[i]->links[j]->name, tab[i]->links[j]->id);
+			j++;
+		}
 		i++;
 	}
 	ft_printf("{reset}");
 }
 
-t_room		***create_matrix_adj(t_lemin *l, t_pipe *pipe)
+void	test(t_lemin *l)
 {
-	t_room ***matrix_adj;
-	t_room *room;
-	t_pipe *tmp;
-	int j;	
-
-	j = 0;
-	room = l->room;
-	matrix_adj = init_matrix_adj(l);
-	while (j < l->nb_room)
-	{
-		tmp = pipe;
-		while (tmp)
-		{
-			if (room->id == tmp->to)
-				matrix_adj[j][tmp->from] = l->tab[tmp->from];
-			else if (room->id == tmp->from)
-				matrix_adj[j][tmp->to] = l->tab[tmp->to];
-			tmp = tmp->next;
-		}
-		room = room->next;
-		j++;
-	}
-	return (matrix_adj);
-}
-
-void	test(t_room ***matrix, t_lemin *l)
-{
-	t_room ***tmp;
-	int k;
 	int i;
 	int j;
+	t_room *room;
 
-	k = 0;
-	tmp = matrix;
-	while (k++ < 20)
+	j = 0;
+	while (j < 75)
 	{
-		j = 0;
-		matrix = tmp;
-		while (j < l->nb_room)
+		room = l->room;
+		while (room)
 		{
 			i = 0;
-			while (i < l->nb_room)
-			{
-				if (matrix[j][i])
-					;
+			while (i < room->nb_links)
 				i++;
-			}
-			j++;
+			room = room->next;
 		}
+		j++;
 	}
 }
 
 int		main(void)
 {
-	t_room ***matrix_adj;
 	t_pipe *pipe;
 	t_lemin l;
 
@@ -214,15 +141,9 @@ int		main(void)
 	{
 		print_room(&l);
 		print_pipe(pipe);
-		create_tab(&l); //revoir la protection du malloc
+		l.tab = create_graph(&l, pipe);
 		print_graph(l.tab, &l);
-		matrix_adj = create_matrix_adj(&l, pipe);
-		test(matrix_adj, &l);
-		/* print_matrix(&l, matrix_adj); */
-		/* int i; */
-		/* i = 3; */
-		/* while (--i) */
-		/* edmonds_karp(&l, matrix_adj); */
+		edmonds_karp(&l);
 	}
 	if (!enough_data(&l, pipe))
 	{

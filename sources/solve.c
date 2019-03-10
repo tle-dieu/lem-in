@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/10 13:58:31 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/10 20:19:05 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,28 +60,28 @@ t_queue *add_queue(t_queue *queue, t_room *actual, t_room *room)
 	return (queue->next);
 }
 
-t_queue	*enqueue(t_lemin *l, t_room ***matrix, t_queue *queue, t_room *room, char **flow)
+t_queue	*enqueue(t_queue *queue, t_room *room, char **flow)
 {
 	int i;
 	int change;
 
 	i = 0;
 	change = 0;
-	while (i < l->nb_room)
+	while (i < room->nb_links)
 	{
-		if (matrix[room->id][i] && !matrix[room->id][i]->i && !flow[room->id][i])
+		if (!room->links[i]->i && !flow[room->id][room->links[i]->id])
 		{
 			change = 1;
-			queue = add_queue(queue, matrix[room->id][i], room);
+			queue = add_queue(queue, room->links[i], room);
 		}
 		++i;
 	}
 	i = 0;
 	if (!change)
-		while (i < l->nb_room)
+		while (i < room->nb_links)
 		{
-			if (matrix[room->id][i] && !matrix[room->id][i]->i && flow[room->id][i] < 0)
-				queue = add_queue(queue, matrix[room->id][i], room);
+			if (!room->links[i]->i && flow[room->id][room->links[i]->id] < 0)
+				queue = add_queue(queue, room->links[i], room);
 			++i;
 		}
 	return (queue);
@@ -111,14 +111,14 @@ int get_path(t_lemin *l, char **flow)
 	return (new_flow);
 }
 
-int     bfs(t_lemin *l, t_room ***matrix, char **flow)
+int     bfs(t_lemin *l, char **flow)
 {
 	t_queue *queue;
 	t_queue *begin;
 	t_queue *tmp;
 
 	begin = init_queue(l);
-	queue = enqueue(l, matrix, begin, begin->room, flow);
+	queue = enqueue(begin, begin->room, flow);
 	while (begin)
 	{
 		/* print_queue(begin); */
@@ -128,22 +128,22 @@ int     bfs(t_lemin *l, t_room ***matrix, char **flow)
 			free(tmp);
 			break;
 		}
-		queue = enqueue(l, matrix, queue, begin->room, flow);
+		queue = enqueue(queue, begin->room, flow);
 		free(tmp);
 	}
 	return (get_path(l, flow));
 }
 
-void	print_flow(char **tab)
+void	print_flow(t_lemin *l, char **tab)
 {
 	int j;
 	int i;
 
 	j = 0;
-	while (j < 8)
+	while (j < l->nb_room)
 	{
 		i = 0;
-		while (i < 8)
+		while (i < l->nb_room)
 			ft_printf("%2d ", (int)tab[j][i++]);
 		ft_printf("\n");
 		j++;
@@ -171,18 +171,70 @@ char	**init_ek(t_lemin *l)
 	return (flow);
 }
 
-int		edmonds_karp(t_lemin *l, t_room ***matrix __attribute__((unused)))
+void	print_path(t_lemin *l, char **flow)
 {
-	char **flow;
-	int		i;
+	int i;
+	int j;
+	t_room *room;
 
-	flow = init_ek(l);
-	i = 0;
-	while (bfs(l, matrix, flow))
+	j = 0;
+	while (j < l->start->nb_links)
 	{
-		i++;
-		/* print_flow(flow); */
+		if (flow[l->start->id][l->start->links[j]->id])
+		{
+			room = l->start->links[j];
+			ft_printf("{#ff3333}${reset}%s {#00ffbf}=> {reset}", l->start->name);
+			while (room != l->end)
+			{
+				i = 0;
+				ft_printf("%s {#00ffbf}=> {reset}", room->name);
+				while (i < room->nb_links)
+				{
+					if (flow[room->id][room->links[i]->id] == 1)
+					{
+						room = room->links[i];
+						break ;
+					}
+					i++;
+				}
+			}
+			ft_printf("%s\n", l->end->name);
+		}
+		j++;
 	}
-	ft_printf("bfs: %d\n", i);
-	return (1);
+}
+
+t_way	*new_way(t_lemin *l, char **flow)
+{
+	(void)l;
+	(void)flow;
+	return (NULL);
+}
+
+t_way	*comp_ways(t_lemin *l, t_way *way, t_way *new)
+{
+	(void)l;
+	(void)way;
+	(void)new;
+	return (NULL);
+}
+
+int		edmonds_karp(t_lemin *l)
+{
+	t_way	*way;
+	char	**flow;
+	int		max_flow;
+
+	max_flow = 0;
+	flow = init_ek(l);
+	way = NULL;
+	while (bfs(l, flow))
+	{
+		max_flow++;
+		print_path(l, flow);
+		way = comp_ways(l, way, new_way(l, flow));
+		/* print_flow(l, flow); */
+	}
+	ft_printf("bfs: %d\n", max_flow);
+	return (way != NULL);
 }
