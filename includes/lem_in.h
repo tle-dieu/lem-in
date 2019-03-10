@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/09 20:23:28 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/10 11:59:34 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,5 @@ typedef struct	s_file
 void			finish(t_file *file, char *message, int error);
 int				atoi_parsing(char const *s);
 int				parse_infos(t_lemin *l, t_pipe **pipe);
-int				bfs(t_lemin *l, t_room ***matrix);
-
+int				edmonds_karp(t_lemin *l, t_room ***matrix);
 #endif

@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/09 20:53:37 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/10 14:57:03 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,33 @@ t_room		***create_matrix_adj(t_lemin *l, t_pipe *pipe)
 	return (matrix_adj);
 }
 
+void	test(t_room ***matrix, t_lemin *l)
+{
+	t_room ***tmp;
+	int k;
+	int i;
+	int j;
+
+	k = 0;
+	tmp = matrix;
+	while (k++ < 20)
+	{
+		j = 0;
+		matrix = tmp;
+		while (j < l->nb_room)
+		{
+			i = 0;
+			while (i < l->nb_room)
+			{
+				if (matrix[j][i])
+					;
+				i++;
+			}
+			j++;
+		}
+	}
+}
+
 int		main(void)
 {
 	t_room ***matrix_adj;
@@ -190,12 +217,12 @@ int		main(void)
 		create_tab(&l); //revoir la protection du malloc
 		print_graph(l.tab, &l);
 		matrix_adj = create_matrix_adj(&l, pipe);
-		print_matrix(&l, matrix_adj);
+		test(matrix_adj, &l);
+		/* print_matrix(&l, matrix_adj); */
 		/* int i; */
 		/* i = 3; */
 		/* while (--i) */
-		bfs(&l, matrix_adj);
-		/* edmond_karp(infos, room); */
+		/* edmonds_karp(&l, matrix_adj); */
 	}
 	if (!enough_data(&l, pipe))
 	{
