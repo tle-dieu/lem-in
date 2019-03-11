@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 16:29:00 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/11 18:23:12 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/11 18:27:13 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,16 @@ int		main(int ac, char **av)
 		ft_printf("nb path: %d\n", nb_path);
 		if (!(path = (int *)malloc(sizeof(int) * nb_path)))
 			return (1);
+		ft_printf("lpath: ");
 		while (i < ac)
 		{
 			path[j] = ft_atoi(av[i]);
-			ft_printf("chemin: %d\n", path[j]);
+			ft_printf("%d ", path[j]);
 			lmax += path[j];
 			i++;
 			j++;
 		}
-		ft_printf("lmax: %d\n", lmax);
+		ft_printf("\nlmax: %d\n", lmax);
 		i = 0;
 		while (i < j)
 		{
