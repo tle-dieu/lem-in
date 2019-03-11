@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/11 16:29:00 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/11 18:15:32 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/11 18:23:12 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ int		main(int ac, char **av)
 		{
 			ant = (ant_max + lmax) / nb_path - path[i];
 			if (ant < 0)
-				ant = 0;
+			{
+				ft_printf("{#ff3333}ERROR PATH UNUSED !{reset}\n");
+				return (1);
+			}
 			lmax -= path[i];
 			ant_max -= ant;
 			k += ant;
