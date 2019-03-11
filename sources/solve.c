@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/10 20:19:05 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/11 14:35:26 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ int get_path(t_lemin *l, char **flow)
 
 	room = l->end;
 	new_flow = 0;
+	ft_printf("\n");
 	if (!room->prev)
 		return (0); //a enlever
 	ft_printf("end  {#00bfff}=> {reset}");
@@ -175,13 +176,16 @@ void	print_path(t_lemin *l, char **flow)
 {
 	int i;
 	int j;
+	int	nb_path;
 	t_room *room;
 
 	j = 0;
+	nb_path = 0;
 	while (j < l->start->nb_links)
 	{
 		if (flow[l->start->id][l->start->links[j]->id])
 		{
+			nb_path++;
 			room = l->start->links[j];
 			ft_printf("{#ff3333}${reset}%s {#00ffbf}=> {reset}", l->start->name);
 			while (room != l->end)
@@ -202,16 +206,47 @@ void	print_path(t_lemin *l, char **flow)
 		}
 		j++;
 	}
+	ft_printf("{rgb(251,196,15)}number of path: %d\n{reset}", nb_path);
 }
 
-t_way	*new_way(t_lemin *l, char **flow)
+t_path *new_path(t_lemin *l, char **flow, int max_flow)
 {
-	(void)l;
-	(void)flow;
+	t_ek *new;
+
+	if (!(new = (t_ek *)malloc(sizeof(t_ek))))
+		return (NULL);
+	if (!(new->len = (int *)malloc(sizeof(int) * max_flow)))
+		return (NULL);
+	if (!(new->path = (t_path **)malloc(sizeof(t_path) * max_flow)))
+		return (NULL);
+	new->max_flow = max_flow;
+	j = 0;
+	while (j < l->start->nb_links)
+	{
+		if (flow[l->start->id][l->start->links[j]->id])
+		{
+			new->nb_way++;
+			room = l->start->links[j];
+			while (room != l->end)
+			{
+				i = 0;
+				while (i < room->nb_links)
+				{
+					if (flow[room->id][room->links[i]->id] == 1)
+					{
+						room = room->links[i];
+						break ;
+					}
+					i++;
+				}
+			}
+		}
+		j++;
+	}
 	return (NULL);
 }
 
-t_way	*comp_ways(t_lemin *l, t_way *way, t_way *new)
+t_path *comp_paths(t_lemin *l, t_path *path, t_path *new)
 {
 	(void)l;
 	(void)way;
@@ -221,20 +256,21 @@ t_way	*comp_ways(t_lemin *l, t_way *way, t_way *new)
 
 int		edmonds_karp(t_lemin *l)
 {
-	t_way	*way;
+
+	t_ek	*ek;
 	char	**flow;
 	int		max_flow;
 
 	max_flow = 0;
+	/* ek = NULL; */
 	flow = init_ek(l);
-	way = NULL;
 	while (bfs(l, flow))
 	{
 		max_flow++;
 		print_path(l, flow);
-		way = comp_ways(l, way, new_way(l, flow));
+		/* ek = comp_paths(l, way, new_path(l, flow, max_flow)); */
 		/* print_flow(l, flow); */
 	}
 	ft_printf("bfs: %d\n", max_flow);
-	return (way != NULL);
+	return (1);
 }
