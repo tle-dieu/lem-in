@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/10 15:42:57 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/12 17:09:20 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,10 +197,8 @@ int		parse_infos(t_lemin *l, t_pipe **pipe)
 {
 	int		room_opt;
 	int		error;
-	int		i;
 	char	*line;
 
-	i = 0;
 	room_opt = 0;
 	while ((error = get_next_line(0, &line)) == 1 && line[0] == '#' && line[1] != '#')
 		free(line);

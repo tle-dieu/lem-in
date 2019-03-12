@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/11 20:54:26 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/12 17:17:17 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,7 @@ t_ek *new_path(t_lemin *l, char **flow, int max_flow)
 	{
 		if (flow[l->start->id][l->start->links[j]->id])
 		{
-			len = -1;
+			len = 0;
 			room = l->start->links[j];
 			while (room != l->end)
 			{
@@ -285,34 +285,40 @@ t_ek *comp_paths(t_lemin *l, t_ek *ek, t_ek *new)
 	int nb_path;
 	int i;
 
+	nb_path = new->max_flow;
+	ant_total = l->ant;
+	lmax = new->len[new->max_flow];
+	k = 0;
+	i = 0;
+	while (nb_path)
+	{
+		ant = (ant_total + lmax) / nb_path - new->len[i]; // A CHANGER
+		if (ant <= 0)
+		{
+			ft_printf("{#ff3333}ERROR PATH UNUSED !{reset}\n");
+			return (ek);
+		}
+		lmax -= new->len[i];
+		ant_total -= ant;
+		k += ant;
+		nb_path--;
+		i++;
+		ft_printf("{rgb(0,188,218)}chemin %d: {reset}%d {rgb(0,188,218)}reste: {reset}%d\n", i - 1, ant, ant_total);
+	}
+	new->steps = ant + new->len[i - 1];
 	if (ek)
 	{
-		nb_path = new->max_flow;
-		ant_total = l->ant;
-		lmax = new->len[new->max_flow];
-		k = 0;
-		i = 0;
-		while (nb_path)
-		{
-			ant = (ant_total + lmax) / nb_path - new->len[i]; // A CHANGER
-			if (ant <= 0)
-			{
-				ft_printf("{#ff3333}ERROR PATH UNUSED !{reset}\n");
-				return (ek);
-			}
-			lmax -= new->len[i];
-			ant_total -= ant;
-			k += ant;
-			nb_path--;
-			i++;
-			ft_printf("{rgb(0,188,218)}chemin %d: {reset}%d {rgb(0,188,218)}reste: {reset}%d\n", i - 1, ant, ant_total);
-		}
-		ft_printf("{rgb(251,196,15)}ants total: {reset}%d\n", k);
-		ft_printf("{rgb(251,196,15)}nb instructions: {reset}%d\n", ant + new->len[i - 1]);
 		new->flow = put_flow(l, ek->flow, new->flow);
+		if (new->steps > ek->steps)
+		{
+			ft_printf("{#ff3333}BAD PATH !\n");
+			return (ek);
+		}
 	}
 	else
 		new->flow = put_flow(l, init_ek(l), new->flow);
+	ft_printf("{rgb(251,196,15)}ants total: {reset}%d\n", k);
+	ft_printf("{rgb(251,196,15)}nb instructions: {reset}%d\n", ant + new->len[i - 1]);
 	return (new);
 }
 
