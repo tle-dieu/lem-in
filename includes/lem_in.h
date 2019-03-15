@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/12 17:09:12 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/15 22:31:31 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,15 @@ typedef struct	s_room
 	int				x;
 	int				y;
 	char			*name;
+	char			path;
 	struct s_room	*prev;
 	int				id;
 	int				i;
+	int				len;
 	struct s_room	**links;
 	int				nb_links;
 	struct s_room	*next;
 }				t_room;
-
-typedef struct	s_ek
-{
-	int			max_flow;
-	char		**flow;
-	int			*len;
-	int			steps;
-}				t_ek;
 
 typedef struct	s_pipe
 {
@@ -46,6 +40,8 @@ typedef struct	s_pipe
 
 typedef struct	s_lemin
 {
+	int				steps;
+	int				flow;
 	int				ant;
 	t_room			*start;
 	t_room			*end;

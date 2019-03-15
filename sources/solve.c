@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/12 17:17:17 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/16 00:17:35 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void	print_flow(t_lemin *l, char **tab)
 	}
 }
 
-char	**init_ek(t_lemin *l)
+char	**init_flow(t_lemin *l)
 {
 	char **flow;
 	int	i;
@@ -172,20 +172,69 @@ char	**init_ek(t_lemin *l)
 	return (flow);
 }
 
-void	print_path(t_lemin *l, char **flow)
+int comp_graph(t_lemin *l, int tlen, int max_flow)
 {
+	int len;
+	t_room *room;
+	int ant_total;
+	int ant;
 	int i;
 	int j;
-	int	nb_path;
-	t_room *room;
 
 	j = 0;
-	nb_path = 0;
+	i = 0;
+	ant_total = l->ant;
+	ft_printf("{rgb(12,231,58)}len total: %d\n{reset}", tlen);
+    while (j < l->start->nb_links)
+    {
+        if (l->start->links[j]->i)
+        {
+			len = l->start->links[j]->i;
+			if ((ant = (ant_total + tlen) / (max_flow - i) - len) <= 0)
+			{
+				ft_printf("{#ff3333}ERROR PATH UNUSED !{reset}\n");
+				return (0);
+			}
+			tlen -= len;
+			ant_total -= ant;
+			ft_printf("{rgb(0,188,218)}--chemin %s--\n{rgb(0,188,218)}len: {reset}%d {rgb(0,188,218)}ant: {reset}%d {rgb(0,188,218)}reste: {reset}%d\n", l->start->links[j]->name, len, ant, ant_total);
+			i++;
+        }
+        j++;
+    }
+	ft_printf("{rgb(251,196,15)}nb instructions: {reset}%d\n", ant + len);
+	if (l->steps == -1 || ant + len < l->steps)
+	{
+		ft_printf("{rgb(12,231,58)}NEW PATHS{reset}\n");
+		l->flow = max_flow;
+		room = l->room;
+		l->steps = ant + len;
+		while (room)
+		{
+			room->path = room->i;
+			room = room->next;
+		}
+	}
+	else
+		ft_printf("{#ff3333}BAD PATHS{reset}\n");
+	return (1);
+}
+
+int		get_new_paths(t_lemin *l, char **flow, int max_flow)
+{
+	t_room *room;
+	int j;
+	int i;
+	int tlen;
+	int len;
+
+	j = 0;
+	tlen = 0;
 	while (j < l->start->nb_links)
 	{
 		if (flow[l->start->id][l->start->links[j]->id])
 		{
-			nb_path++;
+			len = 0;
 			room = l->start->links[j];
 			ft_printf("{#ff3333}${reset}%s {#00ffbf}=> {reset}", l->start->name);
 			while (room != l->end)
@@ -196,156 +245,44 @@ void	print_path(t_lemin *l, char **flow)
 				{
 					if (flow[room->id][room->links[i]->id] == 1)
 					{
+						len++;
+						room->links[i]->i = 1;
 						room = room->links[i];
 						break ;
 					}
+					else
+						room->links[i]->i = 0;
 					i++;
 				}
 			}
+			tlen += len;
+			l->start->links[j]->i = len;
 			ft_printf("%s\n", l->end->name);
 		}
+		else
+			l->start->links[j]->i = 0;
 		j++;
 	}
-	ft_printf("{rgb(251,196,15)}number of path: %d\n{reset}", nb_path);
-}
-
-t_ek *new_path(t_lemin *l, char **flow, int max_flow)
-{
-	t_ek	*new;
-	t_room *room;
-	int		len;
-	int		k;
-	int		j;
-	int		i;
-
-	if (!(new = (t_ek *)malloc(sizeof(t_ek))))
-		return (NULL);
-	if (!(new->len = (int *)malloc(sizeof(int) * (max_flow + 1))))
-		return (NULL);
-	new->len[0] = 0; 
-	new->max_flow = max_flow;
-	new->flow = flow;
-	j = 0;
-	k = 0;
-	while (j < l->start->nb_links)
-	{
-		if (flow[l->start->id][l->start->links[j]->id])
-		{
-			len = 0;
-			room = l->start->links[j];
-			while (room != l->end)
-			{
-				i = 0;
-				while (i < room->nb_links)
-				{
-					if (flow[room->id][room->links[i]->id] == 1)
-					{
-						len++;
-						room = room->links[i];
-						break ;
-					}
-					i++;
-				}
-			}
-			new->len[k + 1] = new->len[k] + len; 
-			new->len[k++] = len;
-			ft_printf("{rgb(12,231,58)}len: %d\n{reset}", len);
-		}
-		j++;
-	}
-	ft_printf("{rgb(12,231,58)}tlen: %d\n{reset}", new->len[max_flow]);
-	return (new);
-}
-
-char	**put_flow(t_lemin *l, char **old, char **new)
-{
-	int i;
-	int j;
-
-	j = 0;
-	while (j < l->nb_room)
-	{
-		i = 0;
-		while (i < l->nb_room)
-		{
-			old[j][i] = new[j][i];
-			i++;
-		}
-		j++;
-	}
-	return (old);
-}
-
-t_ek *comp_paths(t_lemin *l, t_ek *ek, t_ek *new)
-{
-	int lmax;
-	int ant_total;
-	int ant;
-	int k;
-	int nb_path;
-	int i;
-
-	nb_path = new->max_flow;
-	ant_total = l->ant;
-	lmax = new->len[new->max_flow];
-	k = 0;
-	i = 0;
-	while (nb_path)
-	{
-		ant = (ant_total + lmax) / nb_path - new->len[i]; // A CHANGER
-		if (ant <= 0)
-		{
-			ft_printf("{#ff3333}ERROR PATH UNUSED !{reset}\n");
-			return (ek);
-		}
-		lmax -= new->len[i];
-		ant_total -= ant;
-		k += ant;
-		nb_path--;
-		i++;
-		ft_printf("{rgb(0,188,218)}chemin %d: {reset}%d {rgb(0,188,218)}reste: {reset}%d\n", i - 1, ant, ant_total);
-	}
-	new->steps = ant + new->len[i - 1];
-	if (ek)
-	{
-		new->flow = put_flow(l, ek->flow, new->flow);
-		if (new->steps > ek->steps)
-		{
-			ft_printf("{#ff3333}BAD PATH !\n");
-			return (ek);
-		}
-	}
-	else
-		new->flow = put_flow(l, init_ek(l), new->flow);
-	ft_printf("{rgb(251,196,15)}ants total: {reset}%d\n", k);
-	ft_printf("{rgb(251,196,15)}nb instructions: {reset}%d\n", ant + new->len[i - 1]);
-	return (new);
+	ft_printf("{rgb(251,196,15)}number of path: %d\n{reset}", max_flow);
+	return (comp_graph(l, tlen, max_flow));
 }
 
 int		edmonds_karp(t_lemin *l)
 {
-
-	t_ek	*ek;
-	t_ek	*new;
 	char	**flow;
 	int		max_flow;
 
+	l->flow = 0;
+	l->steps = -1;
 	max_flow = 0;
-	ek = NULL;
-	flow = init_ek(l);
+	flow = init_flow(l);
 	while (bfs(l, flow))
 	{
 		max_flow++;
-		new = comp_paths(l, ek, new_path(l, flow, max_flow));
-		if (new == ek)
-		{
-			max_flow--;
+		if (!get_new_paths(l, flow, max_flow))
 			break ;
-		}
-		print_path(l, flow);
-		ek = new;
 		/* print_flow(l, flow); */
 	}
-	ft_printf("bfs: %d\n", max_flow);
+	ft_printf("{rgb(251,196,15)}best path: %d\nnb de bfs: %d\n{reset}", l->steps, max_flow);
 	return (1);
 }

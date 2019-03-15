@@ -39,7 +39,7 @@ ifneq (,$(filter $(fsanitize),y yes))
 	CFLAG += -fsanitize=address
 endif
 ifneq (,$(filter $(time),y yes))
-	RUN_OPTION := time
+	RUN_OPTION := time -p
 endif
 ifneq (,$(filter $(valgrind),y yes))
 	RUN_OPTION += valgrind --leak-check=full --track-origins=yes --read-inline-info=yes --read-var-info=yes --num-callers=100 --show-possibly-lost=no
