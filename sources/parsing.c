@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/12 17:09:20 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/17 22:00:45 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ int		get_room(t_lemin *l, char *line, int *room_opt)
 	new->id = l->room ? l->room->id + 1 : 0;
 	new->next = l->room;
 	new->i = 0;
+	new->flow = 0;
 	new->nb_links = 0;
 	new->links = NULL;
 	l->room = new;
