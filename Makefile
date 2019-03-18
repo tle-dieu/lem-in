@@ -14,7 +14,8 @@ vpath %.c $(SOURCES_FOLDER)
 SOURCES = main.c \
 		  parsing.c \
 		  utils.c \
-		  solve.c
+		  solve.c \
+		  debug.c
 
 OBJECTS = $(SRC:.c=.o)
 

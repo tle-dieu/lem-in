@@ -6,25 +6,12 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/17 22:20:04 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/18 19:30:03 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <stdlib.h>
-
-void	print_queue(t_queue *print)
-{
-	while (print)
-	{
-		if (print->next)
-			ft_printf("%s {yellow}-> {reset}", print->room->name);
-		else
-			ft_printf("%s\n", print->room->name);
-		print = print->next;
-	}
-	ft_printf("\n");
-}
 
 t_queue	*init_queue(t_lemin *l)
 {
@@ -141,22 +128,6 @@ int     bfs(t_lemin *l, char **flow)
 		free(tmp);
 	}
 	return (get_path(l, flow));
-}
-
-void	print_flow(t_lemin *l, char **tab)
-{
-	int j;
-	int i;
-
-	j = 0;
-	while (j < l->nb_room)
-	{
-		i = 0;
-		while (i < l->nb_room)
-			ft_printf("%2d ", (int)tab[j][i++]);
-		ft_printf("\n");
-		j++;
-	}
 }
 
 char	**init_flow(t_lemin *l)
