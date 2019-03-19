@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/18 19:31:08 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/18 21:59:10 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct	s_pipe
 typedef struct	s_lemin
 {
 	int				first;
-	int				steps;
+	long 			steps;
 	int				flow;
 	int				ant;
 	t_room			*start;

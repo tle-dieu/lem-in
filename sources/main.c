@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/18 19:32:45 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/18 19:40:27 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int		main(void)
 	{
 		print_room(&l);
 		print_pipe(pipe);
-		l.tab = create_graph(&l, pipe);
+		l.tab = create_graph(&l, pipe); //l.tab pour print, a ne creer seulement dans fonction
 		print_graph(l.tab, &l);
 		edmonds_karp(&l);
 	}

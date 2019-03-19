@@ -13,12 +13,20 @@ while [[ $i -lt 100 ]]; do
 	res=$(echo "$res" | grep best | cut -d ' ' -f 3 2>&1)
 	req=$(cat maps/big_super/gen_$i | grep required | sort -u 2>&1 | cut -d ' ' -f 8 2>&1)
 	printf "required: $req - result: $res = "
-	if [[ $(echo "$res - $req" | bc) -le 0 ]]; then
+	diff=$(echo "$res - $req" | bc)
+	if [[ $diff -le 0 ]]; then
 		printf "\033[38;2;12;231;58m"
 	else
 		printf "\033[38;2;255;60;51m"
 	fi
-	echo "$res - $req" | bc
+	echo "$diff"
+	if [[ $diff -gt 10 ]]; then
+		name=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
+		mkdir -p maps/big_super/hard_maps/
+		cp -f maps/big_super/gen_$i maps/big_super/hard_maps/$name
+		echo "new hard map: $name"
+		echo "diff: $diff" >> maps/big_super/hard_maps/$name
+	fi
 	total=$(echo "$res - $req + $total" | bc)
 	j=1.0
 	printf "\033[0m"

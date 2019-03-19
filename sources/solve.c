@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/18 19:30:03 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/18 22:22:36 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ int comp_graph(t_lemin *l, int tlen, int max_flow)
         if (l->start->links[j]->i)
         {
 			len = l->start->links[j]->i;
-			if ((ant = (ant_total + tlen) / (max_flow - i) - len) <= 0)
+			if ((ant = ((long)ant_total + tlen) / (max_flow - i) - len) <= 0)
 			{
 				ft_printf("{#ff3333}ERROR PATH UNUSED !{reset}\n");
 				return (0);
@@ -182,13 +182,13 @@ int comp_graph(t_lemin *l, int tlen, int max_flow)
         }
         j++;
     }
-	ft_printf("{rgb(251,196,15)}nb instructions: {reset}%d\n", ant + len);
-	if (l->steps == -1 || ant + len < l->steps)
+	ft_printf("{rgb(251,196,15)}nb instructions: {reset}%ld old: %ld\n", (long)ant + len, l->steps);
+	if (l->steps == -1 || (long)ant + len < l->steps)
 	{
 		ft_printf("{rgb(12,231,58)}NEW PATHS{reset}\n");
 		l->flow = max_flow;
 		room = l->room;
-		l->steps = ant + len;
+		l->steps = (long)ant + len;
 		while (room)
 		{
 			room->path = room->i;
@@ -268,6 +268,6 @@ int		edmonds_karp(t_lemin *l)
 			break ;
 		/* print_flow(l, flow); */
 	}
-	ft_printf("{rgb(251,196,15)}best path: %d\nnb de bfs: %d\n{reset}", l->steps, max_flow);
+	ft_printf("{rgb(251,196,15)}best path: %ld\nnb de bfs: %d\n{reset}", l->steps, max_flow);
 	return (1);
 }
