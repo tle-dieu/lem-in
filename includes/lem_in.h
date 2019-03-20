@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/18 21:59:10 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/20 04:23:14 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,12 @@ typedef struct	s_room
 	int				y;
 	char			*name;
 	char			path;
-	struct s_room	*prev;
 	int				id;
+	struct s_room	*prev_p;
+	struct s_room	*next_p;
+	struct s_room	*prev;
 	int				flow;
 	int				i;
-	int				len;
 	struct s_room	**links;
 	int				nb_links;
 	struct s_room	*next;
@@ -45,6 +46,7 @@ typedef struct	s_lemin
 	long 			steps;
 	int				flow;
 	int				ant;
+	int				tlen;
 	t_room			*start;
 	t_room			*end;
 	t_room			*room;
@@ -70,6 +72,9 @@ void				finish(t_file *file, char *message, int error);
 int					atoi_parsing(char const *s);
 int					parse_infos(t_lemin *l, t_pipe **pipe);
 int					edmonds_karp(t_lemin *l);
+void				send_ants(t_lemin *l);
+t_queue				*init_queue(t_lemin *l, t_room *begin);
+
 
 /* DEBUG */
 void				print_flow(t_lemin *l, char **tab);

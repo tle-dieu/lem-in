@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/18 19:40:27 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/19 18:39:51 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,5 +75,6 @@ int		main(void)
 		ft_printf("NOT ENOUGH DATA ERROR\n");
 		return (1);
 	}
+	send_ants(&l);
 	return (0);
 }
