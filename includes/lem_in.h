@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/20 04:23:14 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/20 16:38:39 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,8 @@ t_queue				*init_queue(t_lemin *l, t_room *begin);
 /* DEBUG */
 void				print_flow(t_lemin *l, char **tab);
 void				print_queue(t_queue *print);
-void				print_room(t_lemin *l);;
+void				print_room(t_lemin *l);
 void				print_pipe(t_pipe *pipe);
 void				print_graph(t_room **tab, t_lemin *l);
+void				verif_path(t_lemin *l);
 #endif

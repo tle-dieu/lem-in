@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/16 18:57:45 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/16 19:01:30 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/20 16:37:52 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,4 +93,39 @@ void	print_graph(t_room **tab, t_lemin *l)
 		i++;
 	}
 	ft_printf("{reset}");
+}
+
+void	verif_path(t_lemin *l)
+{
+	t_room *room;
+	int j;
+
+	j = 0;
+	room = l->room;
+	while (room)
+	{
+		room->i = 0;
+		room = room->next;
+	}
+	while (j < l->start->nb_links)
+	{
+		if (l->start->links[j]->path)
+		{
+			room = l->start->links[j];
+			while (room != l->end)
+			{
+				if (!room->next_p->i)
+				{
+					room = room->next_p;
+					room->i = 1;
+				}
+				else
+				{
+					ft_printf("{#ff3333}BLOQUE name: %s\n\n\n\n", room->next_p->name);
+					break ;
+				}
+			}
+		}
+		j++;
+	}
 }

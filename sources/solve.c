@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 17:36:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/20 04:21:17 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/20 19:01:19 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,22 +62,21 @@ t_queue	*enqueue(t_lemin *l, t_queue *queue, t_room *room, char **flow)
 			change = 1;
 			queue = add_queue(queue, room->links[i], room);
 		}
-		else
+		/* else */
 			/* ft_printf("NON ADD | name: %s i: %d flow: %d\n", room->links[i]->name, room->links[i]->i, flow[room->id][room->links[i]->id]); */
-			++i;
+		++i;
 	}
 	i = 0;
-	if (!change)
-		while (i < room->nb_links)
+	while (i < room->nb_links)
+	{
+		if (room->links[i] != l->start && room->prev != room->links[i] && flow[room->id][room->links[i]->id] < 0)
 		{
-			if (room->links[i] != l->start && room->prev != room->links[i] && flow[room->id][room->links[i]->id] < 0)
-			{
-				/* ft_printf(" ADD NEG | name: %s i: %d flow: %d\n", room->links[i]->name, room->links[i]->i, flow[room->id][room->links[i]->id]); */
-				l->first = 1;
-				queue = add_queue(queue, room->links[i], room);
-			}
-			++i;
+			/* ft_printf(" ADD NEG | name: %s i: %d flow: %d\n", room->links[i]->name, room->links[i]->i, flow[room->id][room->links[i]->id]); */
+			l->first = 1;
+			queue = add_queue(queue, room->links[i], room);
 		}
+		++i;
+	}
 	return (queue);
 }
 
@@ -151,38 +150,45 @@ char	**init_flow(t_lemin *l)
 	return (flow);
 }
 
-void	swap_links(t_lemin *l)
+int		assign_paths(t_lemin *l, char **flow)
 {
-	int		i;
-	t_room	*room;
+	t_room *room;
+	int j;
+	int i;
 
+	j = 0;
 	room = l->room;
-	while (room)
+	while (j < l->start->nb_links)
 	{
-		if (room->prev_p)
+		if (flow[l->start->id][l->start->links[j]->id] == 1)
 		{
-			i = 0;
-			while (room->links[i] != room->prev_p)
-				i++;
-			room->links[i] = room->links[0];
-			room->links[0] = room->prev_p;
+			l->start->links[j]->prev_p = l->start;
+			room = l->start->links[j];
+			ft_printf("name: %s len: %d\n", room->name, room->flow);
+			while (room != l->end)
+			{
+				i = 0;
+				while (i < room->nb_links)
+				{
+					if (flow[room->id][room->links[i]->id] == 1)
+					{
+						room->path = room->flow;
+						room->next_p = room->links[i];
+						if (room->links[i] != l->end)
+							room->links[i]->prev_p = room;
+						room = room->links[i];
+						break ;
+					}
+					i++;
+				}
+			}
 		}
-		if (room->next_p)
-		{
-			i = 0;
-			while (room->links[i] != room->next_p)
-				i++;
-			room->links[i] = room->links[1];
-			room->links[1] = room->next_p;
-		}
-		room->prev_p = NULL;
-		room->next_p = NULL;
-		room->path = room->flow;
-		room = room->next;
+		j++;
 	}
+	return (1);
 }
 
-int comp_graph(t_lemin *l, int tlen, int max_flow)
+int comp_graph(t_lemin *l, int tlen, int max_flow, char **flow)
 {
 	int len;
 	int	tmp;
@@ -198,7 +204,6 @@ int comp_graph(t_lemin *l, int tlen, int max_flow)
 	ft_printf("{rgb(12,231,58)}len total: %d\n{reset}", tlen);
 	while (j < l->start->nb_links)
 	{
-		/* ft_printf("path: %s i: %d\n", l->start->links[j]->name, l->start->links[j]->i); */
 		if (l->start->links[j]->flow)
 		{
 			len = l->start->links[j]->flow;
@@ -221,7 +226,7 @@ int comp_graph(t_lemin *l, int tlen, int max_flow)
 		l->flow = max_flow;
 		l->tlen = tmp;
 		l->steps = (long)ant + len;
-		swap_links(l);
+		assign_paths(l, flow);
 	}
 	else
 		ft_printf("{#ff3333}BAD PATHS{reset}\n");
@@ -241,7 +246,6 @@ int		get_new_paths(t_lemin *l, char **flow, int max_flow)
 	room = l->room;
 	while (room)
 	{
-		room->i = 0;
 		room->flow = 0;
 		room = room->next;
 	}
@@ -262,9 +266,6 @@ int		get_new_paths(t_lemin *l, char **flow, int max_flow)
 					if (flow[room->id][room->links[i]->id] == 1)
 					{
 						len++;
-						room->next_p = room->links[i];
-						if (room->links[i] != l->end)
-							room->links[i]->prev_p = room;
 						room->flow = 1;
 						room = room->links[i];
 						break ;
@@ -279,8 +280,9 @@ int		get_new_paths(t_lemin *l, char **flow, int max_flow)
 		j++;
 	}
 	ft_printf("{rgb(251,196,15)}number of path: %d\n{reset}", max_flow);
-	return (comp_graph(l, tlen, max_flow));
+	return (comp_graph(l, tlen, max_flow, flow));
 }
+
 
 int		edmonds_karp(t_lemin *l)
 {
