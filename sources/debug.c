@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/16 18:57:45 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/20 16:37:52 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/21 12:54:13 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,39 @@ void    print_flow(t_lemin *l, char **tab)
         ft_printf("\n");
         j++;
     }
+}
+
+void	print_paths(t_lemin *l, char **flow)
+{
+	t_room *room;
+	int j;
+	int i;
+
+	j = 0;
+	while (j < l->start->nb_links)
+	{
+		if (flow[l->start->id][l->start->links[j]->id] == 1)
+		{
+			room = l->start->links[j];
+			ft_printf("{#ff3333}${reset}%s {#00ffbf}=> {reset}", l->start->name);
+			while (room != l->end)
+			{
+				i = 0;
+				ft_printf("%s {#00ffbf}=> {reset}", room->name);
+				while (i < room->nb_links)
+				{
+					if (flow[room->id][room->links[i]->id] == 1)
+					{
+						room = room->links[i];
+						break ;
+					}
+					i++;
+				}
+			}
+			ft_printf("%s\n", l->end->name);
+		}
+		j++;
+	}
 }
 
 void    print_queue(t_queue *print)
@@ -95,37 +128,37 @@ void	print_graph(t_room **tab, t_lemin *l)
 	ft_printf("{reset}");
 }
 
-void	verif_path(t_lemin *l)
-{
-	t_room *room;
-	int j;
+/* void	verif_path(t_lemin *l) */
+/* { */
+/* 	t_room *room; */
+/* 	int j; */
 
-	j = 0;
-	room = l->room;
-	while (room)
-	{
-		room->i = 0;
-		room = room->next;
-	}
-	while (j < l->start->nb_links)
-	{
-		if (l->start->links[j]->path)
-		{
-			room = l->start->links[j];
-			while (room != l->end)
-			{
-				if (!room->next_p->i)
-				{
-					room = room->next_p;
-					room->i = 1;
-				}
-				else
-				{
-					ft_printf("{#ff3333}BLOQUE name: %s\n\n\n\n", room->next_p->name);
-					break ;
-				}
-			}
-		}
-		j++;
-	}
-}
+/* 	j = 0; */
+/* 	room = l->room; */
+/* 	while (room) */
+/* 	{ */
+/* 		room->i = 0; */
+/* 		room = room->next; */
+/* 	} */
+/* 	while (j < l->start->nb_links) */
+/* 	{ */
+/* 		if (l->start->links[j]->path) */
+/* 		{ */
+/* 			room = l->start->links[j]; */
+/* 			while (room != l->end) */
+/* 			{ */
+/* 				if (!room->next_p->i) */
+/* 				{ */
+/* 					room = room->next_p; */
+/* 					room->i = 1; */
+/* 				} */
+/* 				else */
+/* 				{ */
+/* 					ft_printf("{#ff3333}BLOQUE name: %s\n\n\n\n", room->next_p->name); */
+/* 					break ; */
+/* 				} */
+/* 			} */
+/* 		} */
+/* 		j++; */
+/* 	} */
+/* } */

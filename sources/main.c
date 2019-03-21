@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/20 12:47:27 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/21 11:31:07 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,21 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int		enough_data(t_lemin *l, t_pipe *pipe)
-{
-	if (!pipe)
-		return (0);
-	if (!l->end || !l->start || l->end == l->start)
-		return (0);
-	return (1);
-}
-
-t_room **create_graph(t_lemin *l, t_pipe *pipe)
+int	create_graph(t_lemin *l, t_pipe *pipe)
 {
 	t_room *room;
 	t_room **tab;
 	int i;
 
 	room = l->room;
-	tab = (t_room **)malloc(sizeof(t_room *) * (l->nb_room));
+	if (!(tab = (t_room **)malloc(sizeof(t_room *) * (l->nb_room))))
+		return (0);
 	i = 0;
 	while (room)
 	{
 		tab[i++] = room;
 		if (room->nb_links && !(room->links = (t_room**)malloc(sizeof(t_room*) * room->nb_links)))
-			return (NULL);
+			return (0);
 		room = room->next;
 	}
 	while (pipe)
@@ -45,7 +37,8 @@ t_room **create_graph(t_lemin *l, t_pipe *pipe)
 		tab[pipe->to]->links[tab[pipe->to]->i++] = tab[pipe->from];
 		pipe = pipe->next;
 	}
-	return (tab);
+	print_graph(tab, l);
+	return (1);
 }
 
 int		main(void)
@@ -53,10 +46,7 @@ int		main(void)
 	t_pipe *pipe;
 	t_lemin l;
 
-	l.start = NULL;
-	l.end = NULL;
-	l.room = NULL;
-	l.nb_room = 0;
+	l = (t_lemin){-1,0,0,0,0,NULL,NULL,NULL};
 	pipe = NULL;
 	ft_printf("{green}debut\n{reset}");
 	parse_infos(&l, &pipe);
@@ -66,15 +56,9 @@ int		main(void)
 	{
 		print_room(&l);
 		print_pipe(pipe);
-		l.tab = create_graph(&l, pipe); //l.tab pour print, a ne creer seulement dans fonction
-		print_graph(l.tab, &l);
+		create_graph(&l, pipe);
 		edmonds_karp(&l);
 	}
-	if (!enough_data(&l, pipe))
-	{
-		ft_printf("NOT ENOUGH DATA ERROR\n");
-		return (1);
-	}
-	send_ants(&l);
+	/* send_ants(&l); */
 	return (0);
 }
