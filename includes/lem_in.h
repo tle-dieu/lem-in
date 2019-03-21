@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/21 12:40:27 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/21 16:00:14 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef struct	s_room
 	char			*name;
 	int				id;
 	char			flow;
+	char			back;
 	int				i;
 	int				nb_links;
 	struct s_room	*prev;
@@ -58,9 +59,9 @@ void				finish(char *s, char *message, int error);
 int					atoi_parsing(char const *s);
 int					parse_infos(t_lemin *l, t_pipe **pipe);
 int					edmonds_karp(t_lemin *l);
-void				send_ants(t_lemin *l);
-t_queue				*init_queue(t_lemin *l, t_room *begin);
-
+int					free_queue(t_queue *queue);
+int					bfs(t_lemin *l, char **flow);
+int					get_path(t_lemin *l, char **flow);
 
 /* DEBUG */
 void				print_flow(t_lemin *l, char **tab);

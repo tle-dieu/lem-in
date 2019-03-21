@@ -15,7 +15,9 @@ SOURCES = main.c \
 		  parsing.c \
 		  utils.c \
 		  solve.c \
-		  debug.c
+		  debug.c \
+		  bfs.c \
+		  free.c
 		  # ants.c \
 
 OBJECTS = $(SRC:.c=.o)

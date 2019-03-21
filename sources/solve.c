@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 19:12:07 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/21 12:41:08 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/21 16:08:57 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,105 +36,6 @@ int get_path(t_lemin *l, char **flow)
 	return (1);
 }
 
-t_queue	*init_queue(t_lemin *l, t_room *begin)
-{
-	t_room *room;
-	t_queue	*new;
-
-	if (!(new = (t_queue *)malloc(sizeof(t_queue))))
-		return (NULL);
-	new->next = NULL;
-	new->room = begin;
-	room = l->room;
-	while (room)
-	{
-		room->i = 0;
-		room->prev = NULL;
-		room = room->next;
-	}
-	begin->i = 1;
-	return (new);
-}
-
-t_queue *add_queue(t_queue *queue, t_room *actual, t_room *room)
-{
-	t_queue *new;
-
-	if (!(new = (t_queue *)malloc(sizeof(t_queue))))
-		return (NULL);
-	queue->next = new;
-	new->next = NULL;
-	new->room = actual;
-	new->room->i = 1;
-	actual->prev = room;
-	return (queue->next);
-}
-
-t_queue *enqueue(t_queue *queue, t_room *room, char **flow)
-{
-	int i;
-
-	i = 0;
-	while (i < room->nb_links)
-	{
-		if (!room->links[i]->i && flow[room->id][room->links[i]->id] < 1)
-		{
-			if (!(queue = add_queue(queue, room->links[i], room)))
-				return (NULL);// rendre les if plus propres
-		}
-		++i;
-	}
-	return (queue);
-}
-
-int		free_queue(t_queue *queue)
-{
-	t_queue *next;
-
-	while (queue)
-	{
-		next = queue->next;
-		free(queue);
-		queue = next;
-	}
-	return (0);
-}
-
-int     bfs(t_lemin *l, char **flow)
-{
-	t_queue *queue;
-	t_queue *begin;
-	t_queue *tmp;
-
-	if (!(begin = init_queue(l, l->start)))
-	{
-		ft_printf("error init queue\n");
-		return (0);
-	}
-	if (!(queue = enqueue(begin, begin->room, flow)))
-	{
-		ft_printf("error start enqueue\n");
-		return (free_queue(begin));
-	}
-	while (begin)
-	{
-		/* print_queue(begin); */
-		tmp = begin;
-		if (!(begin = begin->next) || (begin->room == l->end))
-		{
-			free(tmp);
-			break;
-		}
-		if (!(queue = enqueue(queue, begin->room, flow)))
-		{
-			ft_printf("error enqueue\n");
-			return (free_queue(begin));
-		}
-		free(tmp);
-	}
-	return (get_path(l, flow));
-}
-
 char	**init_flow(t_lemin *l)
 {
 	char **flow;
@@ -160,6 +61,77 @@ char	**init_flow(t_lemin *l)
 	}
 	return (flow);
 }
+
+void	flow_paths(t_lemin *l, char **flow)
+{
+	int i;
+	int j;
+	t_room *room;
+
+	j = 0;
+	while (j < l->start->nb_links)
+	{
+		if (flow[l->start->id][l->start->links[j]->id])
+		{
+			room = l->start->links[j];
+			while (room != l->end)
+			{
+				i = 0;
+				while (i < room->nb_links && (flow[room->id][room->links[i]->id] != 1))
+					++i;
+				room->flow = 1;
+				room = room->links[i];
+			}
+		}
+		j++;
+	}
+}
+
+void	check_block(t_lemin *l, char **flow)
+{
+	int i;
+	int j;
+	t_room *room;
+
+
+	room = l->room;
+	while (room)
+	{
+		/* ft_printf("{#32ee03}name: {reset}%s {#32ee03}flow: {reset}%d\n", room->name, room->flow); */
+		room->i = 0;
+		room = room->next;
+	}
+	room = l->start;
+	j = 0;
+	while (j < l->start->nb_links)
+	{
+		if (flow[l->start->id][l->start->links[j]->id])
+		{
+			room = l->start->links[j];
+			while (room != l->end)
+			{
+				i = 0;
+				while (i < room->nb_links)
+				{
+					if (flow[room->id][room->links[i]->id] == 1)
+					{
+						if (room->i)
+						{
+							ft_printf("{#ff3333}BLOCK {reset}%s\n", room->name);
+							exit(1);
+						}
+						room->i = 1;
+						room = room->links[i];
+						break ;
+					}
+					++i;
+				}
+			}
+		}
+		j++;
+	}
+}
+
 int		edmonds_karp(t_lemin *l)
 {
 	char	**flow;
@@ -172,8 +144,8 @@ int		edmonds_karp(t_lemin *l)
 	{
 		max_flow++;
 		print_paths(l, flow);
-		/* if (!get_new_paths(l, flow, max_flow)) */
-		/* break ; */
+		flow_paths(l, flow);
+		check_block(l, flow);
 		/* print_flow(l, flow); */
 	}
 	ft_printf("{rgb(251,196,15)}best path: %ld\nnb de bfs: %d\n{reset}", l->steps, max_flow);
