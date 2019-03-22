@@ -17,8 +17,8 @@ SOURCES = main.c \
 		  solve.c \
 		  debug.c \
 		  bfs.c \
+		  ants.c \
 		  free.c
-		  # ants.c \
 
 OBJECTS = $(SRC:.c=.o)
 

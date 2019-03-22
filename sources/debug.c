@@ -6,11 +6,65 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/16 18:57:45 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/21 12:54:13 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/22 11:02:33 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
+#include <stdlib.h>
+
+void    print_link(t_room *room)
+{
+    while (room)
+    {
+        if (room->path)
+		{
+			if (room->from && room->to)
+				ft_printf("%s -> %s -> %s    %d\n", room->from->name, room->name, room->to->name, room->path);
+			else
+				ft_printf("NULL: %s path: %d\n", room->name, room->path);
+		}	
+        room = room->next;
+    }
+}
+
+void    verif_path(t_lemin *l)
+{
+    t_room *room;
+    int j;
+	int error;
+
+    j = 0;
+    room = l->room;
+	error = 0;
+    while (room)
+    {
+        room->i = 0;
+        room = room->next;
+    }
+    while (j < l->start->nb_links)
+    {
+        if (l->start->links[j]->path)
+        {
+            room = l->start->links[j];
+            while (room != l->end)
+            {
+                if (!room->to->i)
+                    room->i = 1;
+				else if (room->to != l->end)
+                {
+					error = 1;
+                    ft_printf("{#ff3333}BLOQUE name: %s\n\n\n\n", room->to->name);
+                    /* break ; */
+                }
+                room = room->to;
+            }
+        }
+        j++;
+    }
+	if (!error)
+		ft_printf("{#33de56}NO ERROR\n{reset}");
+}
 
 void    print_flow(t_lemin *l, char **tab)
 {
@@ -24,6 +78,51 @@ void    print_flow(t_lemin *l, char **tab)
         while (i < l->nb_room)
             ft_printf("%2d ", (int)tab[j][i++]);
         ft_printf("\n");
+        j++;
+    }
+}
+
+void    check_block(t_lemin *l, char **flow)
+{
+    int i;
+    int j;
+    t_room *room;
+
+
+    room = l->room;
+    while (room)
+    {
+        /* ft_printf("{#32ee03}name: {reset}%s {#32ee03}flow: {reset}%d\n", room->name, room->flow); */
+        room->i = 0;
+        room = room->next;
+    }
+    room = l->start;
+    j = 0;
+    while (j < l->start->nb_links)
+    {
+        if (flow[l->start->id][l->start->links[j]->id])
+        {
+            room = l->start->links[j];
+            while (room != l->end)
+            {
+                i = 0;
+                while (i < room->nb_links)
+                {
+                    if (flow[room->id][room->links[i]->id] == 1)
+                    {
+                        if (room->i)
+                        {
+                            ft_printf("{#ff3333}BLOCK {reset}%s\n", room->name);
+                            exit(1);
+                        }
+                        room->i = 1;
+                        room = room->links[i];
+                        break ;
+                    }
+                    ++i;
+                }
+            }
+        }
         j++;
     }
 }
@@ -127,38 +226,3 @@ void	print_graph(t_room **tab, t_lemin *l)
 	}
 	ft_printf("{reset}");
 }
-
-/* void	verif_path(t_lemin *l) */
-/* { */
-/* 	t_room *room; */
-/* 	int j; */
-
-/* 	j = 0; */
-/* 	room = l->room; */
-/* 	while (room) */
-/* 	{ */
-/* 		room->i = 0; */
-/* 		room = room->next; */
-/* 	} */
-/* 	while (j < l->start->nb_links) */
-/* 	{ */
-/* 		if (l->start->links[j]->path) */
-/* 		{ */
-/* 			room = l->start->links[j]; */
-/* 			while (room != l->end) */
-/* 			{ */
-/* 				if (!room->next_p->i) */
-/* 				{ */
-/* 					room = room->next_p; */
-/* 					room->i = 1; */
-/* 				} */
-/* 				else */
-/* 				{ */
-/* 					ft_printf("{#ff3333}BLOQUE name: %s\n\n\n\n", room->next_p->name); */
-/* 					break ; */
-/* 				} */
-/* 			} */
-/* 		} */
-/* 		j++; */
-/* 	} */
-/* } */

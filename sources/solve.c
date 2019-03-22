@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/20 19:12:07 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/21 16:08:57 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/22 10:57:26 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,51 +62,106 @@ char	**init_flow(t_lemin *l)
 	return (flow);
 }
 
-void	flow_paths(t_lemin *l, char **flow)
+int		assign_paths(t_lemin *l, char **flow)
 {
-	int i;
-	int j;
 	t_room *room;
+	int j;
+	int i;
 
 	j = 0;
+	room = l->room;
+	ft_printf("{rgb(12,231,58)}NEW PATHS{reset}\n");
 	while (j < l->start->nb_links)
 	{
-		if (flow[l->start->id][l->start->links[j]->id])
+		if (flow[l->start->id][l->start->links[j]->id] == 1)
 		{
+			l->start->links[j]->from = l->start;
 			room = l->start->links[j];
 			while (room != l->end)
 			{
 				i = 0;
-				while (i < room->nb_links && (flow[room->id][room->links[i]->id] != 1))
-					++i;
-				room->flow = 1;
+				while (i < room->nb_links && flow[room->id][room->links[i]->id] != 1)
+					i++;
+				if (i == room->nb_links)
+					return (0);
+				room->path = room->flow;
+				room->to = room->links[i];
+				if (room->links[i] != l->end)
+					room->links[i]->from = room;
 				room = room->links[i];
 			}
 		}
 		j++;
 	}
+	return (1);
 }
 
-void	check_block(t_lemin *l, char **flow)
+int comp_graph(t_lemin *l, int tlen, int max_flow, char **flow)
+{
+	int len;
+	int	tmp;
+	int ant_total;
+	int ant;
+	int i;
+	int j;
+
+	j = 0;
+	i = 0;
+	tmp = tlen;
+	ant_total = l->ant;
+	ft_printf("{rgb(12,231,58)}len total: %d\n{reset}", tlen);
+	while (j < l->start->nb_links)
+	{
+		if (l->start->links[j]->flow)
+		{
+			len = l->start->links[j]->flow;
+			if ((ant = ((long)ant_total + tlen) / (max_flow - i) - len) <= 0)
+			{
+				ft_printf("{#ff3333}ERROR PATH UNUSED !{reset}\n");
+				return (0);
+			}
+			tlen -= len;
+			ant_total -= ant;
+			ft_printf("{rgb(0,188,218)}--chemin %s--\n{rgb(0,188,218)}len: {reset}%d {rgb(0,188,218)}ant: {reset}%d {rgb(0,188,218)}reste: {reset}%d\n", l->start->links[j]->name, len, ant, ant_total);
+			i++;
+		}
+		j++;
+	}
+	ft_printf("{rgb(251,196,15)}nb instructions: {reset}%ld old: %ld\n", (long)ant + len, l->steps);
+	if (l->steps == -1 || (long)ant + len < l->steps)
+	{
+		l->flow = max_flow;
+		l->tlen = tmp;
+		l->steps = (long)ant + len;
+		assign_paths(l, flow);
+	}
+	else
+		ft_printf("{#ff3333}BAD PATHS{reset}\n");
+	return (1);
+}
+
+int		new_paths(t_lemin *l, char **flow, int max_flow)
 {
 	int i;
 	int j;
+	int tlen;
+	int len;
 	t_room *room;
 
-
+	j = 0;
+	tlen = 0;
 	room = l->room;
 	while (room)
 	{
-		/* ft_printf("{#32ee03}name: {reset}%s {#32ee03}flow: {reset}%d\n", room->name, room->flow); */
-		room->i = 0;
+		room->flow = 0;
 		room = room->next;
 	}
-	room = l->start;
-	j = 0;
 	while (j < l->start->nb_links)
 	{
-		if (flow[l->start->id][l->start->links[j]->id])
+		if (flow[l->start->id][l->start->links[j]->id] == 1)
 		{
+			l->start->links[j]->from = l->start;
+			len = 0;
 			room = l->start->links[j];
 			while (room != l->end)
 			{
@@ -115,21 +170,22 @@ void	check_block(t_lemin *l, char **flow)
 				{
 					if (flow[room->id][room->links[i]->id] == 1)
 					{
-						if (room->i)
-						{
-							ft_printf("{#ff3333}BLOCK {reset}%s\n", room->name);
-							exit(1);
-						}
-						room->i = 1;
+						len++;
+						room->flow = 1;
 						room = room->links[i];
 						break ;
 					}
-					++i;
+					i++;
 				}
+
 			}
+			tlen += len;
+			l->start->links[j]->flow = len;
 		}
 		j++;
 	}
+	ft_printf("{rgb(251,196,15)}number of path: %d\n{reset}", max_flow);
+	return (comp_graph(l, tlen, max_flow, flow));
 }
 
 int		edmonds_karp(t_lemin *l)
@@ -144,8 +200,10 @@ int		edmonds_karp(t_lemin *l)
 	{
 		max_flow++;
 		print_paths(l, flow);
-		flow_paths(l, flow);
 		check_block(l, flow);
+		if (!(new_paths(l, flow, max_flow)))
+			break ;
+		verif_path(l);
 		/* print_flow(l, flow); */
 	}
 	ft_printf("{rgb(251,196,15)}best path: %ld\nnb de bfs: %d\n{reset}", l->steps, max_flow);

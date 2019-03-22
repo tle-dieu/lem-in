@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 17:50:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/20 16:38:21 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/22 11:21:21 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,14 @@ t_queue *next_room(t_lemin *l, t_queue *queue, t_room *room)
 {
 	t_queue *new;
 
-	if (!room->prev_p)
-	{
-		ft_printf("name: %s path: %d\n", room->name, room->path);
+	if (!room->from)
 		return (queue);
-	}
-	if (room->prev_p != l->start)
+	if (room->from != l->start)
 	{
 		if (!(new = (t_queue *)malloc(sizeof(t_queue))))
 			return (NULL);
 		queue->next = new;
-		new->room = room->prev_p;
+		new->room = room->from;
 		new->room->i = 1;
 		new->next = NULL;
 		return (queue->next);
@@ -75,16 +72,6 @@ t_queue	*queue_ant(t_lemin *l)
 	return (begin);
 }
 
-void	print_link(t_room *room)
-{
-	while (room)
-	{
-		if (room->path)
-			ft_printf("%s -> %s -> %s    %d\n", room->prev_p->name, room->name, room->next_p->name, room->path);
-		room = room->next;
-	}
-}
-
 int		*ants_by_path(t_room *start, int tlen, int max_flow, int ant_total)
 {
 	int len;
@@ -92,9 +79,12 @@ int		*ants_by_path(t_room *start, int tlen, int max_flow, int ant_total)
 	int *send;
 	int i;
 	int j;
+	int tmp;
+	int tt;
 
 	j = 0;
 	i = 0;
+	tt = 0;
 	if (!(send = (int*)malloc(sizeof(int) * start->nb_links)))
 		return (NULL);
 	while (j < start->nb_links)
@@ -108,8 +98,12 @@ int		*ants_by_path(t_room *start, int tlen, int max_flow, int ant_total)
 			ant_total -= ant;
 			i++;
 		}
+		if (ant)
+			tmp = j;
+		tt += ant;
 		send[j++] = ant;
 	}
+	ft_printf("instructions: %ld total: %d\n", (long)send[tmp] + start->links[tmp]->path, tt);
 	return (send);
 }
 
@@ -119,10 +113,10 @@ void	push_ant(t_queue *queue)
 	{
 		if (queue->room->i)
 		{
-			queue->room->next_p->i++;
+			queue->room->to->i++;
 			queue->room->i--;
-			queue->room->next_p->id = queue->room->id;
-			/* ft_printf("L%d-%s ", queue->room->id, queue->room->next_p->name); */
+			queue->room->to->id = queue->room->id;
+			ft_printf("L%d-%s ", queue->room->id, queue->room->to->name);
 		}
 		queue = queue->next;
 	}
@@ -138,7 +132,7 @@ void	send_ants(t_lemin *l)
 
 	verif_path(l);
 	queue = queue_ant(l);
-	print_queue(queue);
+	/* print_queue(queue); */
 	/* print_link(l->room); */
 	send = ants_by_path(l->start, l->tlen, l->flow, l->ant);
 	room = l->room;
@@ -158,13 +152,13 @@ void	send_ants(t_lemin *l)
 			{
 				send[i]--; 
 				++ant;
-				/* ft_printf("L%d-%s ", ant, l->start->links[i]->name); */
+				ft_printf("L%d-%s ", ant, l->start->links[i]->name);
 				l->start->links[i]->i++;
 				l->start->links[i]->id = ant;
 			}
 			i++;
 		}
-		/* ft_printf("\n"); */
+		ft_printf("\n");
 		/* ft_printf("\nend: %d start: %d ant: %d\n", l->end->i, l->start->i, l->ant); */
 	}
 }

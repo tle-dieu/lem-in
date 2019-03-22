@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/21 16:00:14 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/22 10:59:25 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,13 @@ typedef struct	s_room
 	int				y;
 	char			*name;
 	int				id;
-	char			flow;
+	int				flow;
 	char			back;
+	int				path;
 	int				i;
 	int				nb_links;
+	struct s_room	*to;
+	struct s_room	*from;
 	struct s_room	*prev;
 	struct s_room	**links;
 	struct s_room	*next;
@@ -62,6 +65,8 @@ int					edmonds_karp(t_lemin *l);
 int					free_queue(t_queue *queue);
 int					bfs(t_lemin *l, char **flow);
 int					get_path(t_lemin *l, char **flow);
+void				send_ants(t_lemin *l);
+t_queue				*init_queue(t_lemin *l, t_room *begin);
 
 /* DEBUG */
 void				print_flow(t_lemin *l, char **tab);
@@ -71,4 +76,6 @@ void				print_pipe(t_pipe *pipe);
 void				print_graph(t_room **tab, t_lemin *l);
 void				verif_path(t_lemin *l);
 void				print_paths(t_lemin *l, char **flow);
+void				check_block(t_lemin *l, char **flow);
+void				print_link(t_room *room);
 #endif

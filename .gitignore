@@ -56,3 +56,4 @@ dkms.conf
 .DS_Store
 lem-in
 lemin_test
+maps/big_super/gen_*
