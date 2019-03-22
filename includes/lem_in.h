@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/22 10:59:25 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/22 23:08:03 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@
 
 typedef struct	s_room
 {
-	int				x;
-	int				y;
-	char			*name;
-	int				id;
-	int				flow;
-	char			back;
-	int				path;
 	int				i;
 	int				nb_links;
+	int				path;
+	int				id;
+	int				flow;
+	int				x;
+	int				y;
+	char			back;
+	char			*name;
 	struct s_room	*to;
 	struct s_room	*from;
 	struct s_room	*prev;
@@ -33,14 +33,14 @@ typedef struct	s_room
 	struct s_room	*next;
 }				t_room;
 
-typedef struct	s_pipe
+typedef struct s_pipe
 {
 	int				from;
 	int				to;
 	struct s_pipe	*next;
 }				t_pipe;
 
-typedef struct	s_lemin
+typedef struct s_lemin
 {
 	long 			steps;
 	int				flow;
@@ -58,18 +58,43 @@ typedef struct s_queue
 	struct	s_queue *next;
 }				t_queue;
 
+typedef struct s_file
+{
+	char			*line;
+	struct s_file	*next;
+}				t_file;
+
 void				finish(char *s, char *message, int error);
 int					atoi_parsing(char const *s);
-int					parse_infos(t_lemin *l, t_pipe **pipe);
 int					edmonds_karp(t_lemin *l);
 int					free_queue(t_queue *queue);
 int					bfs(t_lemin *l, char **flow);
-int					get_path(t_lemin *l, char **flow);
 void				send_ants(t_lemin *l);
 t_queue				*init_queue(t_lemin *l, t_room *begin);
 
+/*
+** --------- PARSING ---------
+*/
+
+
+void				parse_infos(t_lemin *l, t_pipe **pipe, t_file **file);
+
+/*
+** ---------- SOLVE ----------
+*/
+
+int					augmenting_path(t_lemin *l, char **flow);
+long				get_steps(t_lemin *l, int max_flow, int tlen);
+
+/*
+** ---------- PATH -----------
+*/
+
+int					new_graph(t_lemin *l, char **flow, int max_flow);
+
 /* DEBUG */
 void				print_flow(t_lemin *l, char **tab);
+int					start_to_end(t_lemin *l);
 void				print_queue(t_queue *print);
 void				print_room(t_lemin *l);
 void				print_pipe(t_pipe *pipe);
@@ -78,4 +103,5 @@ void				verif_path(t_lemin *l);
 void				print_paths(t_lemin *l, char **flow);
 void				check_block(t_lemin *l, char **flow);
 void				print_link(t_room *room);
+void				print_file(t_file *file);
 #endif

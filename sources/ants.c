@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 17:50:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/22 11:21:21 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/22 23:27:50 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,30 @@ void	push_ant(t_queue *queue)
 	}
 }
 
+int		start_to_end(t_lemin *l)
+{
+	int i;
+
+	i = 0;
+	while (i < l->start->nb_links)
+	{
+		if (l->start->links[i] == l->end)
+		{
+			i = 1;
+			while (i <= l->ant)
+			{
+				ft_printf("L%d-%s", i, l->end->name);
+				if (i++ != l->ant)
+					ft_printf(" ");
+			}
+			ft_printf("\n");
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
 void	send_ants(t_lemin *l)
 {
 	t_queue *queue;
@@ -130,10 +154,7 @@ void	send_ants(t_lemin *l)
 	int		i;
 	int		ant;
 
-	verif_path(l);
 	queue = queue_ant(l);
-	/* print_queue(queue); */
-	/* print_link(l->room); */
 	send = ants_by_path(l->start, l->tlen, l->flow, l->ant);
 	room = l->room;
 	while (room)
@@ -159,6 +180,5 @@ void	send_ants(t_lemin *l)
 			i++;
 		}
 		ft_printf("\n");
-		/* ft_printf("\nend: %d start: %d ant: %d\n", l->end->i, l->start->i, l->ant); */
 	}
 }

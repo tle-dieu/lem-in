@@ -76,6 +76,7 @@ SOURCES := $(FT_PRINTF)buff.c \
 		  $(STRING)ft_strupper.c \
 		  $(STRING)ft_tolower.c \
 		  $(STRING)ft_toupper.c \
+		  $(STRING)ft_count_occ.c \
 		  $(NUMERIC)ft_atoi.c \
 		  $(NUMERIC)ft_atoll.c \
 		  $(NUMERIC)ft_iterative_power.c \

@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/22 10:58:59 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/22 23:26:14 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,21 @@
 
 int		get_coord(t_room *new, char *line)
 {
-	char *tmp_y;
+	char	x[11];
+	int		i;
 
 	if (!line || !*(++line))
 		return (0);
-	if (!(tmp_y = ft_strchr(line, ' ')))
+	i = 0;
+	while (i < 10 && line[i] && line[i] != ' ')
+	{
+		x[i] = line[i];
+		i++;
+	}
+	x[i] = '\0';
+	if ((new->x = atoi_parsing(x)) < 0)
 		return (0);
-	*tmp_y++ = '\0';
-	if (!*tmp_y || ((new->x = atoi_parsing(line)) < 0) || ((new->y = atoi_parsing(tmp_y)) < 0))
+	if (line[i] != ' ' || !line[i + 1] || (new->y = atoi_parsing(line + i + 1)) < 0)
 		return (0);
 	return (1);
 }
@@ -38,7 +45,7 @@ void	check_room(t_lemin *l)
 	{
 		actual = prev->next;
 		if (!ft_strcmp(actual->name, l->room->name)
-		|| (l->room->x == actual->x && l->room->y == actual->y))	
+		|| (l->room->x == actual->x && l->room->y == actual->y))
 		{
 			--l->nb_room;
 			if (actual == l->start)
@@ -58,14 +65,12 @@ int		get_room(t_lemin *l, char *line, int *room_opt)
 {
 	t_room	*new;
 
-	/* ft_printf("room: %s\n", line); */
 	++l->nb_room;
 	if (!(new = (t_room*)malloc(sizeof(t_room))))
 		return (1);
 	if (!get_coord(new, ft_strchr(line, ' '))
 	|| !(new->name = ft_strcdup(line, ' ')))
 	{
-		ft_printf("coord error\n");
 		free(new);
 		return (1);
 	}
@@ -102,7 +107,11 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 	new = pipe;
 	pipe->to = -1;
 	pipe->from = -1;
-	if (from && to && ft_strcmp(from, to))
+	room_from = NULL;
+	room_to = NULL;
+	if (!from || !to)
+		return (1);
+	if (ft_strcmp(from, to))
 	{
 		while (room)
 		{
@@ -137,7 +146,15 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 	}
 	free(from);
 	free(to);
-	return (pipe->to != -1 && pipe->from != -1);
+	if (pipe->to == -1 || pipe->from == -1)
+	{
+		if (room_from)
+			room_from->nb_links--;
+		if (room_to)
+			room_to->nb_links--;
+		return (1);
+	}
+	return (0);
 }
 
 void	reorder_room(t_room *room)
@@ -159,10 +176,9 @@ int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 	char	*from;
 	char	*to;
 
-	/* ft_printf("pipe: %s\n", line); */
 	if (!*pipe)
 		reorder_room(room);
-	if (!(new = (t_pipe*)malloc(sizeof(t_pipe))))
+	if (ft_count_occ(line, '-') != 1 || !(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
 	to = NULL;
 	from = ft_strcdup(line, '-');
@@ -172,11 +188,10 @@ int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 		if ((to = ft_strdup(tmp + 1)))
 			*pipe = new;
 	}
-	if (!check_pipe(room, *pipe, from, to))
+	if (check_pipe(room, *pipe, from, to))
 	{
 		*pipe = (*pipe)->next;
 		free(new);
-		return (1);
 	}
 	return (0);
 }
@@ -196,22 +211,37 @@ int		get_room_opt(char *line, int *room_opt)
 	return (0);
 }
 
-int		parse_infos(t_lemin *l, t_pipe **pipe)
+int		add_line(char **line, t_file **actual, t_file **file)
 {
-	int		room_opt;
+	t_file	*new;
+
+	*line = NULL;
+	if (get_next_line(0, line) != 1)
+		return (1);
+	if (!(new = (t_file *)malloc(sizeof(t_file))))
+	{
+		free(line);
+		return (0);
+	}
+	new->next = NULL;
+	new->line = *line;
+	if (!*file)
+		*file = new;
+	else
+		(*actual)->next = new;
+	*actual = new;
+	return (0);
+}
+
+int		parse_graph(t_lemin *l, t_pipe **pipe, t_file **file, t_file *actual)
+{
 	int		error;
+	int		room_opt;
 	char	*line;
 
-	room_opt = 0;
-	while ((error = get_next_line(0, &line)) == 1 && line[0] == '#' && line[1] != '#')
-		free(line);
-	if (error != 1)
-		finish(NULL, "NO ANT ERROR\n", 1); // a changer
-	if ((l->ant = atoi_parsing(line)) <= 0)
-		finish(NULL, "ANT ERROR\n", 1); // a changer
-	free(line);
 	error = 0;
-	while (!error && get_next_line(0, &line) == 1)
+	room_opt = 0;
+	while (!error && !add_line(&line, &actual, file))
 	{
 		if (line[0] == '#')
 		{
@@ -222,10 +252,27 @@ int		parse_infos(t_lemin *l, t_pipe **pipe)
 			error = *pipe || get_room(l, line, &room_opt);
 		else
 			error = room_opt || line[0] == 'L' || get_pipe(pipe, l->room, line);
-		free(line);
-		line = NULL;
+	}
+	return (error);
+}
+
+void	parse_infos(t_lemin *l, t_pipe **pipe, t_file **file)
+{
+	char	*line;
+	int		error;
+	t_file	*actual;
+
+	actual = NULL;
+	while (!(error = add_line(&line, &actual, file)) && line[0] == '#')
+	{
+		if (line[1] == '#')
+			finish(NULL, "COMMENT ERROR\n", 1); // a changer
 	}
 	if (error)
-		ft_printf("{#de5453}STOP !\n");
-	return (0);
+		finish(NULL, "NO ANT ERROR\n", 1); // a changer
+	if ((l->ant = atoi_parsing(line)) <= 0)
+		finish(NULL, "ANT ERROR\n", 1); // a changer
+	if (parse_graph(l, pipe, file, actual))
+		ft_printf("{#de5453}STOP !{reset}\n");
+	print_file(*file);
 }

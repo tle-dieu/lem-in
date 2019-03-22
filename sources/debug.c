@@ -6,12 +6,27 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/16 18:57:45 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/22 11:02:33 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/22 17:47:27 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <stdlib.h>
+
+void	print_file(t_file *file)
+{
+	t_file *next;
+
+	ft_printf("print file\n");
+	while (file)
+	{
+		ft_printf("%s\n", file->line);
+		next = file->next;
+		free(file->line);
+		free(file);
+		file = next;
+	}
+}
 
 void    print_link(t_room *room)
 {

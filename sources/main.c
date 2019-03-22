@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/21 19:20:51 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/22 23:35:57 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int	create_graph(t_lemin *l, t_pipe *pipe)
+int		create_graph(t_lemin *l, t_pipe *pipe)
 {
-	t_room *room;
-	t_room **tab;
-	int i;
+	t_room	*room;
+	t_room	**tab;
+	int		i;
 
 	room = l->room;
 	if (!(tab = (t_room **)malloc(sizeof(t_room *) * (l->nb_room))))
@@ -27,7 +27,8 @@ int	create_graph(t_lemin *l, t_pipe *pipe)
 	while (room)
 	{
 		tab[i++] = room;
-		if (room->nb_links && !(room->links = (t_room**)malloc(sizeof(t_room*) * room->nb_links)))
+		if (room->nb_links
+		&& !(room->links = (t_room**)malloc(sizeof(t_room*) * room->nb_links)))
 			return (0);
 		room = room->next;
 	}
@@ -37,28 +38,28 @@ int	create_graph(t_lemin *l, t_pipe *pipe)
 		tab[pipe->to]->links[tab[pipe->to]->i++] = tab[pipe->from];
 		pipe = pipe->next;
 	}
-	print_graph(tab, l);
 	return (1);
 }
 
 int		main(void)
 {
-	t_pipe *pipe;
-	t_lemin l;
+	t_pipe	*pipe;
+	t_lemin	l;
+	t_file	*file;
 
-	l = (t_lemin){-1,0,0,0,0,NULL,NULL,NULL};
+	l = (t_lemin){-1, 0, 0, 0, 0, NULL, NULL, NULL};
 	pipe = NULL;
-	ft_printf("{green}debut\n{reset}");
-	parse_infos(&l, &pipe);
-	ft_printf("{yellow}::::::::::PARSING RESULT::::::::::\n");
-	ft_printf("{green}number of ants %d\n", l.ant);
+	file = NULL;
+	parse_infos(&l, &pipe, &file);
 	if (pipe && l.room)
 	{
-		print_room(&l);
-		print_pipe(pipe);
 		create_graph(&l, pipe);
-		edmonds_karp(&l);
+		if (start_to_end(&l))
+			return (0);
+		/* print_room(&l); */
+		/* print_pipe(pipe); */
+		if (edmonds_karp(&l))
+			send_ants(&l);
 	}
-	send_ants(&l);
 	return (0);
 }

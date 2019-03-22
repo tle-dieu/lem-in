@@ -18,7 +18,8 @@ SOURCES = main.c \
 		  debug.c \
 		  bfs.c \
 		  ants.c \
-		  free.c
+		  free.c \
+		  path.c
 
 OBJECTS = $(SRC:.c=.o)
 
@@ -65,7 +66,7 @@ $(LIBFT): force
 force:
 	@true
 
-objects/%.o: %.c $(DEPS) $(INCLUDES)
+objects/%.o: %.c $(INCLUDES)
 	@tput civis
 	@mkdir -p $(dir $@)
 	@$(CC) -I $(INCLUDES_FOLDER) -I $(LIBINC) -o $@ -c $<
@@ -95,7 +96,7 @@ else
 		$(MAP_FOLDER)./generator --$(generator)
 endif
 else
-	-@if [ -f $(MAP_FOLDER)$(map) ]; then $(RUN_OPTION) ./$(NAME) < $(MAP_FOLDER)$(map); \
+	-@if [ -f $(map) ]; then $(RUN_OPTION) ./$(NAME) < $(map); \
 	else printf "$(BLUE)List of maps\n$(RESET)" && ls $(MAP_FOLDER); fi
 ifneq (,$(filter $(valgrind),y yes))
 		@$(RM) $(NAME).dSYM
