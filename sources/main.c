@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/22 23:35:57 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/23 21:17:51 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int		create_graph(t_lemin *l, t_pipe *pipe)
+int		create_graph(t_lemin *l, t_pipe *pipe) //OK //a mettre dans un fichier parsing
 {
 	t_room	*room;
 	t_room	**tab;
@@ -29,7 +29,10 @@ int		create_graph(t_lemin *l, t_pipe *pipe)
 		tab[i++] = room;
 		if (room->nb_links
 		&& !(room->links = (t_room**)malloc(sizeof(t_room*) * room->nb_links)))
+		{
+			free(tab);
 			return (0);
+		}
 		room = room->next;
 	}
 	while (pipe)
@@ -38,6 +41,7 @@ int		create_graph(t_lemin *l, t_pipe *pipe)
 		tab[pipe->to]->links[tab[pipe->to]->i++] = tab[pipe->from];
 		pipe = pipe->next;
 	}
+	free(tab);
 	return (1);
 }
 
@@ -47,19 +51,23 @@ int		main(void)
 	t_lemin	l;
 	t_file	*file;
 
-	l = (t_lemin){-1, 0, 0, 0, 0, NULL, NULL, NULL};
 	pipe = NULL;
 	file = NULL;
+	l = (t_lemin){-1, 0, 0, 0, 0, NULL, NULL, NULL};
 	parse_infos(&l, &pipe, &file);
-	if (pipe && l.room)
+	if (!pipe || !l.room || !l.start || !l.end)
+		return (error_finish(file, pipe, l.room, "ERROR\n"));
+	if (!(create_graph(&l, pipe)))
+		return (error_finish(file, pipe, l.room, "ERROR\n"));
+	if (start_to_end(&l, file))
+		return (!error_finish(NULL, pipe, l.room, NULL));
+	print_room(&l); // a retirer
+	if (edmonds_karp(&l))
 	{
-		create_graph(&l, pipe);
-		if (start_to_end(&l))
-			return (0);
-		/* print_room(&l); */
-		/* print_pipe(pipe); */
-		if (edmonds_karp(&l))
-			send_ants(&l);
+		if (!(send_ants(&l, file)))
+			return (error_finish(file, pipe, l.room, "ERROR\n"));
 	}
-	return (0);
+	else
+		return (error_finish(file, pipe, l.room, "ERROR\n"));
+	return (!error_finish(NULL, pipe, l.room, NULL));
 }

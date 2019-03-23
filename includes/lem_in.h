@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/22 23:08:03 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/23 21:23:56 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,25 +64,25 @@ typedef struct s_file
 	struct s_file	*next;
 }				t_file;
 
-void				finish(char *s, char *message, int error);
-int					atoi_parsing(char const *s);
-int					edmonds_karp(t_lemin *l);
-int					free_queue(t_queue *queue);
-int					bfs(t_lemin *l, char **flow);
-void				send_ants(t_lemin *l);
-t_queue				*init_queue(t_lemin *l, t_room *begin);
 
 /*
 ** --------- PARSING ---------
 */
 
-
-void				parse_infos(t_lemin *l, t_pipe **pipe, t_file **file);
+void				parse_infos(t_lemin *l, t_pipe **pipe, t_file **file); // nom a changer en parse
 
 /*
-** ---------- SOLVE ----------
+** ----------- BFS -----------
 */
 
+int                 bfs(t_lemin *l, char **flow);
+t_queue				*init_queue(t_lemin *l, t_room *begin);
+
+/*
+** ----------- EK ------------
+*/
+
+int					edmonds_karp(t_lemin *l);
 int					augmenting_path(t_lemin *l, char **flow);
 long				get_steps(t_lemin *l, int max_flow, int tlen);
 
@@ -92,9 +92,33 @@ long				get_steps(t_lemin *l, int max_flow, int tlen);
 
 int					new_graph(t_lemin *l, char **flow, int max_flow);
 
+/*
+** ---------- FREE -----------
+*/
+
+int					free_pipe(t_pipe *pipe);
+int					free_queue(t_queue *queue);
+int					free_room(t_room *room);
+int					free_tab(void **tab, int size);
+int					free_file(t_file *file);
+
+/*
+** ---------- ANTS -----------
+*/
+
+int					send_ants(t_lemin *l, t_file *file);
+int					start_to_end(t_lemin *l, t_file *file);
+
+/*
+** ---------- UTILS ----------
+*/
+
+int					error_finish(t_file *file, t_pipe *pipe, t_room *room, char *message);
+int					atoi_parsing(char const *s);
+void				print_file(t_file *file);
+
 /* DEBUG */
 void				print_flow(t_lemin *l, char **tab);
-int					start_to_end(t_lemin *l);
 void				print_queue(t_queue *print);
 void				print_room(t_lemin *l);
 void				print_pipe(t_pipe *pipe);
@@ -103,5 +127,7 @@ void				verif_path(t_lemin *l);
 void				print_paths(t_lemin *l, char **flow);
 void				check_block(t_lemin *l, char **flow);
 void				print_link(t_room *room);
-void				print_file(t_file *file);
+
+//fichier debug a retirer
+//verifier print a la fin et faire test lemin
 #endif

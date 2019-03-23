@@ -14,7 +14,7 @@ vpath %.c $(SOURCES_FOLDER)
 SOURCES = main.c \
 		  parsing.c \
 		  utils.c \
-		  solve.c \
+		  edmonds_karp.c \
 		  debug.c \
 		  bfs.c \
 		  ants.c \
@@ -36,9 +36,6 @@ BLUE := \033[38;2;0;188;218m
 RMLINE := \033[2K
 RESET := \033[0m
 
-ifneq (,$(filter $(debug),y yes))
-	CFLAG += -g3
-endif
 ifneq (,$(filter $(fsanitize),y yes))
 	CFLAG += -g3
 	CFLAG += -fsanitize=address
@@ -48,6 +45,7 @@ ifneq (,$(filter $(time),y yes))
 endif
 ifneq (,$(filter $(valgrind),y yes))
 	RUN_OPTION += valgrind --leak-check=full --track-origins=yes --read-inline-info=yes --read-var-info=yes --num-callers=100 --show-possibly-lost=no
+	CFLAG += -g3
 endif
 
 MAP_FOLDER := maps/
@@ -56,7 +54,7 @@ all: $(NAME)
 
 $(NAME): $(OBJECTS) $(LIBFT)
 	@printf "$(RMLINE)$(YELLOW)🌘  All compiled$(RESET)\n"
-	@$(CC) -o $@ $(OBJECTS) $(LDFLAG)
+	@$(CC) -o $(NAME) $(OBJECTS) $(LDFLAG)
 	@printf "$(GREEN)$(NAME) has been created$(RESET)\n"
 	@tput cnorm
 
@@ -84,9 +82,6 @@ fclean:
 	@printf "$(RED)The lem_in objects have been removed$(RESET)\n"
 	@printf "$(RED)$(NAME) has been removed$(RESET)\n"
 
-debug: CFLAG += -g3
-debug: re
-
 run: $(NAME)
 ifneq ($(generator),)
 ifneq (,$(filter $(generator),flow-one flow-ten flow-thousand big big-superposition))
@@ -97,7 +92,7 @@ else
 endif
 else
 	-@if [ -f $(map) ]; then $(RUN_OPTION) ./$(NAME) < $(map); \
-	else printf "$(BLUE)List of maps\n$(RESET)" && ls $(MAP_FOLDER); fi
+		else printf "$(BLUE)List of maps: maps/\n$(RESET)" && ls $(MAP_FOLDER); fi
 ifneq (,$(filter $(valgrind),y yes))
 		@$(RM) $(NAME).dSYM
 endif
@@ -105,4 +100,4 @@ endif
 
 re: fclean all
 
-.PHONY: clean fclean run
+.PHONY: clean fclean run debug

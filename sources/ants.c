@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 17:50:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/22 23:27:50 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/23 21:23:42 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,21 @@ t_queue	*queue_ant(t_lemin *l)
 	t_queue	*actual;
 	t_queue	*begin;
 
-	begin = init_queue(l, l->end);
-	queue = end_room(begin, begin->room);
+	queue = NULL;
+	if (!(begin = init_queue(l, l->end)))
+		return (NULL);
+	if (!(queue = end_room(begin, begin->room)))
+	{
+		free_queue(begin);
+		return (NULL);
+	}
 	actual = begin;
 	while ((actual = actual->next))
-	{
-		/* print_queue(begin); */
-		queue = next_room(l, queue, actual->room);
-	}
+		if (!(queue = next_room(l, queue, actual->room)))
+		{
+			free_queue(begin);
+			return (NULL);
+		}
 	return (begin);
 }
 
@@ -79,7 +86,6 @@ int		*ants_by_path(t_room *start, int tlen, int max_flow, int ant_total)
 	int *send;
 	int i;
 	int j;
-	int tmp;
 	int tt;
 
 	j = 0;
@@ -98,12 +104,9 @@ int		*ants_by_path(t_room *start, int tlen, int max_flow, int ant_total)
 			ant_total -= ant;
 			i++;
 		}
-		if (ant)
-			tmp = j;
 		tt += ant;
 		send[j++] = ant;
 	}
-	ft_printf("instructions: %ld total: %d\n", (long)send[tmp] + start->links[tmp]->path, tt);
 	return (send);
 }
 
@@ -122,7 +125,7 @@ void	push_ant(t_queue *queue)
 	}
 }
 
-int		start_to_end(t_lemin *l)
+int		start_to_end(t_lemin *l, t_file *file)
 {
 	int i;
 
@@ -134,6 +137,7 @@ int		start_to_end(t_lemin *l)
 			i = 1;
 			while (i <= l->ant)
 			{
+				print_file(file);
 				ft_printf("L%d-%s", i, l->end->name);
 				if (i++ != l->ant)
 					ft_printf(" ");
@@ -146,7 +150,7 @@ int		start_to_end(t_lemin *l)
 	return (0);
 }
 
-void	send_ants(t_lemin *l)
+int		send_ants(t_lemin *l, t_file *file)
 {
 	t_queue *queue;
 	t_room	*room;
@@ -154,8 +158,14 @@ void	send_ants(t_lemin *l)
 	int		i;
 	int		ant;
 
-	queue = queue_ant(l);
-	send = ants_by_path(l->start, l->tlen, l->flow, l->ant);
+	if (!(queue = queue_ant(l)))
+		return (0);
+	if (!(send = ants_by_path(l->start, l->tlen, l->flow, l->ant)))
+	{
+		free_queue(queue);
+		return (0);
+	}
+	print_file(file);
 	room = l->room;
 	while (room)
 	{
@@ -181,4 +191,62 @@ void	send_ants(t_lemin *l)
 		}
 		ft_printf("\n");
 	}
+	free(send);
+	return (free_queue(queue));
 }
+
+/* int		put_instruction(char *buff, int nb, int i, char *room) */
+/* { */
+/* 	char	*dp; */
+/* 	char	nbr[10]; */
+
+/* 	buff[i++] = 'L'; */
+/* 	dp = nbr; */
+/* 	while (nb) */
+/* 	{ */
+/* 		*dp++ = nb % 10 + 48; */
+/* 		nb /= 10; */
+/* 	} */
+/* 	while (dp != nbr) */
+/* 		buff[i++] = *--dp; */
+/* 	buff[i++] = '-'; */
+/* 	while (*room) */
+/* 		buff[i++] = *room++; */
+/* 	return (i); */
+/* } */
+
+/* int		start_to_end(t_lemin *l, t_file *file) */
+/* { */
+/* 	char buff[BS_LEMIN]; */
+/* 	int i; */
+/* 	size_t len; */
+/* 	int j; */
+
+/* 	i = 0; */
+/* 	j = 0; */
+/* 	while (i < l->start->nb_links) */
+/* 	{ */
+/* 		if (l->start->links[i] == l->end) */
+/* 		{ */
+/* 			i = 1; */
+/* 			len = ft_strlen(l->end->name); */
+/* 			print_file(file); */
+/* 			while (i <= l->ant) */
+/* 			{ */
+/* 				if (j + 14 + len >= BS_LEMIN) */
+/* 				{ */
+/* 					write(1, buff, j); */
+/* 					j = 0; */
+/* 				} */
+/* 				j = put_instruction(buff, i, j, l->end->name); */
+/* 				if (i++ != l->ant) */
+/* 					buff[j++] = ' '; */
+/* 			} */
+/* 			buff[j++] = '\n'; */
+/* 			write(1, buff, j); */
+/* 			return (1); */
+/* 		} */
+/* 		i++; */
+/* 	} */
+/* 	return (0); */
+/* } */

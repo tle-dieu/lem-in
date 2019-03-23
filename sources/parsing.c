@@ -6,12 +6,11 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/22 23:26:14 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/23 21:20:55 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
-#include <fcntl.h>
 #include <stdlib.h>
 
 int		get_coord(t_room *new, char *line)
@@ -89,6 +88,7 @@ int		get_room(t_lemin *l, char *line, int *room_opt)
 	new->flow = 0;
 	new->to = NULL;
 	new->from = NULL;
+	new->links = NULL;
 	new->next = l->room;
 	l->room = new;
 	check_room(l);
@@ -178,7 +178,8 @@ int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 
 	if (!*pipe)
 		reorder_room(room);
-	if (ft_count_occ(line, '-') != 1 || !(new = (t_pipe*)malloc(sizeof(t_pipe))))
+	if (ft_count_occ(line, '-') != 1 || ft_strchr(line, ' ')
+	|| !(new = (t_pipe*)malloc(sizeof(t_pipe))))
 		return (1);
 	to = NULL;
 	from = ft_strcdup(line, '-');
@@ -200,12 +201,16 @@ int		get_room_opt(char *line, int *room_opt)
 {
 	int new_opt;
 
+	new_opt = 0;
+	if (line[2] == '#' && line[3] == '#')
+	{
+		ft_printf("error coom\n");
+		return (1);
+	}
 	if (!ft_strcmp("##end", line))
 		new_opt = 2;
 	else if (!ft_strcmp("##start", line))
 		new_opt = 1;
-	else
-		return (1); //peut etre pas une erreur si c'est ni ##start ni ##end
 	if (*room_opt != new_opt && *room_opt != 3)
 		*room_opt += new_opt;
 	return (0);
@@ -233,7 +238,7 @@ int		add_line(char **line, t_file **actual, t_file **file)
 	return (0);
 }
 
-int		parse_graph(t_lemin *l, t_pipe **pipe, t_file **file, t_file *actual)
+int		parse_graph(t_lemin *l, t_pipe **pipe, t_file **file, t_file **actual)
 {
 	int		error;
 	int		room_opt;
@@ -241,15 +246,12 @@ int		parse_graph(t_lemin *l, t_pipe **pipe, t_file **file, t_file *actual)
 
 	error = 0;
 	room_opt = 0;
-	while (!error && !add_line(&line, &actual, file))
+	while (!error && !add_line(&line, actual, file))
 	{
-		if (line[0] == '#')
-		{
-			if (line[1] == '#')
-				error = get_room_opt(line, &room_opt);
-		}
+		if (*line == '#')
+			error = get_room_opt(line, &room_opt);
 		else if (!ft_strchr(line, '-'))
-			error = *pipe || get_room(l, line, &room_opt);
+			error = *pipe || line[0] == 'L' || get_room(l, line, &room_opt);
 		else
 			error = room_opt || line[0] == 'L' || get_pipe(pipe, l->room, line);
 	}
@@ -266,13 +268,15 @@ void	parse_infos(t_lemin *l, t_pipe **pipe, t_file **file)
 	while (!(error = add_line(&line, &actual, file)) && line[0] == '#')
 	{
 		if (line[1] == '#')
-			finish(NULL, "COMMENT ERROR\n", 1); // a changer
+			exit(1);
 	}
 	if (error)
-		finish(NULL, "NO ANT ERROR\n", 1); // a changer
+		exit(1);
+	ft_printf("ant line: %s\n", line);
 	if ((l->ant = atoi_parsing(line)) <= 0)
-		finish(NULL, "ANT ERROR\n", 1); // a changer
-	if (parse_graph(l, pipe, file, actual))
-		ft_printf("{#de5453}STOP !{reset}\n");
-	print_file(*file);
+		exit(1);
+	if (parse_graph(l, pipe, file, &actual))
+	{
+		ft_printf("{#de5453}STOP: %s{reset}\n", actual->line);
+	}
 }

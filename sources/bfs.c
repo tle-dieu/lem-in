@@ -6,12 +6,12 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 12:58:45 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/22 14:19:04 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/23 21:21:00 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include "lem_in.h"
+#include <stdlib.h>
 
 t_queue			*init_queue(t_lemin *l, t_room *begin)
 {
@@ -96,18 +96,18 @@ int				bfs(t_lemin *l, char **flow)
 	if (!(begin = init_queue(l, l->start)))
 		return (0);
 	if (!(queue = enqueue(begin, begin->room, flow)))
-		return (free_queue(begin));
-	while (begin)
+		return (!free_queue(begin));
+	tmp = begin;
+	begin = begin->next;
+	free(tmp);
+	while (begin && begin->room != l->end)
 	{
-		tmp = begin;
-		if (!(begin = begin->next) || (begin->room == l->end))
-		{
-			free(tmp);
-			break ;
-		}
 		if (!(queue = enqueue(queue, begin->room, flow)))
-			return (free_queue(begin));
+			return (!free_queue(begin));
+		tmp = begin;
+		begin = begin->next;
 		free(tmp);
 	}
+	free(begin);
 	return (augmenting_path(l, flow));
 }

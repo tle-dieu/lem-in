@@ -6,18 +6,21 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/14 13:30:06 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/22 17:38:06 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/23 21:22:52 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <stdlib.h>
 
-void	finish(char *s, char *message, int error)
+int		error_finish(t_file *file, t_pipe *pipe, t_room *room, char *message)
 {
-	ft_printf("%s", message);
-	(void)s;
-	exit(error);
+	free_pipe(pipe);
+	free_file(file);
+	free_room(room);
+	if (message)
+		ft_printf("%s\n", message);
+	return (1);
 }
 
 int		atoi_parsing(char const *s)
@@ -34,4 +37,19 @@ int		atoi_parsing(char const *s)
 		|| (nb = nb * 10 + s[i++] - 48) > 2147483647)
 			return (-1);
 	return (nb);
+}
+
+void	print_file(t_file *file)
+{
+	t_file *next;
+
+	ft_printf("{cyan}print file{reset}\n");
+	while (file)
+	{
+		ft_printf("%s\n", file->line);
+		next = file->next;
+		free(file->line);
+		free(file);
+		file = next;
+	}
 }
