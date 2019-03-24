@@ -6,14 +6,14 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 17:50:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/24 15:33:16 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 20:05:56 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <stdlib.h>
 
-t_queue *end_room(t_queue *queue, t_room *room)
+t_queue	*end_room(t_queue *queue, t_room *room)
 {
 	int		i;
 	t_queue *new;
@@ -36,7 +36,7 @@ t_queue *end_room(t_queue *queue, t_room *room)
 	return (queue);
 }
 
-t_queue *next_room(t_lemin *l, t_queue *queue, t_room *room)
+t_queue	*next_room(t_lemin *l, t_queue *queue, t_room *room)
 {
 	t_queue *new;
 
@@ -181,7 +181,7 @@ int		send_ants(t_lemin *l, t_file *file)
 		{
 			if (send[i])
 			{
-				send[i]--; 
+				send[i]--;
 				++ant;
 				ft_printf("L%d-%s ", ant, l->start->links[i]->name);
 				l->start->links[i]->i++;
@@ -194,59 +194,3 @@ int		send_ants(t_lemin *l, t_file *file)
 	free(send);
 	return (free_queue(queue));
 }
-
-/* int		put_instruction(char *buff, int nb, int i, char *room) */
-/* { */
-/* 	char	*dp; */
-/* 	char	nbr[10]; */
-
-/* 	buff[i++] = 'L'; */
-/* 	dp = nbr; */
-/* 	while (nb) */
-/* 	{ */
-/* 		*dp++ = nb % 10 + 48; */
-/* 		nb /= 10; */
-/* 	} */
-/* 	while (dp != nbr) */
-/* 		buff[i++] = *--dp; */
-/* 	buff[i++] = '-'; */
-/* 	while (*room) */
-/* 		buff[i++] = *room++; */
-/* 	return (i); */
-/* } */
-
-/* int		start_to_end(t_lemin *l, t_file *file) */
-/* { */
-/* 	char buff[BS_LEMIN]; */
-/* 	int i; */
-/* 	size_t len; */
-/* 	int j; */
-
-/* 	i = 0; */
-/* 	j = 0; */
-/* 	while (i < l->start->nb_links) */
-/* 	{ */
-/* 		if (l->start->links[i] == l->end) */
-/* 		{ */
-/* 			i = 1; */
-/* 			len = ft_strlen(l->end->name); */
-/* 			print_file(file); */
-/* 			while (i <= l->ant) */
-/* 			{ */
-/* 				if (j + 14 + len >= BS_LEMIN) */
-/* 				{ */
-/* 					write(1, buff, j); */
-/* 					j = 0; */
-/* 				} */
-/* 				j = put_instruction(buff, i, j, l->end->name); */
-/* 				if (i++ != l->ant) */
-/* 					buff[j++] = ' '; */
-/* 			} */
-/* 			buff[j++] = '\n'; */
-/* 			write(1, buff, j); */
-/* 			return (1); */
-/* 		} */
-/* 		i++; */
-/* 	} */
-/* 	return (0); */
-/* } */

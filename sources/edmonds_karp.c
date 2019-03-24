@@ -6,14 +6,14 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/23 21:18:36 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/23 21:21:11 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 20:04:33 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <stdlib.h>
 
-int		augmenting_path(t_lemin *l, char **flow)
+int			augmenting_path(t_lemin *l, char **flow)
 {
 	t_room *room;
 
@@ -29,7 +29,7 @@ int		augmenting_path(t_lemin *l, char **flow)
 	return (1);
 }
 
-static	char **init_flow(t_lemin *l)
+static char	**init_flow(t_lemin *l)
 {
 	char	**flow;
 	int		i;
@@ -53,7 +53,7 @@ static	char **init_flow(t_lemin *l)
 	return (flow);
 }
 
-long	get_steps(t_lemin *l, int max_flow, int tlen)
+long		get_steps(t_lemin *l, int max_flow, int tlen)
 {
 	int len;
 	int ant_total;
@@ -82,7 +82,7 @@ long	get_steps(t_lemin *l, int max_flow, int tlen)
 	return (0);
 }
 
-int		edmonds_karp(t_lemin *l)
+int			edmonds_karp(t_lemin *l)
 {
 	char	**flow;
 	int		max_flow;
@@ -92,7 +92,6 @@ int		edmonds_karp(t_lemin *l)
 		return (0);
 	while (bfs(l, flow))
 	{
-		print_paths(l, flow); //a retirer
 		max_flow++;
 		if (!(new_graph(l, flow, max_flow)))
 			break ;

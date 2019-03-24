@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/24 17:55:32 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 20:08:37 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,7 @@ int		parse_graph(t_lemin *l, t_pipe **pipe, t_file **file, t_file **actual)
 	return (!error); // a mettre en void
 }
 
-int		parse_infos(t_lemin *l, t_pipe **pipe, t_file **file)
+int		parse(t_lemin *l, t_pipe **pipe, t_file **file)
 {
 	char	*line;
 	int		error;

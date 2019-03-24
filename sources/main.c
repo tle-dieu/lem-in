@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/24 16:38:11 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 20:13:29 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int		create_graph(t_lemin *l, t_pipe *pipe) //OK //a mettre dans un fichier parsing
+int		create_graph(t_lemin *l, t_pipe *pipe) //mettre dans un fichier parsing
 {
 	t_room	*room;
 	t_room	**tab;

@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/24 16:05:52 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 20:08:51 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,16 @@ typedef struct	s_room
 	struct s_room	*next;
 }				t_room;
 
-typedef struct s_pipe
+typedef struct	s_pipe
 {
 	int				from;
 	int				to;
 	struct s_pipe	*next;
 }				t_pipe;
 
-typedef struct s_lemin
+typedef struct	s_lemin
 {
-	long 			steps;
+	long			steps;
 	int				flow;
 	int				ant;
 	int				tlen;
@@ -52,30 +52,29 @@ typedef struct s_lemin
 	t_room			*room;
 }				t_lemin;
 
-typedef struct s_queue
+typedef struct	s_queue
 {
 	t_room			*room;
-	struct	s_queue *next;
+	struct s_queue	*next;
 }				t_queue;
 
-typedef struct s_file
+typedef struct	s_file
 {
 	char			*line;
 	struct s_file	*next;
 }				t_file;
 
-
 /*
 ** --------- PARSING ---------
 */
 
-int					parse_infos(t_lemin *l, t_pipe **pipe, t_file **file); // nom a changer en parse
+int					parse(t_lemin *l, t_pipe **pipe, t_file **file); // nom a changer en parse
 
 /*
 ** ----------- BFS -----------
 */
 
-int                 bfs(t_lemin *l, char **flow);
+int					bfs(t_lemin *l, char **flow);
 t_queue				*init_queue(t_lemin *l, t_room *begin);
 
 /*
@@ -113,7 +112,8 @@ int					start_to_end(t_lemin *l, t_file *file);
 ** ---------- UTILS ----------
 */
 
-int					error_finish(t_file *file, t_pipe *pipe, t_room *room, char *message);
+int					error_finish(t_file *file, t_pipe *pipe,
+t_room *room, char *message);
 int					atoi_parsing(char const *s);
 void				print_file(t_file *file);
 
