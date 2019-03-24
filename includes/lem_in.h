@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/23 21:23:56 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 16:05:52 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ typedef struct s_file
 ** --------- PARSING ---------
 */
 
-void				parse_infos(t_lemin *l, t_pipe **pipe, t_file **file); // nom a changer en parse
+int					parse_infos(t_lemin *l, t_pipe **pipe, t_file **file); // nom a changer en parse
 
 /*
 ** ----------- BFS -----------

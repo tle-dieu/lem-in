@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/21 12:58:45 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/23 21:21:00 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 16:03:50 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,6 @@ int				bfs(t_lemin *l, char **flow)
 		begin = begin->next;
 		free(tmp);
 	}
-	free(begin);
+	free_queue(begin);
 	return (augmenting_path(l, flow));
 }

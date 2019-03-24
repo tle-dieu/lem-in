@@ -6,7 +6,7 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/03 16:08:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/23 21:17:51 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 16:38:11 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ int		main(void)
 	pipe = NULL;
 	file = NULL;
 	l = (t_lemin){-1, 0, 0, 0, 0, NULL, NULL, NULL};
-	parse_infos(&l, &pipe, &file);
-	if (!pipe || !l.room || !l.start || !l.end)
+	if (!(parse_infos(&l, &pipe, &file)))
 		return (error_finish(file, pipe, l.room, "ERROR\n"));
 	if (!(create_graph(&l, pipe)))
 		return (error_finish(file, pipe, l.room, "ERROR\n"));

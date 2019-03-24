@@ -6,12 +6,24 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/23 21:20:55 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 17:55:32 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <stdlib.h>
+
+void	reorder_room(t_room *room)
+{
+	int i;
+
+	i = -1;
+	while (room)
+	{
+		room->id = ++i;
+		room = room->next;
+	}
+}
 
 int		get_coord(t_room *new, char *line)
 {
@@ -109,8 +121,6 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 	pipe->from = -1;
 	room_from = NULL;
 	room_to = NULL;
-	if (!from || !to)
-		return (1);
 	if (ft_strcmp(from, to))
 	{
 		while (room)
@@ -119,13 +129,11 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 			{
 				room_from = room;
 				pipe->from = room->id;
-				room->nb_links++;
 			}
 			else if (!ft_strcmp(room->name, to))
 			{
 				room_to = room;
 				pipe->to = room->id;
-				room->nb_links++;
 			}
 			room = room->next;
 		}
@@ -144,56 +152,38 @@ int		check_pipe(t_room *room, t_pipe *pipe, char *from, char *to)
 			prev = prev->next;
 		}
 	}
-	free(from);
-	free(to);
-	if (pipe->to == -1 || pipe->from == -1)
+	if (room_from && room_to)
 	{
-		if (room_from)
-			room_from->nb_links--;
-		if (room_to)
-			room_to->nb_links--;
-		return (1);
+		room_from->nb_links++;
+		room_to->nb_links++;
+		return (0);
 	}
-	return (0);
-}
-
-void	reorder_room(t_room *room)
-{
-	int i;
-
-	i = -1;
-	while (room)
-	{
-		room->id = ++i;
-		room = room->next;
-	}
+	return (1);
 }
 
 int		get_pipe(t_pipe **pipe, t_room *room, char *line)
 {
 	t_pipe	*new;
-	char	*tmp;
-	char	*from;
 	char	*to;
 
 	if (!*pipe)
 		reorder_room(room);
 	if (ft_count_occ(line, '-') != 1 || ft_strchr(line, ' ')
 	|| !(new = (t_pipe*)malloc(sizeof(t_pipe))))
-		return (1);
-	to = NULL;
-	from = ft_strcdup(line, '-');
-	if (from && (tmp = ft_strchr(line, '-')))
 	{
-		new->next = *pipe;
-		if ((to = ft_strdup(tmp + 1)))
-			*pipe = new;
+		free(line);
+		return (1);
 	}
-	if (check_pipe(room, *pipe, from, to))
+	to = ft_strchr(line, '-');
+	*to++ = '\0';
+	new->next = *pipe;
+	*pipe = new;
+	if (check_pipe(room, *pipe, line, to))
 	{
 		*pipe = (*pipe)->next;
 		free(new);
 	}
+	free(line);
 	return (0);
 }
 
@@ -225,8 +215,8 @@ int		add_line(char **line, t_file **actual, t_file **file)
 		return (1);
 	if (!(new = (t_file *)malloc(sizeof(t_file))))
 	{
-		free(line);
-		return (0);
+		free(*line);
+		return (1);
 	}
 	new->next = NULL;
 	new->line = *line;
@@ -253,12 +243,12 @@ int		parse_graph(t_lemin *l, t_pipe **pipe, t_file **file, t_file **actual)
 		else if (!ft_strchr(line, '-'))
 			error = *pipe || line[0] == 'L' || get_room(l, line, &room_opt);
 		else
-			error = room_opt || line[0] == 'L' || get_pipe(pipe, l->room, line);
+			error = room_opt || line[0] == 'L' || get_pipe(pipe, l->room, ft_strdup(line));
 	}
-	return (error);
+	return (!error); // a mettre en void
 }
 
-void	parse_infos(t_lemin *l, t_pipe **pipe, t_file **file)
+int		parse_infos(t_lemin *l, t_pipe **pipe, t_file **file)
 {
 	char	*line;
 	int		error;
@@ -268,15 +258,11 @@ void	parse_infos(t_lemin *l, t_pipe **pipe, t_file **file)
 	while (!(error = add_line(&line, &actual, file)) && line[0] == '#')
 	{
 		if (line[1] == '#')
-			exit(1);
+			return (0);
 	}
-	if (error)
-		exit(1);
-	ft_printf("ant line: %s\n", line);
-	if ((l->ant = atoi_parsing(line)) <= 0)
-		exit(1);
-	if (parse_graph(l, pipe, file, &actual))
-	{
+	if (error || (l->ant = atoi_parsing(line)) <= 0)
+		return (0);
+	if (!parse_graph(l, pipe, file, &actual)) // a retirer
 		ft_printf("{#de5453}STOP: %s{reset}\n", actual->line);
-	}
+	return (*pipe && l->room && l->start && l->end);
 }

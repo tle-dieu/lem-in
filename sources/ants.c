@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/19 17:50:30 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/23 21:23:42 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 15:33:16 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,9 +135,9 @@ int		start_to_end(t_lemin *l, t_file *file)
 		if (l->start->links[i] == l->end)
 		{
 			i = 1;
+			print_file(file);
 			while (i <= l->ant)
 			{
-				print_file(file);
 				ft_printf("L%d-%s", i, l->end->name);
 				if (i++ != l->ant)
 					ft_printf(" ");
