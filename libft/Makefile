@@ -119,7 +119,6 @@ RMLINE = \033[2K
 NC := \033[0m
 
 all: $(NAME)
-	@tput cnorm
 
 $(NAME): $(OBJECTS)
 	@printf "$(RMLINE)$(YELLOW)🌘  All compiled$(NC)\n"

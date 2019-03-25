@@ -56,17 +56,11 @@ MAP_FOLDER := maps/
 
 all: $(NAME)
 
-$(NAME): $(OBJECTS) $(LIBFT)
+$(NAME): $(LIBFT) $(OBJECTS)
 	@printf "$(RMLINE)$(YELLOW)🌘  All compiled$(RESET)\n"
 	@$(CC) -o $(NAME) $(OBJECTS) $(LDFLAG)
 	@printf "$(GREEN)$(NAME) has been created$(RESET)\n"
 	@tput cnorm
-
-$(LIBFT): force
-	@$(MAKE) -C $(LIBDIR)
-
-force:
-	@true
 
 objects/%.o: %.c $(INCLUDES)
 	@tput civis
@@ -74,6 +68,12 @@ objects/%.o: %.c $(INCLUDES)
 	@$(CC) -I $(INCLUDES_FOLDER) -I $(LIBINC) -o $@ -c $<
 	@printf "$(RMLINE)\r🚀 $(GREEN)$(YELLOW) Compiling:$(RESET) $(notdir $<)\r"
 	@sleep 0.02
+
+$(LIBFT): force
+	@$(MAKE) -C $(LIBDIR)
+
+force:
+	@true
 
 clean:
 	@$(MAKE) $@ -C $(LIBDIR)
@@ -104,4 +104,4 @@ endif
 
 re: fclean all
 
-.PHONY: clean fclean run debug visu
+.PHONY: all clean fclean run visu
