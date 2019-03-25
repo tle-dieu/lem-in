@@ -1,0 +1,15 @@
+100
+##start
+start 0 1
+a 1 0
+b 1 1
+d 2 0
+e 2 1
+##end
+end 3 1
+start-a
+start-b
+a-d
+d-e
+b-e
+e-end

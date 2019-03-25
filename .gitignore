@@ -54,4 +54,6 @@ dkms.conf
 # Other
 *.swp
 .DS_Store
-lem_in
+lem-in
+lemin_test
+maps/big_super/gen_*

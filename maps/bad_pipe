@@ -1,0 +1,13 @@
+200
+##start
+start 1 2
+##end
+end 2 4
+room1 3 4
+room2 4 3
+start-end
+end-start
+room1-room2
+room2-start
+room2-end
+#1 laison

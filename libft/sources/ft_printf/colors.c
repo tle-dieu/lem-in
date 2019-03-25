@@ -6,11 +6,12 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/10 00:24:00 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/01/29 15:51:31 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/07 15:24:38 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "ft_printf.h"
 
 static char	*more_style(char *color)
 {

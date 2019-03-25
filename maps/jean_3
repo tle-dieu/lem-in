@@ -1,0 +1,28 @@
+1000000
+##start
+start 0 1
+a 1 0
+b 1 1
+c 1 2
+d 2 0
+e 2 1
+f 2 2
+z 6 6
+j 8 8
+y 9 9
+##end
+end 3 1
+start-a
+start-b
+b-e
+c-j
+j-f
+y-z
+y-end
+e-f
+a-d
+d-e
+e-end
+b-c
+f-end
+z-b

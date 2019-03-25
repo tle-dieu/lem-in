@@ -76,6 +76,7 @@ SOURCES := $(FT_PRINTF)buff.c \
 		  $(STRING)ft_strupper.c \
 		  $(STRING)ft_tolower.c \
 		  $(STRING)ft_toupper.c \
+		  $(STRING)ft_count_occ.c \
 		  $(NUMERIC)ft_atoi.c \
 		  $(NUMERIC)ft_atoll.c \
 		  $(NUMERIC)ft_iterative_power.c \
@@ -118,7 +119,6 @@ RMLINE = \033[2K
 NC := \033[0m
 
 all: $(NAME)
-	@tput cnorm
 
 $(NAME): $(OBJECTS)
 	@printf "$(RMLINE)$(YELLOW)🌘  All compiled$(NC)\n"

@@ -6,10 +6,11 @@
 /*   By: tle-dieu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/18 16:37:36 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/02/01 19:43:35 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/07 15:27:59 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "get_next_line.h"
 #include "libft.h"
 #include <stdlib.h>
 #include <unistd.h>
