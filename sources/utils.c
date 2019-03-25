@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/14 13:30:06 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/24 15:32:16 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 03:56:17 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	print_file(t_file *file)
 {
 	t_file *next;
 
-	ft_printf("{cyan}print file{reset}\n");
 	while (file)
 	{
 		ft_printf("%s\n", file->line);
@@ -52,4 +51,5 @@ void	print_file(t_file *file)
 		free(file);
 		file = next;
 	}
+	ft_printf("\n");
 }

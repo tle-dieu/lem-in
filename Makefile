@@ -15,10 +15,12 @@ SOURCES = main.c \
 		  parsing.c \
 		  utils.c \
 		  edmonds_karp.c \
-		  debug.c \
+		  room.c \
+		  pipe.c \
 		  bfs.c \
 		  ants.c \
 		  free.c \
+		  send.c \
 		  path.c
 
 OBJECTS = $(SRC:.c=.o)

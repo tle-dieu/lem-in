@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/22 14:13:47 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/23 21:21:19 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/24 23:28:15 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,9 @@ static void	assign_path(t_lemin *l, char **flow, t_room *room)
 
 static int	assign_graph(t_lemin *l, char **flow)
 {
-	t_room	*room;
 	int		j;
 
 	j = 0;
-	room = l->room;
 	while (j < l->start->nb_links)
 	{
 		if (flow[l->start->id][l->start->links[j]->id] == 1)

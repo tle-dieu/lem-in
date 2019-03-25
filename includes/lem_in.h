@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/24 20:08:51 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 03:38:13 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,22 @@ typedef struct	s_file
 ** --------- PARSING ---------
 */
 
-int					parse(t_lemin *l, t_pipe **pipe, t_file **file); // nom a changer en parse
+int					parse(t_lemin *l, t_pipe **pipe, t_file **file);
+
+/*
+** ---------- ROOM -----------
+*/
+
+int					get_room(t_lemin *l, char *line, int *room_opt);
+void				reorder_room_id(t_room *room);
+
+/*
+** ---------- PIPE -----------
+*/
+
+int					get_pipe(t_pipe **pipe, t_room *room, char *line);
+int					assign_pipe(t_room *room, t_pipe *pipe, int size);
+
 
 /*
 ** ----------- BFS -----------
@@ -103,6 +118,13 @@ int					free_file(t_file *file);
 
 /*
 ** ---------- ANTS -----------
+*/
+
+t_queue				*create_queue_ant(t_lemin *l);
+int					*ants_by_path(t_room *start, int tlen, int max_flow, int tt_ant);
+
+/*
+** ---------- SEND -----------
 */
 
 int					send_ants(t_lemin *l, t_file *file);

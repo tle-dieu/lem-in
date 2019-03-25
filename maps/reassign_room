@@ -1,16 +1,21 @@
 32
-1 1 1
-2 2 2
-3 3 3
-##end
-4 4 4
+r1 1 1
+r2 5 5
+r3 13 13
 ##start
-start 10 10
 ##end
-end 0 0
-4 7 7
-start-1
-1-2
-2-3
-3-4
-4-end
+r4 14 14
+##end
+r5 2 2
+##start
+start 0 0
+##end
+end 10 10
+r4 4 4
+r3 3 3
+r2 2 2
+start-r1
+r1-r2
+r2-r3
+r3-r4
+r4-end
