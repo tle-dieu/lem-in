@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 03:27:16 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/25 14:39:03 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 17:03:18 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ int			start_to_end(t_lemin *l, t_file *file)
 			{
 				ft_printf("L%d-%s", i, l->end->name);
 				if (i++ != l->ant)
-					write(1, " ", 1);
+					ft_printf(" ");
 			}
-			write(1, "\n", 1);
+			ft_printf("\n");
 			return (1);
 		}
 		i++;
@@ -71,7 +71,7 @@ static void	send_start_ant(t_lemin *l, int *send, int push, int *ant)
 		{
 			send[i]--;
 			if (push++)
-				write(1, " ", 1);
+				ft_printf(" ");
 			ft_printf("L%d-%s", ++(*ant), l->start->links[i]->name);
 			l->start->links[i]->i++;
 			l->start->i--;

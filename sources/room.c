@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 03:03:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/25 14:42:30 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 17:06:21 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int			get_room(t_lemin *l, char *line, int *room_opt)
 	if (!(new = (t_room*)malloc(sizeof(t_room))))
 		return (1);
 	if (!get_coord(new, ft_strchr(line, ' '))
-			|| !(new->name = ft_strcdup(line, ' ')))
+	|| !(new->name = ft_strcdup(line, ' ')))
 	{
 		free(new);
 		return (1);

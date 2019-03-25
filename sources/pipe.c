@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 03:07:15 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/25 14:41:55 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 17:06:39 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	comp_pipe(t_pipe *prev, t_room *room_from, t_room *room_to)
 	while ((actual = prev->next))
 	{
 		if ((new->to == actual->to && new->from == actual->from)
-				|| (new->to == actual->from && new->from == actual->to))
+		|| (new->to == actual->from && new->from == actual->to))
 		{
 			room_to->nb_links--;
 			room_from->nb_links--;
