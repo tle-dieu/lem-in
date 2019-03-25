@@ -49,7 +49,9 @@ ifneq (,$(filter $(valgrind),y yes))
 	RUN_OPTION += valgrind --leak-check=full --track-origins=yes --read-inline-info=yes --read-var-info=yes --num-callers=100 --show-possibly-lost=no
 	CFLAG += -g3
 endif
-
+ifneq (,$(filter $(visu),y yes))
+	VISU := | python3 visu/visu.py
+endif
 MAP_FOLDER := maps/
 
 all: $(NAME)
@@ -88,12 +90,12 @@ run: $(NAME)
 ifneq ($(generator),)
 ifneq (,$(filter $(generator),flow-one flow-ten flow-thousand big big-superposition))
 		$(MAP_FOLDER)./generator --$(generator) > $(MAP_FOLDER)generator_map
-		$(RUN_OPTION) ./$(NAME) < $(MAP_FOLDER)generator_map
+		$(RUN_OPTION) ./$(NAME) < $(MAP_FOLDER)generator_map $(VISU)
 else
 		$(MAP_FOLDER)./generator --$(generator)
 endif
 else
-	-@if [ -f $(map) ]; then $(RUN_OPTION) ./$(NAME) < $(map); \
+	-@if [ -f $(map) ]; then $(RUN_OPTION) ./$(NAME) < $(map) $(VISU); \
 		else printf "$(BLUE)List of maps: maps/\n$(RESET)" && ls $(MAP_FOLDER); fi
 ifneq (,$(filter $(valgrind),y yes))
 		@$(RM) $(NAME).dSYM
@@ -102,4 +104,4 @@ endif
 
 re: fclean all
 
-.PHONY: clean fclean run debug
+.PHONY: clean fclean run debug visu

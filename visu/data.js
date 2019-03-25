@@ -11,14 +11,6 @@ var data = {
             "room": "short0"
         },
         {
-            "ant": "L1",
-            "room": "long0"
-        },
-        {
-            "ant": "L2",
-            "room": "short0"
-        },
-        {
             "ant": "L2",
             "room": "short1"
         },

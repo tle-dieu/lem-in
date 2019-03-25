@@ -126,7 +126,7 @@ for line in sys.stdin:
     elif line.startswith("##"):
         specialRoom = line
     elif line.startswith("#"):
-        print(" comment: " + line)
+        pass
     elif line.startswith('L'):
         elems, error = getInstru(line)
         if error:
