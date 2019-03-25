@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/25 14:09:06 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 16:27:55 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,5 +139,4 @@ t_room *room, char *message);
 int					atoi_parsing(char const *s);
 void				print_file(t_file *file);
 
-//verifier print a la fin et faire test lemin
 #endif
