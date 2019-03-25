@@ -6,12 +6,13 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 03:27:16 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/25 04:00:29 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 13:57:39 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem_in.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 int		start_to_end(t_lemin *l, t_file *file)
 {
@@ -28,9 +29,9 @@ int		start_to_end(t_lemin *l, t_file *file)
 			{
 				ft_printf("L%d-%s", i, l->end->name);
 				if (i++ != l->ant)
-					ft_printf(" ");
+					write(1, " ", 1);
 			}
-			ft_printf("\n");
+			write(1, "\n", 1);
 			return (1);
 		}
 		i++;
@@ -59,11 +60,28 @@ int		init_send(t_lemin *l, t_queue **queue, int **send, t_file *file)
 	return (1);
 }
 
+t_room		*last_room(t_queue *queue)
+{
+	t_room *last;
+
+	last = NULL;
+	while (queue)
+	{
+		if (queue->room->i)
+			last = queue->room;
+		queue = queue->next;
+	}
+	return (last);
+}
+
 static void	push_ant(t_lemin *l, t_queue *queue, int *ant, int *send)
 {
-	int i;
+	int		i;
+	int		push;
+	t_room	*last;
 
 	i = 0;
+	last = last_room(queue);
 	while (queue)
 	{
 		if (queue->room->i)
@@ -71,17 +89,23 @@ static void	push_ant(t_lemin *l, t_queue *queue, int *ant, int *send)
 			queue->room->to->i++;
 			queue->room->i--;
 			queue->room->to->id = queue->room->id;
-			ft_printf("L%d-%s ", queue->room->id, queue->room->to->name);
+			ft_printf("L%d-%s", queue->room->id, queue->room->to->name);
+			if (queue->room != last || l->start->i)
+				write(1, " ", 1);
 		}
 		queue = queue->next;
 	}
+	push = 0;
 	while (i < l->start->nb_links)
 	{
 		if (send[i])
 		{
 			send[i]--;
-			ft_printf("L%d-%s ", ++(*ant), l->start->links[i]->name); // retirer espace a la fin des lignes
+			ft_printf("L%d-%s", ++(*ant), l->start->links[i]->name); // retirer espace a la fin des lignes
+			if (++push != l->flow)
+				write(1, " ", 1);
 			l->start->links[i]->i++;
+			l->start->i--;
 			l->start->links[i]->id = *ant;
 		}
 		i++;
@@ -97,10 +121,11 @@ int		send_ants(t_lemin *l, t_file *file)
 	ant = 0;
 	if (!(init_send(l, &queue, &send, file)))
 		return (0);
+	l->start->i = l->ant;
 	while (l->end->i != l->ant)
 	{
 		push_ant(l, queue->next, &ant, send);
-		ft_printf("\n");
+		write(1, "\n", 1);
 	}
 	free(send);
 	return (free_queue(queue));
