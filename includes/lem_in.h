@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/02 12:07:42 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/25 03:38:13 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 14:09:06 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "libft.h"
 
-typedef struct	s_room
+typedef struct		s_room
 {
 	int				i;
 	int				nb_links;
@@ -31,16 +31,16 @@ typedef struct	s_room
 	struct s_room	*prev;
 	struct s_room	**links;
 	struct s_room	*next;
-}				t_room;
+}					t_room;
 
-typedef struct	s_pipe
+typedef struct		s_pipe
 {
 	int				from;
 	int				to;
 	struct s_pipe	*next;
-}				t_pipe;
+}					t_pipe;
 
-typedef struct	s_lemin
+typedef struct		s_lemin
 {
 	long			steps;
 	int				flow;
@@ -50,19 +50,19 @@ typedef struct	s_lemin
 	t_room			*start;
 	t_room			*end;
 	t_room			*room;
-}				t_lemin;
+}					t_lemin;
 
-typedef struct	s_queue
+typedef struct		s_queue
 {
 	t_room			*room;
 	struct s_queue	*next;
-}				t_queue;
+}					t_queue;
 
-typedef struct	s_file
+typedef struct		s_file
 {
 	char			*line;
 	struct s_file	*next;
-}				t_file;
+}					t_file;
 
 /*
 ** --------- PARSING ---------
@@ -83,7 +83,6 @@ void				reorder_room_id(t_room *room);
 
 int					get_pipe(t_pipe **pipe, t_room *room, char *line);
 int					assign_pipe(t_room *room, t_pipe *pipe, int size);
-
 
 /*
 ** ----------- BFS -----------
@@ -121,7 +120,8 @@ int					free_file(t_file *file);
 */
 
 t_queue				*create_queue_ant(t_lemin *l);
-int					*ants_by_path(t_room *start, int tlen, int max_flow, int tt_ant);
+int					*ants_by_path(t_room *start, int tlen,
+int max_flow, int tt_ant);
 
 /*
 ** ---------- SEND -----------
@@ -139,17 +139,5 @@ t_room *room, char *message);
 int					atoi_parsing(char const *s);
 void				print_file(t_file *file);
 
-/* DEBUG */
-void				print_flow(t_lemin *l, char **tab);
-void				print_queue(t_queue *print);
-void				print_room(t_lemin *l);
-void				print_pipe(t_pipe *pipe);
-void				print_graph(t_room **tab, t_lemin *l);
-void				verif_path(t_lemin *l);
-void				print_paths(t_lemin *l, char **flow);
-void				check_block(t_lemin *l, char **flow);
-void				print_link(t_room *room);
-
-//fichier debug a retirer
 //verifier print a la fin et faire test lemin
 #endif

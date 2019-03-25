@@ -6,7 +6,7 @@
 /*   By: matleroy <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/04 18:00:33 by matleroy          #+#    #+#             */
-/*   Updated: 2019/03/25 03:21:25 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 14:13:07 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ static int	add_line(char **line, t_file **actual, t_file **file)
 	return (0);
 }
 
-static void	parse_graph(t_lemin *l, t_pipe **pipe, t_file **file, t_file **actual)
+static void	parse_graph(t_lemin *l, t_pipe **pipe,
+t_file **file, t_file **actual)
 {
 	int		error;
 	int		room_opt;
@@ -66,7 +67,11 @@ static void	parse_graph(t_lemin *l, t_pipe **pipe, t_file **file, t_file **actua
 		else if (!ft_strchr(line, '-'))
 			error = *pipe || line[0] == 'L' || get_room(l, line, &room_opt);
 		else
-			error = room_opt || line[0] == 'L' || get_pipe(pipe, l->room, ft_strdup(line));
+		{
+			error = room_opt || line[0] == 'L';
+			if (!error)
+				error = get_pipe(pipe, l->room, ft_strdup(line));
+		}
 	}
 }
 

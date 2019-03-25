@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 03:27:16 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/25 13:57:39 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 14:39:03 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int		start_to_end(t_lemin *l, t_file *file)
+int			start_to_end(t_lemin *l, t_file *file)
 {
 	int i;
 
@@ -39,7 +39,7 @@ int		start_to_end(t_lemin *l, t_file *file)
 	return (0);
 }
 
-int		init_send(t_lemin *l, t_queue **queue, int **send, t_file *file)
+static int	init_send(t_lemin *l, t_queue **queue, int **send, t_file *file)
 {
 	t_room	*room;
 
@@ -60,50 +60,19 @@ int		init_send(t_lemin *l, t_queue **queue, int **send, t_file *file)
 	return (1);
 }
 
-t_room		*last_room(t_queue *queue)
+static void	send_start_ant(t_lemin *l, int *send, int push, int *ant)
 {
-	t_room *last;
-
-	last = NULL;
-	while (queue)
-	{
-		if (queue->room->i)
-			last = queue->room;
-		queue = queue->next;
-	}
-	return (last);
-}
-
-static void	push_ant(t_lemin *l, t_queue *queue, int *ant, int *send)
-{
-	int		i;
-	int		push;
-	t_room	*last;
+	int i;
 
 	i = 0;
-	last = last_room(queue);
-	while (queue)
-	{
-		if (queue->room->i)
-		{
-			queue->room->to->i++;
-			queue->room->i--;
-			queue->room->to->id = queue->room->id;
-			ft_printf("L%d-%s", queue->room->id, queue->room->to->name);
-			if (queue->room != last || l->start->i)
-				write(1, " ", 1);
-		}
-		queue = queue->next;
-	}
-	push = 0;
 	while (i < l->start->nb_links)
 	{
 		if (send[i])
 		{
 			send[i]--;
-			ft_printf("L%d-%s", ++(*ant), l->start->links[i]->name); // retirer espace a la fin des lignes
-			if (++push != l->flow)
+			if (push++)
 				write(1, " ", 1);
+			ft_printf("L%d-%s", ++(*ant), l->start->links[i]->name);
 			l->start->links[i]->i++;
 			l->start->i--;
 			l->start->links[i]->id = *ant;
@@ -112,7 +81,28 @@ static void	push_ant(t_lemin *l, t_queue *queue, int *ant, int *send)
 	}
 }
 
-int		send_ants(t_lemin *l, t_file *file)
+static void	push_ant(t_lemin *l, t_queue *queue, int *ant, int *send)
+{
+	int		push;
+
+	push = 0;
+	while (queue)
+	{
+		if (queue->room->i)
+		{
+			queue->room->to->i++;
+			queue->room->i--;
+			queue->room->to->id = queue->room->id;
+			if (push++)
+				write(1, " ", 1);
+			ft_printf("L%d-%s", queue->room->id, queue->room->to->name);
+		}
+		queue = queue->next;
+	}
+	send_start_ant(l, send, push, ant);
+}
+
+int			send_ants(t_lemin *l, t_file *file)
 {
 	t_queue *queue;
 	int		*send;

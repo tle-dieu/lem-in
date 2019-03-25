@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/25 03:03:29 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/25 03:12:27 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/25 14:42:30 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ static int	get_coord(t_room *new, char *line)
 	x[i] = '\0';
 	if ((new->x = atoi_parsing(x)) < 0)
 		return (0);
-	if (line[i] != ' ' || !line[i + 1] || (new->y = atoi_parsing(line + i + 1)) < 0)
+	if (line[i] != ' ' || !line[i + 1]
+	|| (new->y = atoi_parsing(line + i + 1)) < 0)
 		return (0);
 	return (1);
 }
@@ -86,7 +87,7 @@ static void	init_room(t_lemin *l, t_room *new)
 	l->room = new;
 }
 
-int		get_room(t_lemin *l, char *line, int *room_opt)
+int			get_room(t_lemin *l, char *line, int *room_opt)
 {
 	t_room	*new;
 
