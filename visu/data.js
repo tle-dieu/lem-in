@@ -1,86 +1,50 @@
 var data = {
-    "ants": 10,
+    "ants": 5,
     "error": "",
     "instructions": [
         {
             "ant": "L1",
-            "room": "b"
+            "room": "long0"
         },
         {
             "ant": "L2",
-            "room": "a"
+            "room": "short0"
         },
         {
             "ant": "L1",
-            "room": "c"
+            "room": "long0"
         },
         {
             "ant": "L2",
-            "room": "d"
+            "room": "short0"
         },
         {
-            "ant": "L3",
-            "room": "b"
-        },
-        {
-            "ant": "L4",
-            "room": "a"
+            "ant": "L2",
+            "room": "short1"
         },
         {
             "ant": "L1",
-            "room": "f"
-        },
-        {
-            "ant": "L2",
-            "room": "e"
+            "room": "long1"
         },
         {
             "ant": "L3",
-            "room": "c"
+            "room": "short0"
         },
         {
-            "ant": "L4",
-            "room": "d"
+            "ant": "L2",
+            "room": "end"
         },
         {
-            "ant": "L5",
-            "room": "b"
-        },
-        {
-            "ant": "L6",
-            "room": "a"
+            "ant": "L3",
+            "room": "short1"
         },
         {
             "ant": "L1",
-            "room": "end"
-        },
-        {
-            "ant": "L2",
-            "room": "end"
-        },
-        {
-            "ant": "L3",
-            "room": "f"
+            "room": "long2"
         },
         {
             "ant": "L4",
-            "room": "e"
-        },
-        {
-            "ant": "L5",
-            "room": "c"
-        },
-        {
-            "ant": "L6",
-            "room": "d"
-        },
-        {
-            "ant": "L7",
-            "room": "b"
-        },
-        {
-            "ant": "L8",
-            "room": "a"
+            "room": "short0"
         },
         {
             "ant": "L3",
@@ -88,183 +52,148 @@ var data = {
         },
         {
             "ant": "L4",
+            "room": "short1"
+        },
+        {
+            "ant": "L1",
+            "room": "long3"
+        },
+        {
+            "ant": "L5",
+            "room": "short0"
+        },
+        {
+            "ant": "L4",
             "room": "end"
         },
         {
             "ant": "L5",
-            "room": "f"
+            "room": "short1"
         },
         {
-            "ant": "L6",
-            "room": "e"
-        },
-        {
-            "ant": "L7",
-            "room": "c"
-        },
-        {
-            "ant": "L8",
-            "room": "d"
-        },
-        {
-            "ant": "L9",
-            "room": "b"
-        },
-        {
-            "ant": "L10",
-            "room": "a"
+            "ant": "L1",
+            "room": "long4"
         },
         {
             "ant": "L5",
             "room": "end"
         },
         {
-            "ant": "L6",
-            "room": "end"
-        },
-        {
-            "ant": "L7",
-            "room": "f"
-        },
-        {
-            "ant": "L8",
-            "room": "e"
-        },
-        {
-            "ant": "L9",
-            "room": "c"
-        },
-        {
-            "ant": "L10",
-            "room": "d"
-        },
-        {
-            "ant": "L7",
-            "room": "end"
-        },
-        {
-            "ant": "L8",
-            "room": "end"
-        },
-        {
-            "ant": "L9",
-            "room": "f"
-        },
-        {
-            "ant": "L10",
-            "room": "e"
-        },
-        {
-            "ant": "L9",
-            "room": "end"
-        },
-        {
-            "ant": "L10",
+            "ant": "L1",
             "room": "end"
         }
     ],
     "pipes": [
         {
             "isfrom": "start",
-            "to": "a"
+            "to": "short0"
         },
         {
-            "isfrom": "start",
-            "to": "b"
+            "isfrom": "short0",
+            "to": "short1"
         },
         {
-            "isfrom": "a",
-            "to": "d"
+            "isfrom": "long0",
+            "to": "start"
         },
         {
-            "isfrom": "d",
-            "to": "e"
+            "isfrom": "long0",
+            "to": "long1"
         },
         {
-            "isfrom": "b",
-            "to": "e"
+            "isfrom": "long1",
+            "to": "long2"
         },
         {
-            "isfrom": "e",
+            "isfrom": "long2",
+            "to": "long3"
+        },
+        {
+            "isfrom": "long3",
+            "to": "long4"
+        },
+        {
+            "isfrom": "long4",
             "to": "end"
         },
+        "",
         {
-            "isfrom": "b",
-            "to": "c"
-        },
-        {
-            "isfrom": "c",
-            "to": "f"
-        },
-        {
-            "isfrom": "f",
+            "isfrom": "short1",
             "to": "end"
         }
     ],
     "rooms": [
         {
             "coord": {
-                "x": 0,
-                "y": 1
+                "x": 23,
+                "y": 3
             },
             "name": "start",
             "type": "##start"
         },
         {
             "coord": {
-                "x": 1,
-                "y": 0
-            },
-            "name": "a",
-            "type": ""
-        },
-        {
-            "coord": {
-                "x": 1,
-                "y": 1
-            },
-            "name": "b",
-            "type": ""
-        },
-        {
-            "coord": {
-                "x": 1,
-                "y": 2
-            },
-            "name": "c",
-            "type": ""
-        },
-        {
-            "coord": {
-                "x": 2,
-                "y": 0
-            },
-            "name": "d",
-            "type": ""
-        },
-        {
-            "coord": {
-                "x": 2,
-                "y": 1
-            },
-            "name": "e",
-            "type": ""
-        },
-        {
-            "coord": {
-                "x": 2,
-                "y": 2
-            },
-            "name": "f",
-            "type": ""
-        },
-        {
-            "coord": {
-                "x": 3,
-                "y": 1
+                "x": 16,
+                "y": 7
             },
             "name": "end",
             "type": "##end"
+        },
+        {
+            "coord": {
+                "x": 16,
+                "y": 3
+            },
+            "name": "short0",
+            "type": ""
+        },
+        {
+            "coord": {
+                "x": 16,
+                "y": 5
+            },
+            "name": "short1",
+            "type": ""
+        },
+        {
+            "coord": {
+                "x": 16,
+                "y": 18
+            },
+            "name": "long0",
+            "type": ""
+        },
+        {
+            "coord": {
+                "x": 16,
+                "y": 9
+            },
+            "name": "long1",
+            "type": ""
+        },
+        {
+            "coord": {
+                "x": 5,
+                "y": 6
+            },
+            "name": "long2",
+            "type": ""
+        },
+        {
+            "coord": {
+                "x": 10,
+                "y": 11
+            },
+            "name": "long3",
+            "type": ""
+        },
+        {
+            "coord": {
+                "x": 4,
+                "y": 8
+            },
+            "name": "long4",
+            "type": ""
         }
     ]
 }

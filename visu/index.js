@@ -29,24 +29,28 @@ while (nb_room > 100){
     division = division / 2;
 }
 data.pipes.forEach((item) =>{
-	var canvas = document.getElementById("map-bg");
-	var context = canvas.getContext("2d");
-	context.beginPath();
-    var i = 0;
-    while ( data.rooms[i].name != item.isfrom || data.rooms[i].type == "deleted")
-		i++;
-	var from = data.rooms[i];
-	i = 0;
-	while (data.rooms[i].name != item.to || data.rooms[i].type == "deleted")
-        i++;
-    console.log(data.rooms[i])
-	var to = data.rooms[i];
-	context.strokeStyle = "#a98274";
-	context.moveTo(canvas.width * to.coord.x / x, canvas.height * to.coord.y / y + 0.5);
-	context.lineWidth = 2;
-	context.lineTo(canvas.width * from.coord.x / x, canvas.height * from.coord.y / y + 0.5);
-	context.stroke();
-	context.closePath();
+    console.log("before")
+    if (item){
+        console.log("in")
+        var canvas = document.getElementById("map-bg");
+        var context = canvas.getContext("2d");
+        context.beginPath();
+        var i = 0;
+        while ( data.rooms[i].name != item.isfrom || data.rooms[i].type == "deleted")
+            i++;
+        var from = data.rooms[i];
+        i = 0;
+        while (data.rooms[i].name != item.to || data.rooms[i].type == "deleted")
+            i++;
+        console.log(data.rooms[i])
+        var to = data.rooms[i];
+        context.strokeStyle = "#a98274";
+        context.moveTo(canvas.width * to.coord.x / x, canvas.height * to.coord.y / y + 0.5);
+        context.lineWidth = 2;
+        context.lineTo(canvas.width * from.coord.x / x, canvas.height * from.coord.y / y + 0.5);
+        context.stroke();
+        context.closePath();
+    }
 })
 data.rooms.forEach((item) =>{
     if (item.type != "deleted"){

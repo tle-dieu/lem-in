@@ -63,6 +63,7 @@ def checkRoom(name, kind, coord):
             item.type = "deleted"
         if item.type == kind:
             item.type = ""
+    
 
 def getRoom(line, specialRoom):
     error = ""
@@ -87,14 +88,26 @@ def getRoom(line, specialRoom):
         error = "BAD ROOM"
     return newRoom, error
 
+def checkPipe(isfrom, to):
+    check = 0
+    for item in rooms:
+        if item.type != "deleted":
+            if item.name == isfrom:
+                check += 1
+            if item.name == to:
+                check += 1
+    return check == 2
+
 def getPipe(line):
     error = ""
     newPipe = ""
     tab = line.split('-')
     if len(tab) == 2:
-        newPipe = Pipe(tab[0].strip('\n'), tab[1].strip('\n'))
+        if checkPipe(tab[0].strip('\n'), tab[1].strip('\n')):
+            newPipe = Pipe(tab[0].strip('\n'), tab[1].strip('\n'))
     else:
         error = "BAD PIPE"
+
     return newPipe, error
     
 
