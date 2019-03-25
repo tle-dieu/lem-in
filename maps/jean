@@ -1,21 +1,20 @@
-8
-end 3 1
-f 2 2
-e 2 1
-##end
-d 2 0
-c 1 2
-b 1 1
-a 1 0
+10
 ##start
 start 0 1
-end-d
-end-f
-end-e
-f-c
-e-b
-e-d
-d-a
-c-b
-b-start
-a-start
+a 1 0
+b 1 1
+c 1 2
+d 2 0
+e 2 1
+f 2 2
+##end
+end 3 1
+start-a
+start-b
+a-d
+d-e
+b-e
+e-end
+b-c
+c-f
+f-end

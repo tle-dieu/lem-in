@@ -1,0 +1,180 @@
+body{
+    background-image: url(http://www.areagroup.fr/wp-content/uploads/terre-2.jpg);
+    background-size: cover;
+    background-position: center;
+}
+.slidecontainer {
+    position: absolute;
+    top: 20px;
+    left: 15%;
+    height: 25px;
+    border-radius: 25px;
+    overflow:hidden;
+    right: 15%;
+}
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%; 
+    height: 25px;
+    background: #00000040;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+.slider:hover {
+    opacity: 1;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px; 
+    height: 25px;
+    background-color: #FFC107;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px; 
+    background-color: #FFC107;
+    cursor: pointer;
+}
+nav{
+    background-color:#00000040;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom : 20px;
+    left: 15%;
+    right: 15%;
+    border-radius: 20px;
+    padding: 20px;
+}
+nav button {
+    background-color: transparent;
+    color: #fff;
+    border:none;
+    font-size: 25px;
+    cursor:pointer;
+}
+.ant{
+    width: 60px;
+    position: absolute;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 100;
+    -webkit-transition: all 0.6s ease-in;
+    -moz-transition: all 0.6s ease-in;
+    -ms-transition: all 0.6s ease-in;
+    -o-transition: all 0.6s ease-in;
+    transition: all 0.6s ease-in;
+}
+body{
+    display:flex;
+    font-family: 'Lilita One', cursive;
+    padding: 0;
+    margin: 0;
+    justify-content:center;
+    height: 100vh;
+    overflow: hidden;
+    width: 100vw;
+    align-items: center;
+}
+#map-wrapper{
+    height : 70vh;
+    width: 70vw;
+    padding: 40px;
+    background-color:#00000040;
+    position: relative;
+    border-radius: 40px;
+}
+#map{
+    height:100%;
+    width: 100%;
+    position: relative;
+}
+#map-bg{
+    width: 100%;
+    height: 100%;
+}
+.room{
+    position:absolute;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    color:#fff;
+    font-size: 25px;
+    display: flex;
+    transform: translateX(-50%) translateY(-50%);
+    justify-content:center;
+    align-items: center;
+    background-color: #a98274    
+}
+.victory{
+    position: absolute;
+    z-index:102;
+}
+.victory-bg{
+    background-color:black;
+    position: absolute;
+    left: 0;
+    right:0;
+    top:0;
+    bottom: 0;
+    z-index: 101;
+}
+.null{
+    display:none
+}
+.title{
+    position: absolute;
+    left:50%;
+    top: 50%;
+    z-index: 105;
+    color: #fff;
+    font-size: 400px;
+    transform: translateX(-50%) translateY(-50%) rotate(15deg);
+    background-color: transparent;
+}
+@keyframes  fall {
+    from {
+        transform: translateY(-50%) translateX(-50%)rotate(150deg);
+      }
+      10% {
+          transform: translateY(-30%) translateX(-50%) rotate(70deg);
+      }
+      15% {
+          transform: translateY(-50%) translateX(-50%) rotate(100deg);
+      }
+      30% {
+        transform: translateY(-50%) translateX(-50%) rotate(90deg);
+    }
+      to {
+         transform: translateY(1000%) translateX(-50%) rotate(90deg);
+       }
+}
+
+.title-fall{
+    animation-duration: 2s;
+    animation-name: fall;
+}
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  40% {
+      transform: scale(1.2);
+  }
+  65% {
+      transform: scale(0.8);
+  }
+  to {
+      transform: scale(1);
+  }
+}
+.pulse :hover {
+  animation-duration: 0.4s;
+  animation-name: pulse;
+}

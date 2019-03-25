@@ -1,30 +1,30 @@
-13
-e1 12 12
-d1 11 11
-c1 10 10
-b1 9 9
-a1 8 8
-f 7 7
-e 6 6
-d 5 5
-c 4 4
-b 3 3
-a 2 2
-##end
-end 1 1
+100
 ##start
 start 0 0
-e1-end
-e1-d1
-d1-c1
-d1-d
-c1-b1
-b1-a1
-a1-start
+##end
+end 1 1
+a 2 2
+b 3 3
+c 4 4
+d 5 5
+e 6 6
+f 7 7
+a1 8 8
+b1 9 9
+c1 10 10
+d1 11 11
+e1 12 12
+start-a
+start-a1
+a-b
+b-c
+c-d
+d-e
+d-d1
+e-f
 f-end
-f-e
-e-d
-d-c
-c-b
-b-a
-a-start
+a1-b1
+b1-c1
+c1-d1
+d1-e1
+e1-end
