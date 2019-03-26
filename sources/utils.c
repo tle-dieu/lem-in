@@ -6,7 +6,7 @@
 /*   By: tle-dieu <tle-dieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/14 13:30:06 by tle-dieu          #+#    #+#             */
-/*   Updated: 2019/03/25 17:00:24 by tle-dieu         ###   ########.fr       */
+/*   Updated: 2019/03/26 16:12:44 by tle-dieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int		error_finish(t_file *file, t_pipe *pipe, t_room *room, char *message)
 	free_file(file);
 	free_room(room);
 	if (message)
-		ft_printf("%s\n", message);
+		ft_printf("%s", message);
 	return (1);
 }
 
