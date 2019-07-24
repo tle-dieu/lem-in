@@ -1,0 +1,14 @@
+# simple_map
+3
+room1 1 1
+room2 1 2
+##start
+start 0 1
+##end
+end 3 1
+room3 2 2
+start-room1
+start-room2
+room2-room3
+room1-end
+room3-end

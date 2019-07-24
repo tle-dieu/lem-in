@@ -1,52 +1,62 @@
 # Lem-in #
 
+Lem-in is an algorithm project, the purpose is to find paths from start room to end room and to move ants by these paths with the least amount of steps.
+This is the third project of the algorithmic branch at 42.
+
 ## Subjects ##
 
 * [English](subjects/lem-in.en.pdf)
 * [French](subjects/lem-in.fr.pdf)
 
+## Algorithm ##
+
+The algorithm used is an modified [Edmonds-Karp algorithm](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) to be more suitable to this problem.
+
 ## Compiling ##
 
 Run `make` command and an executable called `lem-in` should be created.
 
-## Example ##
+## Usage ##
+
+Standard:
+\
+`$> ./lem-in < <map>`
+
+With visualizer:
+\
+`$> ./lem-in < <map> | python3 visu/visu.py`
+
+## Undertanding output ##
+
+`$> ./lem-in < maps/simple_map`
 
 ### ###
 
-#### Without visualizer ####
-
-`$> ./lem-in < maps/example`
+#### Map ####
 
 ```.
-10
-##start
+# simple_map    // Comment
+3               // Number of ants
+room1 1 1       // Room declaration: name and X-Y coordonates
+room2 1 2
+##start         // Next room will be start room
 start 0 1
-a 1 0
-b 1 1
-c 1 2
-d 2 0
-e 2 1
-f 2 2
-##end
+##end           // Next room will be end room
 end 3 1
-start-a
-start-b
-a-d
-d-e
-b-e
-e-end
-b-c
-c-f
-f-end
+room3 2 2
+start-room1     // Relations between rooms, room1 and start are linked
+start-room2
+room2-room3
+room1-end
+room3-end
+```
 
-L1-b L2-a
-L1-c L2-d L3-b L4-a
-L1-f L2-e L3-c L4-d L5-b L6-a
-L1-end L2-end L3-f L4-e L5-c L6-d L7-b L8-a
-L3-end L4-end L5-f L6-e L7-c L8-d L9-b L10-a
-L5-end L6-end L7-f L8-e L9-c L10-d
-L7-end L8-end L9-f L10-e
-L9-end L10-end
+#### Steps ####
+
+```.
+L1-room2 L2-room1           // Step 1: ant1 go to room2 and ant2 go to room1 (L<ant>-<room>)
+L2-end L1-room3 L3-room1
+L1-end L3-end
 ```
 
 ## Authors ##
