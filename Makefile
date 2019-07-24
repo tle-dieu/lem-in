@@ -95,7 +95,7 @@ else
 		$(MAP_FOLDER)./generator --$(generator)
 endif
 else
-	-@if [ -f $(map) ]; then $(RUN_OPTION) ./$(NAME) < $(map) $(VISU); \
+	@-if [ -f "$(map)" ]; then $(RUN_OPTION) ./$(NAME) < "$(map)" $(VISU); \
 		else printf "$(BLUE)List of maps: maps/\n$(RESET)" && ls $(MAP_FOLDER); fi
 ifneq (,$(filter $(valgrind),y yes))
 		@$(RM) $(NAME).dSYM

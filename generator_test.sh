@@ -8,13 +8,13 @@ RED="\033[38;2;255;60;51m"
 RESET="\033[0m"
 GREEN="\033[38;2;12;231;58m"
 BLUE="\033[38;2;0;188;218m"
-param="big-superposition"
+GENERATOR_OPTION="--big-superposition"
+if [[ $#>1 ]]; then
+	GENERATOR_OPTION=$1
+fi
 while [[ $i -lt $loop ]]; do
 	i=$(($i + 1))
-	if [[ $#>1 ]]; then
-		param=$1
-	fi
-	./maps/generator --$param > maps/gen_test
+	./maps/generator $GENERATOR_OPTION > maps/gen_test
 	output=$(make run map=maps/gen_test time=y 2>&1)
 	actual_time=$(echo "$output" | grep real | awk '{for(i=1;i<=NF;i++)if($i~/^-?[0-9]+\.[0-9]+$/){print $i}}')
 	diff=$(echo "$output" | grep -E 'L[0-9]' | wc -l | tr -d ' ')

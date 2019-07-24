@@ -1,6 +1,9 @@
+#!/usr/bin/python3
+
 import sys
 import json
-import subprocess
+import webbrowser
+import os
 
 i = 0
 rooms = []
@@ -159,4 +162,5 @@ else:
     f = open("./visu/data.js","w+")
     f.write("var data = ")
     f.write(store.toJSON())
-    subprocess.run(["open", "./visu/visu.html"])
+    # subprocess.run(["open", "./visu/visu.html"])
+    webbrowser.open('file://' + os.path.realpath('./visu/visu.html'))
