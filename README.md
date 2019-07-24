@@ -1,6 +1,6 @@
 # Lem-in #
 
-Lem-in is an algorithm project, the purpose is to find paths from start room to end room and to move ants by these paths with the least amount of steps.
+Lem-in is an algorithm project, the purpose is to find paths from start room to end room and to move ants by these paths with the least amount of steps.\
 This is the third project of the algorithmic branch at 42.
 
 ## Subjects ##
@@ -10,21 +10,12 @@ This is the third project of the algorithmic branch at 42.
 
 ## Algorithm ##
 
-The algorithm used is an modified [Edmonds-Karp algorithm](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm) to be more suitable to this problem.
+The algorithm used is [Edmonds-Karp algorithm](https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm), modified to be more suitable to this problem.
 
-## Compiling ##
+## Run ##
 
-Run `make` command and an executable called `lem-in` should be created.
-
-## Usage ##
-
-Standard:
-\
-`$> ./lem-in < <map>`
-
-With visualizer:
-\
-`$> ./lem-in < <map> | python3 visu/visu.py`
+Run `make` command and an executable called `lem-in` should be created.\
+You can run lem-in like this `./lem-in < <map>`
 
 ## Undertanding output ##
 
@@ -58,6 +49,13 @@ L1-room2 L2-room1           // Step 1: ant1 go to room2 and ant2 go to room1 (L<
 L2-end L1-room3 L3-room1
 L1-end L3-end
 ```
+
+## Visualizer ##
+
+This project have a visualizer.\
+It was written in Javascript and Python
+
+Run visualizer like this `./lem-in < <map> | python3 visu/visu.py`
 
 ## Authors ##
 
