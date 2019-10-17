@@ -17,7 +17,7 @@ The algorithm used is [Edmonds-Karp algorithm](https://en.wikipedia.org/wiki/Edm
 Run `make` command and an executable called `lem-in` should be created.\
 You can run lem-in like this `./lem-in < <map>`
 
-## Undertanding output ##
+## Understanding output ##
 
 `$> ./lem-in < maps/simple_map`
 
