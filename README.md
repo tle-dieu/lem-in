@@ -5,8 +5,8 @@ This is the third project of the algorithmic branch at 42.
 
 ## Subjects ##
 
-* [English](subjects/lem-in.en.pdf)
-* [French](subjects/lem-in.fr.pdf)
+* [English](/subjects/lem-in.en.pdf)
+* [French](/subjects/lem-in.fr.pdf)
 
 ## Algorithm ##
 
@@ -64,7 +64,7 @@ Run visualizer like this `./lem-in < <map> | python3 visu/visu.py`
 
 ## Notes ##
 
-This code complies with the 42 school [norm](https://github.com/Binary-Hackers/42_Subjects/blob/master/04_Norme/norme_2_0_1.pdf)
+This code complies with the 42 school [norm](/subjects/norme_2_0_1.pdf)
 
 &nbsp;
 
